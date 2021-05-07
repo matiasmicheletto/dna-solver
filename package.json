@@ -1,0 +1,31 @@
+{
+  "name": "sganode",
+  "version": "1.0.0",
+  "description": "Simple Genetic Algorithm Dashboard",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matiasmicheletto/sganode.git"
+  },
+  "keywords": [
+    "GA",
+    "Dashboard",
+    "Interactive",
+    "Learning"
+  ],
+  "author": "Matias Micheletto",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/matiasmicheletto/sganode/issues"
+  },
+  "homepage": "https://github.com/matiasmicheletto/sganode#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^9.0.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.10.1"
+  }
+}
