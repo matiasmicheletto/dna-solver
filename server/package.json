@@ -4,7 +4,11 @@
   "description": "Simple Genetic Algorithm Dashboard",
   "main": "app.js",
   "scripts": {
-    "test": "test"
+    "start": "node app",
+    "server": "nodemon",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "build": "npm run build --prefix client"
   },
   "repository": {
     "type": "git",
@@ -27,5 +31,8 @@
     "dotenv": "^9.0.0",
     "express": "^4.17.1",
     "express-validator": "^6.10.1"
+  },
+  "devDependencies": {
+    "concurrently": "^6.0.2"
   }
 }
