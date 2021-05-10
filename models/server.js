@@ -5,12 +5,7 @@ const path = require("path");
 class Server {
   constructor() {
     this.app = express();
-    this.port = process.env.PORT;
-    this.paths = {
-      auth: "/api/auth",
-      homepage: "/api/homepage",
-    };
-
+    this.port = process.env.PORT;    
     this.middlewares();
     this.routes();
   }
@@ -25,11 +20,7 @@ class Server {
     );
   }
 
-  // Bind controllers to routes
-  routes() {
-    this.app.use(this.paths.auth, require("../routes/auth"));
-    this.app.use(this.paths.homepage, require("../routes/homepage"));
-    // Catch all requests that don't match any route
+  routes() {    
     this.app.get("*", (req, res) => {
       res.sendFile(
         path.join(__dirname, "../client/build/index.html")
