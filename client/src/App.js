@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Login from "./components/login";
 import Homepage from "./components/homepage";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const [isUserSignedIn, setIsUserSignedIn] = useState(false);
+  
   useEffect(() => {
     if (localStorage.getItem("token")) setIsUserSignedIn(true);
     else setIsUserSignedIn(false);
