@@ -1,8 +1,9 @@
 {
-  "name": "client",
+  "name": "sganode-client",
+  "description": "Simple Genetic Algorithm Educational Dashboard",
   "version": "1.0.0",
   "private": true,
-  "proxy": "http://locakhost:8080",
+  "proxy": "http://localhost:8080",
   "dependencies": {
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",

@@ -3,8 +3,12 @@ import {
   Container
 } from "react-bootstrap";
 import TopNavbar from "./components/topnavbar"
+import Dashboard from "./components/dashboard"
 import { container } from "./style"
 import 'bootstrap/dist/css/bootstrap.min.css';
+import GA from './ga';
+
+const ga = new GA();
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -23,7 +27,7 @@ const App = () => {
         isLoading ? 
         <p>loading...</p>
         :
-        <p>hello</p>        
+        <Dashboard ga={ga}/>
       }
     </Container>
   );
