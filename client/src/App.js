@@ -8,7 +8,11 @@ import { container } from "./style"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import GA from './ga';
 
-const ga = new GA();
+const fitness = (x) => {
+  return Math.random()*100;
+}
+
+const ga = new GA(fitness, 30);
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
