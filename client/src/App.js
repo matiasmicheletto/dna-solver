@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
-import {
-  Container
-} from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import TopNavbar from "./components/topnavbar"
 import Dashboard from "./components/dashboard"
 import { container } from "./style"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import GA from './ga';
 
-const fitness = (x) => {
-  return Math.random()*100;
-}
 
-const ga = new GA(fitness, 30);
+const config = { // GA parameters
+  fitness: (x) => (x-181)*(x-181)+256, // Global minima at 0000000010110101
+  pop_size: 10
+};
+
+const ga = new GA(config);
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
