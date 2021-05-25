@@ -4,12 +4,13 @@ import TopNavbar from "./components/topnavbar";
 import Dashboard from "./components/dashboard";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles.css';
-import GA from './ga';
+import GA, {selection} from './ga';
 
 
 const config = { // GA parameters
   fitness: (x) => (x-181)*(x-181), // Global minima at 0000000010110101
-  pop_size: 10
+  pop_size: 15,
+  selection: selection.RANK
 };
 
 const ga = new GA(config);

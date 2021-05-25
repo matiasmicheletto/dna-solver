@@ -1,45 +1,42 @@
 import React, {useState} from 'react';
-import './styles.css';
+import PopTable from '../poptable';
 
 const Dashboard = (props) => {
-    
-    const [gen, setGen] = useState(0);
-    const [pop, setPop] = useState([]);
 
-    const go = () => {
-        props.ga.evolve();
+    const [gen, setGen] = useState(0);
+    const [ffe, setFFE] = useState(0);
+    const [pop, setPop] = useState(props.ga.status.population);
+    const [limit, setLimit] = useState(100);
+    
+    const go = () => { // Execute a single step of the algorithm and render
+        props.ga.evolve()
+        const s = props.ga.status; // To avoid run the getter multiple times
         setGen(props.ga.generation);
-        setPop(props.ga.status.population);
+        setFFE(s.fitness_evals)
+        setPop(s.population);
+    }
+
+    const fast_fw = () => { // FFW button callback
+        if(props.ga.generation < limit)
+            setTimeout(()=>{ // When using timeout, a render is performed on every loop
+                go();
+                fast_fw();
+            }, 10);
+        else 
+            setLimit(limit+100); // Increase limit for next 100 generations
     }
 
     return (
         <div>
-            <p>Current generation: {gen}</p>
-            <button onClick={go}>Evolve!</button>
+            <p>Fitness function is <b>y = (x-181)<sup>2</sup></b>. Hit the <i>Evolve!</i> button and let the algorithm find the value of <b>x</b> (phenotype) that minizes the fitness function <b>y</b>.</p>
+            <br></br>
+            <p><b>Current generation:</b> {gen}</p>
+            <p><b>Objective function evaluations:</b> {ffe}</p>
+            <button onClick={go} title="Next generation">Evolve!</button>
+            <button onClick={fast_fw} title="Advance 100 generations">Fast forward</button>
             <br></br>
             <br></br>
-            <table className="table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Genotype</th>
-                        <th>Phenotype</th>
-                        <th>Fitness</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        pop.map( (p,ind) => 
-                            <tr key={ind}>
-                                <td>{ind+1}</td>
-                                <td>{p.genotype}</td>
-                                <td>{p.phenotype}</td>
-                                <td>{p.fitness}</td>
-                            </tr> 
-                        )
-                    }
-                </tbody>
-            </table>
+            <PopTable pop={pop} />
         </div>
     )
 }
