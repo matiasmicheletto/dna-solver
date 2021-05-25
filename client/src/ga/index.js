@@ -3,14 +3,14 @@ import { replaceChar, probability, sample_int } from "../tools";
 const nbit = 16; // Bitlength for genotypes encoding (used only for default config)
 
 const default_config = { // Default parameters for simple scalar function
-    fitness: (x) => (x-181)*(x-181)+256, // Should return integer or float (Minima at 0000000010110101)
+    fitness: (x) => (x-181)*(x-181), // Should return integer or float (Minima at 0000000010110101)
     decode: (b) => parseInt(b.slice(-nbit), 2), // Should return optimization variable format
     encode: (d) => d.toString(2).padStart(nbit,"0").slice(-nbit), // Should return string
     generator: () => Math.floor(Math.random() * Math.pow(2,nbit)), // Generates a random individual. Should return optimization variable format
     pop_size: 20, // Population size
-    mut_prob: 1/nbit, // Mutation probability
-    mut_fr: 0.7, // Mutation fraction (proportion of individuals to be exposed to mutation)    
-    cross_prob: 0.3 // Crossover probability
+    mut_prob: 0.2, // Mutation probability
+    mut_fr: 0.8, // Mutation fraction (proportion of individuals to be exposed to mutation)    
+    cross_prob: 0.9 // Crossover probability
 }
 
 class GA { // Performs minimization of fitness function
@@ -85,14 +85,17 @@ class GA { // Performs minimization of fitness function
 
     _selection() { 
         // Returns selected chromosomes for crossover
-        return [[1,2],[3,4],[5,6]];
+        return [[0,1],[2,3],[4,5]]; // Static
     }
 
     _crossover(k1, k2) { 
         // Performs crossover between parents k1 and k2 and returns their children
-        const p = Math.random() * this._population[k1].genotype.length; // Crossover point
-        const g1 = this._population[k1].genotype.substring(0, p) + this._population[k2].genotype.substring(p + 1);
-        const g2 = this._population[k2].genotype.substring(0, p) + this._population[k1].genotype.substring(p + 1);        
+        const p = Math.floor(Math.random() * (this._population[k1].genotype.length - 2) + 1); // Crossover point
+        //console.log("Crossover point: ", p);
+        const g1 = this._population[k1].genotype.substring(0, p) + this._population[k2].genotype.substring(p);
+        const g2 = this._population[k2].genotype.substring(0, p) + this._population[k1].genotype.substring(p);        
+        //console.log("Parent 1:", this._population[k1].genotype, "Parent 2:", this._population[k2].genotype);
+        //console.log("Children 1:", g1, "Children 2:", g2);
         return [{genotype: g1, fitness: Infinity}, {genotype: g2, fitness: Infinity}]; // Children are not evaluated yet
     }
 
@@ -108,20 +111,16 @@ class GA { // Performs minimization of fitness function
     }
 
     evolve(){ // Compute a generation cycle
-
-        /*
         // Select parents for crossover
         const selected = this._selection(); 
         
-        // Obtain the children list and replace current population
-        let children = []; 
+        // Obtain the children list and push into population
         for(let k in selected)
-            children.push(...this._crossover(selected[k][0], selected[k][1]));
-        this._population = children;
-        */
+            if(probability(this._config.cross_prob))
+                this._population.push(...this._crossover(selected[k][0], selected[k][1]));        
         
-        // Apply mutation 
-        const ind = this._config.mut_fr < 1 ? 
+        // Apply mutation
+        const ind = this._config.mut_fr < 1 ? // Get indexes of the selected individual to mutate
             sample_int(this._mut_range, this._config.pop_size) // Array with random set of indexes
             : 
             Array.from(Array(this._config.pop_size).keys()); // Array with indexes as elements
@@ -130,6 +129,7 @@ class GA { // Performs minimization of fitness function
         // Compute population fitness values and sort from best to worst
         this._population.map( (p, ind) => this._fitness(ind) );
         this._population.sort((a,b) => (a.fitness - b.fitness) );
+        this._population.splice(this._config.pop_size); // Remove worst conditioned individuals
         
         this._generation++;
     }

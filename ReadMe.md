@@ -8,7 +8,7 @@
 
 A Node.js web application for testing and visualizing a Simple Genetic Algorithm performance and behaviour.
 
-Try the latest version [here](http://sganode.herokuapp.com/) or use this application locally using:
+Try the latest version [here](http://sganode.herokuapp.com/) or use this application locally running the following commands:
 
 ```bash
 $ git clone https://github.com/matiasmicheletto/sganode

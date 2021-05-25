@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
-import TopNavbar from "./components/topnavbar"
-import Dashboard from "./components/dashboard"
-import { container } from "./style"
+import TopNavbar from "./components/topnavbar";
+import Dashboard from "./components/dashboard";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './styles.css';
 import GA from './ga';
 
 
 const config = { // GA parameters
-  fitness: (x) => (x-181)*(x-181)+256, // Global minima at 0000000010110101
+  fitness: (x) => (x-181)*(x-181), // Global minima at 0000000010110101
   pop_size: 10
 };
 
@@ -25,7 +25,7 @@ const App = () => {
   }, []);
 
   return (
-    <Container style={container}>
+    <Container>
       <TopNavbar />      
       { 
         isLoading ? 
