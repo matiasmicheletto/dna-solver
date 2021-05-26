@@ -1,4 +1,45 @@
-import { replaceChar, probability, sample_int } from "../tools";
+/*
+Genetic Algorithm Class Module
+------------------------------
+Implements a generic and configurable GA based optimizer.
+Configuration object:
+    - fitness: Fitness function to minimize. 
+        * type: Functiom.
+        * input: Optimization variable. May be number, array or object.
+        * output: Should return a scalar number (integer or float). 
+    - decode: Function for decoding a chromosome's genotype and obtaining its phenotype.
+        * type: Functiom.
+        * input: Array.
+        * output: Obtimization variable. May be number, array or object.
+    - encode: Function for encoding a candidate solution (phenotype) and get its corresponding genotype.
+        * type: Functiom.
+        * input: Optimization variable. May be number, array or object.
+        * output: Array.
+    - generator: Function to generate a random individual during initialization. 
+        * type: Functiom.
+        * input: None.
+        * output: Optimization variable. May be number, array or object.
+    - pop_size: Population size, number of chromosomes.
+        * type: Non zero even Number (integer).
+    - mut_prob: Mutation probability (probability of an allele to change).
+        * type: Number.
+    - mut_fr :Mutation fraction (proportion of individuals to be exposed to mutation).    
+        * type: Number.
+    - cross_prob: Crossover probability (probability that a pair of selected individuals to be crossovered).
+        * type: Number.
+    - elitism: Number of elite individuals. Elite individuals are force-preserved through generations.
+        * type: Number (integer)
+    - rank_r: Ranking parameter (In case of ranking based selection). High r increases selective pressure.
+        * type: Number.
+    - selection: Selection method.
+        * type: selection: ROULETTE, RANK or TOURNAMENT.
+    - crossover: Crossover operator.
+        * type: SINGLE or DOUBLE.
+    - mutation: Mutation operator.
+        * type: INVERT or SWITCH.
+*/
+
+import { probability, sample_int } from "../tools";
 
 // Enumerators
 const selection = {
@@ -21,22 +62,22 @@ const mutation = {
 const nbit = 16; // Bitlength for genotypes encoding (used only for default config)
 
 const default_config = { // Default parameters for simple scalar function
-    fitness: (x) => (x-181)*(x-181), // Should return integer or float (Minima at 0000000010110101)
-    decode: (b) => parseInt(b.slice(-nbit), 2), // Should return optimization variable format
-    encode: (d) => d.toString(2).padStart(nbit,"0").slice(-nbit), // Should return string
-    generator: () => Math.floor(Math.random() * Math.pow(2,nbit)), // Generates a random individual. Should return optimization variable format
-    pop_size: 20, // Population size
-    mut_prob: 0.2, // Mutation probability
-    mut_fr: 0.8, // Mutation fraction (proportion of individuals to be exposed to mutation)    
-    cross_prob: 0.9, // Crossover probability
-    elitism: 1, // Number of elite individuals (0 for no elitism)
-    rank_r: 0.002, // Ranking parameter (In case of ranking based selection)
+    fitness: (x) => (x-181)*(x-181), // (Minima at 0000000010110101)
+    decode: (b) => parseInt(b.join("").slice(-nbit), 2),
+    encode: (d) => d.toString(2).padStart(nbit,"0").slice(-nbit).split("").map(e=>parseInt(e)),
+    generator: () => Math.floor(Math.random() * Math.pow(2,nbit)), 
+    pop_size: 20, 
+    mut_prob: 0.2, 
+    mut_fr: 0.8,
+    cross_prob: 0.9, 
+    elitism: 1,
+    rank_r: 0.002,
     selection: selection.ROULETTE,
     crossover: crossover.SINGLE,
     mutation: mutation.INVERT
 };
 
-class GA { // Performs minimization of fitness function
+class GA { // GA model class
     constructor(config){
         // Merge default and custom configurations
         this._config = { 
@@ -45,11 +86,13 @@ class GA { // Performs minimization of fitness function
         };
 
         // Create and initialize the array of individuals
-        this._population = new Array(this._config.pop_size);        
+        this._population = new Array(this._config.pop_size);
         this.reset();
         
         // Number of individuals to be exposed to mutation
-        this._mut_range = Math.floor(this._population.length * this._config.mut_fr); 
+        this._mut_range = Math.floor(this._population.length * this._config.mut_fr);
+        // Probability parameter for rank based selection operator
+        this._rank_q = this._config.rank_r*(this._config.pop_size-1)/2 + 1/this._config.pop_size;
 
         // Configure operators (using public setters)
         this.selection = this._config.selection;
@@ -102,7 +145,7 @@ class GA { // Performs minimization of fitness function
             population: this._population.map( p => ( // Add phenotypes to population 
                 {
                     ...p,
-                    phenotype: this._config.decode(p.genotype), // Converted to string for displaying
+                    phenotype: this._config.decode(p.genotype), 
                 }
             ))
         }
@@ -111,13 +154,16 @@ class GA { // Performs minimization of fitness function
     /// Setters
     set pop_size(p) { 
         // Changing the population size adds or removes individuals regardless of the current state of the algorithm
-        let current_size = this._population.length;
-        if(p > current_size){ // Add individuals
-            let new_pop = new Array(p - current_size);
+        if(p > this._config.pop_size){ // Add individuals
+            let new_pop = new Array(p - this._config.pop_size);
             this._init(new_pop);
             this._population = this._population.concat(new_pop);
         }else // Remove leftover individuals
             this._population.splice(p);
+        
+        this._config.pop_size = p;
+        // Update the q parameter as it depends on the population size
+        this._rank_q = this._config.rank_r*(this._config.pop_size-1)/2 + 1/this._config.pop_size;
     }
 
     set selection(s) { 
@@ -134,6 +180,7 @@ class GA { // Performs minimization of fitness function
                 this._selection = this._tournament_selection;
                 break;            
         }
+        this._config.selection = s;
     }
 
     set crossover(c) {
@@ -147,6 +194,7 @@ class GA { // Performs minimization of fitness function
                 this._crossover = this._double_point_crossover;
                 break;
         }
+        this._config.crossover = c;
     }
 
     set mutation(m) {
@@ -160,6 +208,7 @@ class GA { // Performs minimization of fitness function
                 this._mutate = this._switch_mutation;
                 break;
         }
+        this._config.mutation = m;
     }
     
     //////////// GA METHODS ////////////
@@ -187,8 +236,8 @@ class GA { // Performs minimization of fitness function
     _single_point_crossover(k1, k2) { 
         // Performs crossover between parents k1 and k2 and returns their children
         const p = Math.floor(Math.random() * (this._population[k1].genotype.length - 2) + 1); // Crossover point
-        const g1 = this._population[k1].genotype.substring(0, p) + this._population[k2].genotype.substring(p);
-        const g2 = this._population[k2].genotype.substring(0, p) + this._population[k1].genotype.substring(p);                
+        const g1 = [...this._population[k1].genotype.slice(0, p), ...this._population[k2].genotype.slice(p)];
+        const g2 = [...this._population[k2].genotype.slice(0, p), ...this._population[k1].genotype.slice(p)];
         return [{genotype: g1, fitness: Infinity}, {genotype: g2, fitness: Infinity}]; // Offspring is not evaluated yet
     }
 
@@ -205,8 +254,8 @@ class GA { // Performs minimization of fitness function
         }
 
         // Perform genotype copy
-        const g1 = this._population[k1].genotype.substring(0, p1) + this._population[k2].genotype.substring(p1, p2) + this._population[k1].genotype.substring(p2);
-        const g2 = this._population[k2].genotype.substring(0, p1) + this._population[k1].genotype.substring(p1, p2) + this._population[k2].genotype.substring(p2);
+        const g1 = [...this._population[k1].genotype.slice(0, p1), ...this._population[k2].genotype.slice(p1, p2), ...this._population[k1].genotype.slice(p2)];
+        const g2 = [...this._population[k2].genotype.slice(0, p1), ...this._population[k1].genotype.slice(p1, p2), ...this._population[k2].genotype.slice(p2)];
 
         return [{genotype: g1, fitness: Infinity}, {genotype: g2, fitness: Infinity}]; // Offspring is not evaluated yet
     }
@@ -218,8 +267,7 @@ class GA { // Performs minimization of fitness function
         // Applies mutation to a list of individuals.
         for(let k = 0; k < this._population[ind].genotype.length; k++) // For every allele
             if( probability(this._config.mut_prob) ){ 
-                const sw = this._population[ind].genotype[k] === "1" ? "0" : "1";
-                this._population[ind].genotype = replaceChar(this._population[ind].genotype, k, sw);
+                this._population[ind].genotype[k] = this._population[ind].genotype[k] ? 0 : 1;
                 this._population[ind].fitness = Infinity;
             }
     }
@@ -230,7 +278,12 @@ class GA { // Performs minimization of fitness function
                 let p = k;
                 while(p === k)
                     p = Math.floor(Math.random() * this._population[ind].genotype.length); // The other position
-                this._population[ind].genotype = replaceChar(this._population[ind].genotype, k, this._population[ind].genotype[p]);
+                
+                // Switch positions
+                const temp = this._population[ind].genotype[k];
+                this._population[ind].genotype[k] = this._population[ind].genotype[p];
+                this._population[ind].genotype[p] = temp;
+                
                 this._population[ind].fitness = Infinity;
             }
     }

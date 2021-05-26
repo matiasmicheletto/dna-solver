@@ -28,7 +28,8 @@ const Dashboard = (props) => {
 
     return (
         <div>
-            <p>Fitness function is <b>y = (x-181)<sup>2</sup></b>. Hit the <i>Evolve!</i> button and let the algorithm find the value of <b>x</b> (phenotype) that minizes the fitness function <b>y</b>.</p>
+            <p>Fitness function is <b>y = (x-181)<sup>2</sup></b> for <b>x</b> in range <b>(0..65535)</b>.</p> 
+            <p>Hit the <i>Evolve!</i> button and let the algorithm find the value of <b>x</b> (column phenotype) that minizes the fitness function <b>y</b>.</p>
             <br></br>
             <p><b>Current generation:</b> {gen}</p>
             <p><b>Objective function evaluations:</b> {ffe}</p>
