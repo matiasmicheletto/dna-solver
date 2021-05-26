@@ -8,7 +8,8 @@ import GA, {selection} from './ga';
 
 
 const config = { // GA parameters
-  fitness: (x) => (x-181)*(x-181), // Global minima at 0000000010110101
+  //fitness: (x) => {const y = 10000-(x-181)*(x-181); return y < 0 ? 0 : y}, // Global maxima at 0000000010110101
+  fitness: (x) => 10000-(x-181)*(x-181), // Global maxima at 0000000010110101
   pop_size: 15,
   selection: selection.RANK
 };

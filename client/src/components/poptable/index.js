@@ -1,8 +1,10 @@
 import React from 'react';
+import { Table } from 'react-bootstrap';
 
 const PopTable = (props) => {
+
     return (
-        <table className="table">
+        <Table striped bordered hover>
             <thead>
                 <tr>
                     <th>#</th>
@@ -23,7 +25,7 @@ const PopTable = (props) => {
                     )
                 }
             </tbody>
-        </table>
+        </Table>
     )
 }
 

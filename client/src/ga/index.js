@@ -3,7 +3,7 @@ Genetic Algorithm Class Module
 ------------------------------
 Implements a generic and configurable GA based optimizer.
 Configuration object:
-    - fitness: Fitness function to minimize. 
+    - fitness: Fitness function to maximize. 
         * type: Functiom.
         * input: Optimization variable. May be number, array or object.
         * output: Should return a scalar number (integer or float). 
@@ -62,13 +62,13 @@ const mutation = {
 const nbit = 16; // Bitlength for genotypes encoding (used only for default config)
 
 const default_config = { // Default parameters for simple scalar function
-    fitness: (x) => (x-181)*(x-181), // (Minima at 0000000010110101)
+    fitness: (x) => 10000-(x-181)*(x-181), // (Maxima at 0000000010110101)
     decode: (b) => parseInt(b.join("").slice(-nbit), 2),
     encode: (d) => d.toString(2).padStart(nbit,"0").slice(-nbit).split("").map(e=>parseInt(e)),
     generator: () => Math.floor(Math.random() * Math.pow(2,nbit)), 
     pop_size: 20, 
-    mut_prob: 0.2, 
-    mut_fr: 0.8,
+    mut_prob: 0.1, 
+    mut_fr: 0.6,
     cross_prob: 0.9, 
     elitism: 1,
     rank_r: 0.002,
@@ -104,17 +104,19 @@ class GA { // GA model class
 
     reset() { // Restarts de algorithm
         this._init(this._population);
+        // Sort population (selection requires ranked individuals)
+        this._population.sort((a,b) => (a.fitness - b.fitness) );
+        // Retart counters
         this._generation = 0; // Generation counter
-        this._ff_evs = 0; // Fitness function evaluations counter
+        this._ff_evs = 0; // Fitness function evaluations counter        
     }
 
-    _init(pop) { // Initialize/resets population genotypes                
+    _init(pop) { // Initialize/resets population genotypes
         for(let k = 0; k < pop.length; k++){
             const rand_genotype = this._config.generator();
             const genotype = this._config.encode(rand_genotype);
             pop[k] = {
-                genotype: genotype,
-                fitness: Infinity
+                genotype: genotype
             }
             this._fitness(k);
         }                
@@ -140,7 +142,7 @@ class GA { // GA model class
 
     get status() { // Algorithm metrics (may be slow)
         return {
-            generation: this._generation, // Current step or generation number
+            generation: this._generation,
             fitness_evals: this._ff_evs,
             population: this._population.map( p => ( // Add phenotypes to population 
                 {
@@ -217,17 +219,17 @@ class GA { // GA model class
 
     _roulette_selection() { 
         // Returns selected chromosomes in pairs for crossover 
-        return [[0,1],[2,3],[4,5], [6,7]]; // Static
+
+        return [[0,1],[2,3],[4,5],[6,7]]; // Static
     }
 
     _rank_selection() {
         // Returns selected chromosomes in pairs for crossover
-
-        return [[0,1],[2,3],[4,5], [6,7]]; // Static
+        return [[0,1],[2,3],[4,5],[6,7]]; // Static
     }
 
     _tournament_selection() {
-        return [[0,1],[2,3],[4,5], [6,7]]; // Static
+        return [[0,1],[2,3],[4,5],[6,7]]; // Static
     }
 
 
@@ -246,7 +248,7 @@ class GA { // GA model class
         const r1 = Math.floor(Math.random() * (this._population[k1].genotype.length - 2) + 1); // Crossover point 1
         const r2 = Math.floor(Math.random() * (this._population[k1].genotype.length - 2) + 1); // Crossover point 2
 
-        // Sort crossover points
+        // Sort crossover points such that p1 < p2
         let p1 = r1; let p2 = r2;
         if( p1 > p2 ){
             p1 = r2;
@@ -264,7 +266,7 @@ class GA { // GA model class
     /// Mutation
 
     _invert_mutation(ind) { 
-        // Applies mutation to a list of individuals.
+        // Applies bitflip mutation to individual "ind".
         for(let k = 0; k < this._population[ind].genotype.length; k++) // For every allele
             if( probability(this._config.mut_prob) ){ 
                 this._population[ind].genotype[k] = this._population[ind].genotype[k] ? 0 : 1;
@@ -273,6 +275,7 @@ class GA { // GA model class
     }
 
     _switch_mutation(ind) {
+        // Applies bit switch mutation to individual "ind"
         for(let k = 0; k < this._population[ind].genotype.length; k++) // For every allele
             if( probability(this._config.mut_prob) ){ 
                 let p = k;
@@ -288,7 +291,7 @@ class GA { // GA model class
             }
     }
 
-
+    
     /// Generation
 
     evolve(){ // Compute a generation cycle
@@ -297,21 +300,26 @@ class GA { // GA model class
         
         // Obtain the children list and push into population
         for(let k in selected)
-            if(probability(this._config.cross_prob))
+            if(probability(this._config.cross_prob)){
+                //const children = this._crossover(selected[k][0], selected[k][1]);
+                //this._population[selected[k][0]] = children[0];
+                //this._population[selected[k][1]] = children[1];
+                
                 this._population.push(...this._crossover(selected[k][0], selected[k][1]));        
+            }
         
         // Apply mutation
         const ind = this._config.mut_fr < 1 ? // Get indexes of the selected individual to mutate
-            sample_int(this._mut_range, this._config.pop_size) // Array with random set of indexes
+            sample_int(this._mut_range, this._population.length) // Array with random set of indexes
             : 
-            Array.from(Array(this._config.pop_size).keys()); // Array with indexes as elements
+            Array.from(Array(this._population.length).keys()); // Array with indexes as elements
         for(let j in ind)
             this._mutate(ind[j]);
 
         // Compute population fitness values and sort from best to worst
         // TODO: elitism
         this._population.map( (p, ind) => this._fitness(ind) );
-        this._population.sort((a,b) => (a.fitness - b.fitness) );
+        this._population.sort((a,b) => (b.fitness - a.fitness) );
         this._population.splice(this._config.pop_size); // Remove worst conditioned individuals
         
         this._generation++;
