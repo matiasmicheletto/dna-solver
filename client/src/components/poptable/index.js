@@ -20,7 +20,7 @@ const PopTable = (props) => {
                             <td>{ind+1}</td>
                             <td>{p.genotype}</td>
                             <td>{p.phenotype}</td>
-                            <td>{p.fitness}</td>
+                            <td>{p.fitness.toFixed(2)}</td>
                         </tr> 
                     )
                 }

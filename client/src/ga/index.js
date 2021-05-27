@@ -6,7 +6,7 @@ Configuration object:
     - fitness: Fitness function to maximize. 
         * type: Functiom.
         * input: Optimization variable. May be number, array or object.
-        * output: Should return a scalar number (integer or float). 
+        * output: Should return a non negative scalar number (integer or float). 
     - decode: Function for decoding a chromosome's genotype and obtaining its phenotype.
         * type: Functiom.
         * input: Array.
@@ -58,21 +58,41 @@ const mutation = {
     SWITCH: "switch"
 };
 
-// Other default constants
-const nbit = 16; // Bitlength for genotypes encoding (used only for default config)
+
+// Default fitness function is an inverse cuadratic function that should be positive for the range of the bitstring representation.
+// So, fitness function is y = a - b*(x-c)^2;
+
+// Length of bitstring for genotypes encoding. Let use a small value
+const nbit = 10; 
+// Lets force the max value for the fitness to be 10.000, so a = 10.000
+const a = 10000; 
+// First zero is z1 = 0, and the second is at 2^nbit-1 (max range)
+const z1 = Math.pow(2,nbit)-1; 
+// The max is in the middle between the zeros, so its z1/2.
+const c = z1/2; 
+// Then we can calculate the value of b that makes the quadratic have a max of "a".
+const b = 4*a/z1/z1; 
+
+const fitness = (x) => a-b*(x-c)*(x-c);
+// Decoder function will convert the binary array to decimal
+const decode = (b) => parseInt(b.join("").slice(-nbit), 2);
+// Encoder function converts the decimal value of x to bitstring
+const encode = (d) => d.toString(2).padStart(nbit,"0").slice(-nbit).split("").map(e=>parseInt(e));
+// Generator generates numbers for x between 0 and 2^nbit
+const generator = () => Math.floor(Math.random() * Math.pow(2,nbit));
 
 const default_config = { // Default parameters for simple scalar function
-    fitness: (x) => 10000-(x-181)*(x-181), // (Maxima at 0000000010110101)
-    decode: (b) => parseInt(b.join("").slice(-nbit), 2),
-    encode: (d) => d.toString(2).padStart(nbit,"0").slice(-nbit).split("").map(e=>parseInt(e)),
-    generator: () => Math.floor(Math.random() * Math.pow(2,nbit)), 
+    fitness: fitness, 
+    decode: decode,
+    encode: encode,
+    generator: generator, 
     pop_size: 20, 
     mut_prob: 0.1, 
     mut_fr: 0.6,
     cross_prob: 0.9, 
     elitism: 1,
     rank_r: 0.002,
-    selection: selection.ROULETTE,
+    selection: selection.RANK,
     crossover: crossover.SINGLE,
     mutation: mutation.INVERT
 };
@@ -109,6 +129,7 @@ class GA { // GA model class
         // Retart counters
         this._generation = 0; // Generation counter
         this._ff_evs = 0; // Fitness function evaluations counter        
+        this._best_hist = [this._population[0].fitness]; // Historic values of best fitness
     }
 
     _init(pop) { // Initialize/resets population genotypes
@@ -173,13 +194,13 @@ class GA { // GA model class
         switch(s){
             default: // Default is roulette
             case selection.ROULETTE:
-                this._selection = this._roulette_selection;
+                this._cr_selection = this._roulette_selection;
                 break;
             case selection.RANK:
-                this._selection = this._rank_selection;
+                this._cr_selection = this._rank_selection;
                 break;
             case selection.TOURNAMENT:
-                this._selection = this._tournament_selection;
+                this._cr_selection = this._tournament_selection;
                 break;            
         }
         this._config.selection = s;
@@ -218,18 +239,30 @@ class GA { // GA model class
     /// Selection
 
     _roulette_selection() { 
-        // Returns selected chromosomes in pairs for crossover 
-
-        return [[0,1],[2,3],[4,5],[6,7]]; // Static
+        // Returns pop_size selected chromosomes for crossover
+        let selected = [];
+        const sf = this._population.reduce((r, a) => a.fitness + r, 0); // Sum of fitness values        
+        for(let i = 0; i<this._population.length; i++){
+            const r = Math.random()*sf; // Random number from 0 to sum
+            let s = 0; // Partial adder
+            for(let k in this._population){ // Population should be sorted from best to worst
+                s += this._population[k].fitness;
+                if(s >= r){ // If random value reached
+                    selected.push(parseInt(k)); // Add individual   
+                    break;
+                }
+            }
+        }       
+        return selected;
     }
 
     _rank_selection() {
-        // Returns selected chromosomes in pairs for crossover
-        return [[0,1],[2,3],[4,5],[6,7]]; // Static
+        // Returns selected chromosomes for crossover
+        return [0,1,2,3,4,5,6,7]; // Static
     }
 
     _tournament_selection() {
-        return [[0,1],[2,3],[4,5],[6,7]]; // Static
+        return [0,1,2,3,4,5,6,7]; // Static
     }
 
 
@@ -291,30 +324,34 @@ class GA { // GA model class
             }
     }
 
+    _mut_selection() {
+        // Returns selected chromosomes for mutation (in case of mutation proportion < 1)
+        return this._config.mut_fr < 1 ? // Get indexes of the selected individual to mutate
+            sample_int(this._mut_range, this._population.length) // Array with random set of indexes
+            : 
+            Array.from(Array(this._population.length).keys()); // Return all elements
+    }
+
     
     /// Generation
 
     evolve(){ // Compute a generation cycle
         // Select parents list for crossover
-        const selected = this._selection(); 
+        const cr_selected = this._cr_selection(); 
         
         // Obtain the children list and push into population
-        for(let k in selected)
+        for(let k = 0; k < cr_selected.length-1; k += 2)
             if(probability(this._config.cross_prob)){
-                //const children = this._crossover(selected[k][0], selected[k][1]);
-                //this._population[selected[k][0]] = children[0];
-                //this._population[selected[k][1]] = children[1];
-                
-                this._population.push(...this._crossover(selected[k][0], selected[k][1]));        
+                //const children = this._crossover(cr_selected[k], cr_selected[k+1]);
+                //this._population[cr_selected[k]] = children[0];
+                //this._population[cr_selected[k+1]] = children[1];
+                this._population.push(...this._crossover(cr_selected[k], cr_selected[k+1])); 
             }
         
         // Apply mutation
-        const ind = this._config.mut_fr < 1 ? // Get indexes of the selected individual to mutate
-            sample_int(this._mut_range, this._population.length) // Array with random set of indexes
-            : 
-            Array.from(Array(this._population.length).keys()); // Array with indexes as elements
-        for(let j in ind)
-            this._mutate(ind[j]);
+        const mut_selected = this._mut_selection();
+        for(let j in mut_selected)
+            this._mutate(mut_selected[j]);
 
         // Compute population fitness values and sort from best to worst
         // TODO: elitism
@@ -322,6 +359,9 @@ class GA { // GA model class
         this._population.sort((a,b) => (b.fitness - a.fitness) );
         this._population.splice(this._config.pop_size); // Remove worst conditioned individuals
         
+        // Record the new best
+        this._best_hist.push(this._population[0].fitness);
+
         this._generation++;
     }
 }
