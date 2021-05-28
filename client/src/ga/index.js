@@ -38,10 +38,11 @@ Configuration object:
     - crossover: Crossover operator.
         * type: SINGLE or DOUBLE.
     - mutation: Mutation operator.
-        * type: INVERT or SWITCH.
+        * type: INVERT, SWITCH or RAND.
 */
 
-import { probability, sample_int } from "../tools";
+import { probability, sampleInt } from "../tools";
+import Fitness from "../fitness/quadratic";
 
 // Enumerators
 const selection = {
@@ -52,42 +53,19 @@ const selection = {
 
 const crossover = {
     SINGLE: "single",
-    DOUBLE: "double"
+    DOUBLE: "double",
+    PMX: "pmx"
 };
 
 const mutation = {
     INVERT: "invert",
-    SWITCH: "switch"
+    SWITCH: "switch",
+    RAND: "rand"
 };
 
 
-// Default fitness function is an inverse cuadratic function that should be positive for the range of the bitstring representation.
-// So, fitness function is y = a - b*(x-c)^2;
-
-// Length of bitstring for genotypes encoding. Let use a small value
-const nbit = 10; 
-// Lets force the max value for the fitness to be 10.000, so a = 10.000
-const a = 10000; 
-// First zero is z1 = 0, and the second is at 2^nbit-1 (max range)
-const z1 = Math.pow(2,nbit)-1; 
-// The max is in the middle between the zeros, so its z1/2.
-const c = z1/2; 
-// Then we can calculate the value of b that makes the quadratic have a max of "a".
-const b = 4*a/z1/z1; 
-
-const fitness = (x) => a-b*(x-c)*(x-c);
-// Decoder function will convert the binary array to decimal
-const decode = (b) => parseInt(b.join("").slice(-nbit), 2);
-// Encoder function converts the decimal value of x to bitstring
-const encode = (d) => d.toString(2).padStart(nbit,"0").slice(-nbit).split("").map(e=>parseInt(e));
-// Generator generates numbers for x between 0 and 2^nbit
-const generator = () => Math.floor(Math.random() * Math.pow(2,nbit));
-
 const default_config = { // Default parameters for simple scalar function
-    fitness: fitness, 
-    decode: decode,
-    encode: encode,
-    generator: generator, 
+    ...Fitness, // This extracts the fitness function attributes
     pop_size: 20, 
     mut_prob: 0.2, 
     mut_fr: 0.6,
@@ -95,7 +73,7 @@ const default_config = { // Default parameters for simple scalar function
     elitism: 1,
     rank_r: 0.002,
     tourn_k: 3,
-    selection: selection.RANK,
+    selection: selection.ROULETTE,
     crossover: crossover.SINGLE,
     mutation: mutation.INVERT
 };
@@ -220,6 +198,9 @@ class GA { // GA model class
             case crossover.DOUBLE:
                 this._crossover = this._double_point_crossover;
                 break;
+            case crossover.PMX:
+                this._crossover = this._pmx_crossover;
+                break;
         }
         this._config.crossover = c;
     }
@@ -234,6 +215,9 @@ class GA { // GA model class
             case mutation.SWITCH:
                 this._mutate = this._switch_mutation;
                 break;
+            case mutation.RAND:
+                this._mutate = this._rand_allele_mutation;
+                break
         }
         this._config.mutation = m;
     }
@@ -327,6 +311,11 @@ class GA { // GA model class
         return [{genotype: g1, fitness: Infinity}, {genotype: g2, fitness: Infinity}]; // Offspring is not evaluated yet
     }
 
+    _pmx_crossover(k1, k2) {
+        // TODO
+        return [];
+    }
+
 
     /// Mutation
 
@@ -340,7 +329,7 @@ class GA { // GA model class
     }
 
     _switch_mutation(ind) {
-        // Applies bit switch mutation to individual "ind"
+        // Applies allele switch mutation to individual "ind"
         for(let k = 0; k < this._population[ind].genotype.length; k++) // For every allele
             if( probability(this._config.mut_prob) ){ 
                 let p = k;
@@ -356,10 +345,15 @@ class GA { // GA model class
             }
     }
 
+    _rand_allele_mutation(ind) {
+        // Selects a random value for a random selected allele
+        // TODO:
+    }
+
     _mut_selection() {
         // Returns selected chromosomes for mutation (in case of mutation proportion < 1)
         return this._config.mut_fr < 1 ? // Get indexes of the selected individual to mutate
-            sample_int(this._mut_range, this._population.length) // Array with random set of indexes
+            sampleInt(this._mut_range, this._population.length) // Array with random set of indexes
             : 
             Array.from(Array(this._population.length).keys()); // Return all elements
     }

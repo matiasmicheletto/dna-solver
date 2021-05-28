@@ -4,12 +4,14 @@ import TopNavbar from "./components/topnavbar";
 import Dashboard from "./components/dashboard";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles.css';
-import GA, {selection} from './ga';
+import GA, {selection, mutation} from './ga';
+import Fitness from './fitness/nqueens';
 
-
-const config = { // GA parameters
-  pop_size: 10,
-  selection: selection.TOURNAMENT
+const config = { // GA parameters  
+  ...Fitness,
+  pop_size: 20,
+  selection: selection.TOURNAMENT,
+  mutation: mutation.SWITCH
 };
 
 const ga = new GA(config);
