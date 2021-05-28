@@ -22,17 +22,19 @@ Configuration object:
     - pop_size: Population size, number of chromosomes.
         * type: Non zero even Number (integer).
     - mut_prob: Mutation probability (probability of an allele to change).
-        * type: Number.
+        * type: Float number between 0 and 1. Usually 1/(bitstring length)
     - mut_fr :Mutation fraction (proportion of individuals to be exposed to mutation).    
         * type: Number.
     - cross_prob: Crossover probability (probability that a pair of selected individuals to be crossovered).
-        * type: Number.
+        * type: Float number between 0 and 1.
     - elitism: Number of elite individuals. Elite individuals are force-preserved through generations.
         * type: Number (integer)
-    - rank_r: Ranking parameter (In case of ranking based selection). High r increases selective pressure.
-        * type: Number.
-    - selection: Selection method.
-        * type: selection: ROULETTE, RANK or TOURNAMENT.
+    - rank_r: Ranking parameter (In case of ranking based selection). High r increases selective pressure. 
+        * type: Float number between 0 and 2/(pop_size*(pop_size-1)).
+    - tourn_k: K parameter for tournament selection method
+        * type: Integer number, usually between 2 and 5.
+    - selection: Selection operator.
+        * type: ROULETTE, RANK or TOURNAMENT.
     - crossover: Crossover operator.
         * type: SINGLE or DOUBLE.
     - mutation: Mutation operator.
@@ -87,11 +89,12 @@ const default_config = { // Default parameters for simple scalar function
     encode: encode,
     generator: generator, 
     pop_size: 20, 
-    mut_prob: 0.1, 
+    mut_prob: 0.2, 
     mut_fr: 0.6,
     cross_prob: 0.9, 
     elitism: 1,
     rank_r: 0.002,
+    tourn_k: 3,
     selection: selection.RANK,
     crossover: crossover.SINGLE,
     mutation: mutation.INVERT
@@ -99,7 +102,7 @@ const default_config = { // Default parameters for simple scalar function
 
 class GA { // GA model class
     constructor(config){
-        // Merge default and custom configurations
+        // Overwrite default with custom configuration
         this._config = { 
             ...default_config,
             ...config
@@ -107,7 +110,7 @@ class GA { // GA model class
 
         // Create and initialize the array of individuals
         this._population = new Array(this._config.pop_size);
-        this.reset();
+        this.reset(); // Init and sort the array
         
         // Number of individuals to be exposed to mutation
         this._mut_range = Math.floor(this._population.length * this._config.mut_fr);
@@ -130,6 +133,7 @@ class GA { // GA model class
         this._generation = 0; // Generation counter
         this._ff_evs = 0; // Fitness function evaluations counter        
         this._best_hist = [this._population[0].fitness]; // Historic values of best fitness
+        this._avg_hist = [this._population[0].fitness]; // Historic values of population average fitness
     }
 
     _init(pop) { // Initialize/resets population genotypes
@@ -234,21 +238,28 @@ class GA { // GA model class
         this._config.mutation = m;
     }
     
+    //////////// HELPERS ///////////
+    _fitness_sum() { 
+        // Sum of fitness values
+        return this._population.reduce((r, a) => a.fitness + r, 0);
+    }
+
+
     //////////// GA METHODS ////////////
 
     /// Selection
 
     _roulette_selection() { 
-        // Returns pop_size selected chromosomes for crossover
+        // Uses probability of selection proportional to fitness
         let selected = [];
-        const sf = this._population.reduce((r, a) => a.fitness + r, 0); // Sum of fitness values        
-        for(let i = 0; i<this._population.length; i++){
+        const sf = this._fitness_sum(); 
+        for(let i = 0; i < this._population.length; i++){
             const r = Math.random()*sf; // Random number from 0 to sum
             let s = 0; // Partial adder
             for(let k in this._population){ // Population should be sorted from best to worst
                 s += this._population[k].fitness;
                 if(s >= r){ // If random value reached
-                    selected.push(parseInt(k)); // Add individual   
+                    selected.push(k); // Add individual   
                     break;
                 }
             }
@@ -257,12 +268,33 @@ class GA { // GA model class
     }
 
     _rank_selection() {
-        // Returns selected chromosomes for crossover
-        return [0,1,2,3,4,5,6,7]; // Static
+        // Uses linear distribution of probabilities based on ranking
+        let selected = [];
+        for(let i = 0; i < this._population.length; i++){
+            const r = Math.random(); 
+            let s = 0; // Partial adder
+            for(let k = 0; k < this._population.length; k++){ // Population should be sorted from best to worst
+                s += this._rank_q - k * this._config.rank_r;
+                if(s >= r){ // If random value reached
+                    selected.push(k); // Add individual   
+                    break;
+                }
+            }
+        }       
+        return selected;
     }
 
     _tournament_selection() {
-        return [0,1,2,3,4,5,6,7]; // Static
+        // Performs pop_size fitness comparations beetween k selected individuals
+        let selected = [];
+        for(let i = 0; i < this._population.length; i++){
+            let tournament = [];
+            for(let k = 0; k < this._config.tourn_k; k++)
+                tournament.push(Math.floor(Math.random()*this._population.length));
+            tournament.sort((a,b)=>(a-b)); // Lower index has better fitness
+            selected.push(tournament[0]);
+        }
+        return selected;
     }
 
 
@@ -354,13 +386,13 @@ class GA { // GA model class
             this._mutate(mut_selected[j]);
 
         // Compute population fitness values and sort from best to worst
-        // TODO: elitism
         this._population.map( (p, ind) => this._fitness(ind) );
         this._population.sort((a,b) => (b.fitness - a.fitness) );
-        this._population.splice(this._config.pop_size); // Remove worst conditioned individuals
+        this._population.splice(this._config.pop_size); 
         
-        // Record the new best
+        // Record the new best and average values
         this._best_hist.push(this._population[0].fitness);
+        this._avg_hist.push( this._fitness_sum / this._config.pop_size );
 
         this._generation++;
     }

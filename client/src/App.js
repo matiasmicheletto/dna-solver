@@ -8,8 +8,8 @@ import GA, {selection} from './ga';
 
 
 const config = { // GA parameters
-  pop_size: 15,
-  selection: selection.ROULETTE
+  pop_size: 10,
+  selection: selection.TOURNAMENT
 };
 
 const ga = new GA(config);
@@ -21,7 +21,7 @@ const App = () => {
     setTimeout(() => {
       setIsLoading(false);
       console.log("Loading complete");
-    }, 3000);
+    }, 2000);
   }, []);
 
   return (
