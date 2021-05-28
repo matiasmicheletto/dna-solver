@@ -3,28 +3,40 @@ Genetic Algorithm Class Module
 ------------------------------
 Implements a generic and configurable GA based optimizer.
 Configuration object:
+    - description: Problem description.
+        * type: Function.
+        * input: None.
+        * output: Component. 
     - fitness: Fitness function to maximize. 
-        * type: Functiom.
+        * type: Function.
         * input: Optimization variable. May be number, array or object.
         * output: Should return a non negative scalar number (integer or float). 
     - decode: Function for decoding a chromosome's genotype and obtaining its phenotype.
-        * type: Functiom.
+        * type: Function.
         * input: Array.
         * output: Obtimization variable. May be number, array or object.
     - encode: Function for encoding a candidate solution (phenotype) and get its corresponding genotype.
-        * type: Functiom.
+        * type: Function.
         * input: Optimization variable. May be number, array or object.
         * output: Array.
+    - beautify: Function for decoding a chromosome's genotype using a human-readable format.
+        * type: Function.
+        * input: Optimization variable. May be number, array or object.
+        * output: String.
     - generator: Function to generate a random individual during initialization. 
-        * type: Functiom.
+        * type: Function.
         * input: None.
         * output: Optimization variable. May be number, array or object.
     - pop_size: Population size, number of chromosomes.
         * type: Non zero even Number (integer).
     - mut_prob: Mutation probability (probability of an allele to change).
         * type: Float number between 0 and 1. Usually 1/(bitstring length)
-    - mut_fr :Mutation fraction (proportion of individuals to be exposed to mutation).    
+    - mut_fr: Mutation fraction (proportion of individuals to be exposed to mutation).    
         * type: Number.
+    - mut_gen: Allele generator for mutation.    
+        * type: Function.
+        * input: None.
+        * ouput: Number.
     - cross_prob: Crossover probability (probability that a pair of selected individuals to be crossovered).
         * type: Float number between 0 and 1.
     - elitism: Number of elite individuals. Elite individuals are force-preserved through generations.
@@ -38,11 +50,11 @@ Configuration object:
     - crossover: Crossover operator.
         * type: SINGLE or DOUBLE.
     - mutation: Mutation operator.
-        * type: INVERT, SWITCH or RAND.
+        * type: BITFLIP, SWITCH or RAND.
 */
 
 import { probability, sampleInt } from "../tools";
-import Fitness from "../fitness/quadratic";
+import Fitness from "../fitness/quadratic"; // Default fitness is an inverted parabola
 
 // Enumerators
 const selection = {
@@ -58,24 +70,25 @@ const crossover = {
 };
 
 const mutation = {
-    INVERT: "invert",
+    BITFLIP: "bitflip", // Only for bitstring encoding
     SWITCH: "switch",
-    RAND: "rand"
+    RAND: "rand" // Uses mut_gen as random generator
 };
 
 
 const default_config = { // Default parameters for simple scalar function
-    ...Fitness, // This extracts the fitness function attributes
     pop_size: 20, 
     mut_prob: 0.2, 
     mut_fr: 0.6,
+    mut_gen: () => Math.round(Math.random()),
     cross_prob: 0.9, 
     elitism: 1,
     rank_r: 0.002,
     tourn_k: 3,
     selection: selection.ROULETTE,
     crossover: crossover.SINGLE,
-    mutation: mutation.INVERT
+    mutation: mutation.BITFLIP,
+    ...Fitness, // This extracts the fitness function attributes (may bring some overwriting parameters too)
 };
 
 class GA { // GA model class
@@ -106,7 +119,7 @@ class GA { // GA model class
     reset() { // Restarts de algorithm
         this._init(this._population);
         // Sort population (selection requires ranked individuals)
-        this._population.sort((a,b) => (a.fitness - b.fitness) );
+        this._sort_pop();
         // Retart counters
         this._generation = 0; // Generation counter
         this._ff_evs = 0; // Fitness function evaluations counter        
@@ -143,14 +156,18 @@ class GA { // GA model class
         return this._population;
     }
 
+    get problem_description() {
+        return this._config.description();
+    }
+
     get status() { // Algorithm metrics (may be slow)
-        return {
+        return {            
             generation: this._generation,
             fitness_evals: this._ff_evs,
             population: this._population.map( p => ( // Add phenotypes to population 
                 {
                     ...p,
-                    phenotype: this._config.decode(p.genotype), 
+                    phenotype: this._config.beautify(p.genotype), 
                 }
             ))
         }
@@ -208,9 +225,9 @@ class GA { // GA model class
     set mutation(m) {
         // Set the mutation method
         switch(m){
-            default: // Default is invert 
-            case mutation.INVERT:
-                this._mutate = this._invert_mutation;
+            default: // Default is bitflip 
+            case mutation.BITFLIP:
+                this._mutate = this._bitflip_mutation;
                 break;
             case mutation.SWITCH:
                 this._mutate = this._switch_mutation;
@@ -226,6 +243,11 @@ class GA { // GA model class
     _fitness_sum() { 
         // Sum of fitness values
         return this._population.reduce((r, a) => a.fitness + r, 0);
+    }
+
+    _sort_pop() {
+        // Sort population from best to worst fitness
+        this._population.sort((a,b) => (b.fitness - a.fitness) );
     }
 
 
@@ -275,7 +297,7 @@ class GA { // GA model class
             let tournament = [];
             for(let k = 0; k < this._config.tourn_k; k++)
                 tournament.push(Math.floor(Math.random()*this._population.length));
-            tournament.sort((a,b)=>(a-b)); // Lower index has better fitness
+            tournament.sort((a,b)=>(b - a)); // Lower index has better fitness
             selected.push(tournament[0]);
         }
         return selected;
@@ -288,7 +310,7 @@ class GA { // GA model class
         // Performs crossover between parents k1 and k2 and returns their children
         const p = Math.floor(Math.random() * (this._population[k1].genotype.length - 2) + 1); // Crossover point
         const g1 = [...this._population[k1].genotype.slice(0, p), ...this._population[k2].genotype.slice(p)];
-        const g2 = [...this._population[k2].genotype.slice(0, p), ...this._population[k1].genotype.slice(p)];
+        const g2 = [...this._population[k2].genotype.slice(0, p), ...this._population[k1].genotype.slice(p)];        
         return [{genotype: g1, fitness: Infinity}, {genotype: g2, fitness: Infinity}]; // Offspring is not evaluated yet
     }
 
@@ -319,11 +341,11 @@ class GA { // GA model class
 
     /// Mutation
 
-    _invert_mutation(ind) { 
+    _bitflip_mutation(ind) { 
         // Applies bitflip mutation to individual "ind".
         for(let k = 0; k < this._population[ind].genotype.length; k++) // For every allele
             if( probability(this._config.mut_prob) ){ 
-                this._population[ind].genotype[k] = this._population[ind].genotype[k] ? 0 : 1;
+                this._population[ind].genotype[k] = this._population[ind].genotype[k] ? 0 : 1; // Bitflip
                 this._population[ind].fitness = Infinity;
             }
     }
@@ -347,7 +369,11 @@ class GA { // GA model class
 
     _rand_allele_mutation(ind) {
         // Selects a random value for a random selected allele
-        // TODO:
+        for(let k = 0; k < this._population[ind].genotype.length; k++) // For every allele
+            if( probability(this._config.mut_prob) ){ 
+                this._population[ind].genotype[k] = this._config.mut_gen();                
+                this._population[ind].fitness = Infinity;
+            }
     }
 
     _mut_selection() {
@@ -359,7 +385,7 @@ class GA { // GA model class
     }
 
     
-    /// Generation
+    /// Iteration
 
     evolve(){ // Compute a generation cycle
         // Select parents list for crossover
@@ -381,7 +407,7 @@ class GA { // GA model class
 
         // Compute population fitness values and sort from best to worst
         this._population.map( (p, ind) => this._fitness(ind) );
-        this._population.sort((a,b) => (b.fitness - a.fitness) );
+        this._sort_pop();
         this._population.splice(this._config.pop_size); 
         
         // Record the new best and average values

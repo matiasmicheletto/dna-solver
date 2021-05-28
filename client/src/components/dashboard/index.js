@@ -7,6 +7,7 @@ const Dashboard = (props) => {
     const [gaState, setGAState] = useState(props.ga.status);
     const [tms, setTms] = useState(0); // Algorithm timing is done externally
     const [limit, setLimit] = useState(100); // Upper limit for FFW optimization
+    //const [desc, setDesc] = useState(props.ga.problem_description);
     
     const iteration = () => { // Execute a single step of the algorithm and render
         props.ga.evolve();
@@ -44,28 +45,30 @@ const Dashboard = (props) => {
 
     return (
         <Row>
-            <Row>
-                <p>Fitness function is <b>y = 1000-(x-511.5)<sup>2</sup>/26.164</b> for <b>x</b> in range <b>(0..1023)</b>.</p> 
-                <p>Hit the <i>Evolve!</i> button and let the algorithm find the value of <b>x</b> (column phenotype) that maximizes the fitness function <b>y</b>.</p>
+            <Row style={{marginBottom: "20px"}}>
+                <h3>Optimization problem</h3>
+                {props.ga.problem_description}
             </Row>
-            <Row>
-                <Card>
-                    <Card.Body>
-                        <p><b>Current generation:</b> {gaState.generation}</p>
-                        <p><b>Objective function evaluations:</b> {gaState.fitness_evals}</p>
-                        <p><b>Running time:</b> {tms} ms.</p>
-                    </Card.Body>
-                </Card>
-            </Row>
-            <Row style={{margin:"20px"}}>
+            <Row md="auto" style={{marginBottom: "20px"}}>
                 <Col md="auto">
-                    <Button variant="primary" onClick={go} title="Next generation">Evolve!</Button>
+                    <Row style={{marginBottom: "5px"}}>
+                        <Button variant="primary" onClick={go} title="Next generation">Evolve!</Button>
+                    </Row>
+                    <Row style={{marginBottom: "5px"}}>
+                        <Button variant="secondary" onClick={fast_fw} title="Advance 100 generations">Fast forward</Button>
+                    </Row>
+                    <Row style={{marginBottom: "5px"}}>
+                        <Button variant="danger" onClick={reset} title="Reset algorithm">Restart</Button>
+                    </Row>
                 </Col>
                 <Col md="auto">
-                    <Button variant="secondary" onClick={fast_fw} title="Advance 100 generations">Fast forward</Button>
-                </Col>
-                <Col md="auto">
-                    <Button variant="danger" onClick={reset} title="Reset algorithm">Restart</Button>
+                    <Card>
+                        <Card.Body>
+                            <p><b>Current generation:</b> {gaState.generation}</p>
+                            <p><b>Objective function evaluations:</b> {gaState.fitness_evals}</p>
+                            <p><b>Running time:</b> {tms} ms.</p>
+                        </Card.Body>
+                    </Card>
                 </Col>
             </Row>
             

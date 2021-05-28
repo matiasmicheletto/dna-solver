@@ -8,10 +8,11 @@ import GA, {selection, mutation} from './ga';
 import Fitness from './fitness/nqueens';
 
 const config = { // GA parameters  
-  ...Fitness,
-  pop_size: 20,
-  selection: selection.TOURNAMENT,
-  mutation: mutation.SWITCH
+  pop_size: 15, 
+  mut_prob: 0.5,
+  mut_fr: 0.8,
+  mutation: mutation.RAND,
+  ...Fitness
 };
 
 const ga = new GA(config);
