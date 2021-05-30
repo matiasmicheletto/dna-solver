@@ -28,11 +28,12 @@ All fitness functions should have the following attributes:
 Other GA configuration parameters can be added to overwrite the default ones.
 */
 
-import { shuffleArray } from "../tools";
+import { shuffle_array } from "../tools";
 
 ////////// N-QUEENS PROBLEM /////////////
 
 const N = 8; // Board size
+const max = N*(N+1) / 2; // Max possible conflicts
 
 const NQueens = {
     description: () => (
@@ -50,7 +51,7 @@ const NQueens = {
                 if(col2 - col1 === columns[col2] - columns[col1]) { cntr++; continue; } // Same positive diagonal
             }
         }
-        return 100-cntr;
+        return max-cntr;
     },
     // No need to encode or decode, as genotype and phenotype are the same
     decode: b => b, 
@@ -58,7 +59,7 @@ const NQueens = {
     beautify: b => b.join("-"), // Separate elements with a dash
     generator: () => { // Random order of numbers from 1 to N
         let numbers = Array.from(Array(N).keys());
-        shuffleArray(numbers);
+        shuffle_array(numbers);
         return numbers;
     },
     mut_gen: () => Math.floor(Math.random()*N) // Overwrite the random allele generator function

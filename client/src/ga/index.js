@@ -53,7 +53,7 @@ Configuration object:
         * type: BITFLIP, SWITCH or RAND.
 */
 
-import { probability, sampleInt } from "../tools";
+import { probability, sample_ints } from "../tools";
 import Fitness from "../fitness/quadratic"; // Default fitness is an inverted parabola
 
 // Enumerators
@@ -81,7 +81,7 @@ const default_config = { // Default parameters for simple scalar function
     mut_prob: 0.2, 
     mut_fr: 0.6,
     mut_gen: () => Math.round(Math.random()),
-    cross_prob: 0.9, 
+    cross_prob: 0.8, 
     elitism: 1,
     rank_r: 0.002,
     tourn_k: 3,
@@ -105,10 +105,12 @@ class GA { // GA model class
         
         // Number of individuals to be exposed to mutation
         this._mut_range = Math.floor(this._population.length * this._config.mut_fr);
-        // Probability parameter for rank based selection operator
-        this._rank_q = this._config.rank_r*(this._config.pop_size-1)/2 + 1/this._config.pop_size;
+        
+        if(this._config.selection === selection.RANK)
+            // Probability parameter for rank based selection operator
+            this._rank_q = this._config.rank_r*(this._config.pop_size-1)/2 + 1/this._config.pop_size;
 
-        // Configure operators (using public setters)
+        // Configure operators (IMPORTANT: The following are setters)
         this.selection = this._config.selection;
         this.mutation = this._config.mutation;
         this.crossover = this._config.crossover;
@@ -334,8 +336,42 @@ class GA { // GA model class
     }
 
     _pmx_crossover(k1, k2) {
-        // TODO
-        return [];
+        // Partially mapped crossover
+        // https://gist.github.com/celaus/d5a55e723ce233f2b83af36a4cf456b4
+        const s = this.population[k1].genotype;
+        const t = this.population[k2].genotype;
+
+        let _map1 = {};
+        let _map2 = {};
+
+        const x1 = Math.floor(Math.random() * (s.length - 1));
+        const x2 = x1 + Math.floor(Math.random() * (s.length - x1));
+
+        let g1 = Array.from(s);
+        let g2 = Array.from(t);
+
+        for (let i = x1; i < x2; i++) {
+            g1[i] = t[i];
+            _map1[t[i]] = s[i];
+            g2[i] = s[i];
+            _map2[s[i]] = t[i];
+        }
+
+        for (let i = 0; i < x1; i++) {
+            while (g1[i] in _map1) 
+                g1[i] = _map1[g1[i]];
+            while (g2[i] in _map2)
+                g2[i] = _map2[g2[i]];
+        }
+
+        for (let i = x2; i < s.length; i++) {
+            while (g1[i] in _map1) 
+                g1[i] = _map1[g1[i]];
+            while (g2[i] in _map2) 
+                g2[i] = _map2[g2[i]];
+        }
+
+        return [{genotype: g1, fitness: Infinity}, {genotype: g2, fitness: Infinity}]; // Offspring is not evaluated yet;
     }
 
 
@@ -351,7 +387,8 @@ class GA { // GA model class
     }
 
     _switch_mutation(ind) {
-        // Applies allele switch mutation to individual "ind"
+        // Applies allele position switch to individual "ind"
+
         for(let k = 0; k < this._population[ind].genotype.length; k++) // For every allele
             if( probability(this._config.mut_prob) ){ 
                 let p = k;
@@ -376,10 +413,10 @@ class GA { // GA model class
             }
     }
 
-    _mut_selection() {
+    _mut_selection() {        
         // Returns selected chromosomes for mutation (in case of mutation proportion < 1)
         return this._config.mut_fr < 1 ? // Get indexes of the selected individual to mutate
-            sampleInt(this._mut_range, this._population.length) // Array with random set of indexes
+            sample_ints(this._mut_range, this._population.length) // Array with random set of indexes
             : 
             Array.from(Array(this._population.length).keys()); // Return all elements
     }

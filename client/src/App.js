@@ -4,14 +4,14 @@ import TopNavbar from "./components/topnavbar";
 import Dashboard from "./components/dashboard";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles.css';
-import GA, {selection, mutation} from './ga';
-import Fitness from './fitness/nqueens';
+import GA, {crossover, mutation} from './ga';
+import Fitness from './fitness/tsp.js';
 
 const config = { // GA parameters  
   pop_size: 15, 
-  mut_prob: 0.5,
-  mut_fr: 0.8,
-  mutation: mutation.RAND,
+  mut_prob: 0.1,
+  mutation: mutation.SWITCH,
+  crossover: crossover.PMX,
   ...Fitness
 };
 
