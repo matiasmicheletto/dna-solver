@@ -2,31 +2,8 @@
 Genetic Algorithm Class Module
 ------------------------------
 Implements a generic and configurable GA based optimizer.
-Configuration object:
-    - description: Problem description.
-        * type: Function.
-        * input: None.
-        * output: Component. 
-    - fitness: Fitness function to maximize. 
-        * type: Function.
-        * input: Optimization variable. May be number, array or object.
-        * output: Should return a non negative scalar number (integer or float). 
-    - decode: Function for decoding a chromosome's genotype and obtaining its phenotype.
-        * type: Function.
-        * input: Array.
-        * output: Obtimization variable. May be number, array or object.
-    - encode: Function for encoding a candidate solution (phenotype) and get its corresponding genotype.
-        * type: Function.
-        * input: Optimization variable. May be number, array or object.
-        * output: Array.
-    - beautify: Function for decoding a chromosome's genotype using a human-readable format.
-        * type: Function.
-        * input: Optimization variable. May be number, array or object.
-        * output: String.
-    - generator: Function to generate a random individual during initialization. 
-        * type: Function.
-        * input: None.
-        * output: Optimization variable. May be number, array or object.
+
+Configuration object:    
     - pop_size: Population size, number of chromosomes.
         * type: Non zero even Number (integer).
     - mut_prob: Mutation probability (probability of an allele to change).
@@ -52,9 +29,7 @@ Configuration object:
     - mutation: Mutation operator.
         * type: BITFLIP, SWITCH or RAND.
 */
-
-import { probability, sample_ints } from "../tools";
-import Fitness from "../fitness/quadratic"; // Default fitness is an inverted parabola
+import { probability, random_select } from "../tools";
 
 // Enumerators
 const selection = {
@@ -75,7 +50,6 @@ const mutation = {
     RAND: "rand" // Uses mut_gen as random generator
 };
 
-
 const default_config = { // Default parameters for simple scalar function
     pop_size: 20, 
     mut_prob: 0.2, 
@@ -87,8 +61,7 @@ const default_config = { // Default parameters for simple scalar function
     tourn_k: 3,
     selection: selection.ROULETTE,
     crossover: crossover.SINGLE,
-    mutation: mutation.BITFLIP,
-    ...Fitness, // This extracts the fitness function attributes (may bring some overwriting parameters too)
+    mutation: mutation.BITFLIP
 };
 
 class GA { // GA model class
@@ -98,6 +71,12 @@ class GA { // GA model class
             ...default_config,
             ...config
         };
+
+        // Objective function should be passed through config object
+        if(!this._config.fitness){
+            console.warn("Fitness function is not defined!");
+            return;
+        }
 
         // Create and initialize the array of individuals
         this._population = new Array(this._config.pop_size);
@@ -131,8 +110,7 @@ class GA { // GA model class
 
     _init(pop) { // Initialize/resets population genotypes
         for(let k = 0; k < pop.length; k++){
-            const rand_genotype = this._config.generator();
-            const genotype = this._config.encode(rand_genotype);
+            const genotype = this._config.rand_encoded();    
             pop[k] = {
                 genotype: genotype
             }
@@ -141,7 +119,7 @@ class GA { // GA model class
     }
 
     _fitness(ind) { // This fitness function evaluates the k-th individual condition
-        this._population[ind].fitness = this._config.fitness(this._config.decode(this._population[ind].genotype));
+        this._population[ind].fitness = this._config.fitness(this._population[ind].genotype);
         this._ff_evs++;
     }
 
@@ -169,7 +147,7 @@ class GA { // GA model class
             population: this._population.map( p => ( // Add phenotypes to population 
                 {
                     ...p,
-                    phenotype: this._config.beautify(p.genotype), 
+                    phenotype: this._config.decode(p.genotype), 
                 }
             ))
         }
@@ -416,7 +394,7 @@ class GA { // GA model class
     _mut_selection() {        
         // Returns selected chromosomes for mutation (in case of mutation proportion < 1)
         return this._config.mut_fr < 1 ? // Get indexes of the selected individual to mutate
-            sample_ints(this._mut_range, this._population.length) // Array with random set of indexes
+            random_select(this._mut_range, this._population.length) // Array with random set of indexes
             : 
             Array.from(Array(this._population.length).keys()); // Return all elements
     }

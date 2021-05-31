@@ -5,14 +5,16 @@ import Dashboard from "./components/dashboard";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles.css';
 import GA, {crossover, mutation} from './ga';
-import Fitness from './fitness/tsp.js';
+import Fitness from './fitness/tsp';
+
+let fitness = new Fitness();
 
 const config = { // GA parameters  
   pop_size: 15, 
-  mut_prob: 0.1,
+  mut_prob: 0.3,
   mutation: mutation.SWITCH,
   crossover: crossover.PMX,
-  ...Fitness
+  ...fitness.config
 };
 
 const ga = new GA(config);
