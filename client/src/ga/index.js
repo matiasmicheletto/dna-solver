@@ -4,6 +4,8 @@ Genetic Algorithm Class Module
 Implements a generic and configurable GA based optimizer.
 
 Configuration object:    
+    - doc: Problem description provided by fitness function model.
+        * type: String.
     - pop_size: Population size, number of chromosomes.
         * type: Non zero even Number (integer).
     - mut_prob: Mutation probability (probability of an allele to change).
@@ -51,6 +53,7 @@ const mutation = {
 };
 
 const default_config = { // Default parameters for simple scalar function
+    doc: "N/D",
     pop_size: 20, 
     mut_prob: 0.2, 
     mut_fr: 0.6,
@@ -136,8 +139,8 @@ class GA { // GA model class
         return this._population;
     }
 
-    get problem_description() {
-        return this._config.description();
+    get problem_info() { // Problem description
+        return this._config.doc();
     }
 
     get status() { // Algorithm metrics (may be slow)

@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import PopTable from '../poptable';
 import { Row, Col, Card, Button } from 'react-bootstrap';
+import Parse from 'html-react-parser';
 
 const Dashboard = (props) => {
 
@@ -47,7 +48,7 @@ const Dashboard = (props) => {
         <Row>
             <Row style={{marginBottom: "20px"}}>
                 <h3>Optimization problem</h3>
-                {props.ga.problem_description}
+                {Parse(props.ga.problem_info)}
             </Row>
             <Row md="auto" style={{marginBottom: "20px"}}>
                 <Col md="auto">

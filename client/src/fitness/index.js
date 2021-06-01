@@ -46,10 +46,8 @@ class Fitness { // Fitness model class
             this[attr] = params[attr];
     }
 
-    _description() {
-        return (
-            <p>This is an empty fitness function</p>
-        )
+    _doc() {
+        return "N/D";
     }
 
     _objective(x) {
@@ -70,7 +68,7 @@ class Fitness { // Fitness model class
 
     get config() { // Return references to private methods
         return {
-            description: this._description,
+            doc: this._doc,
             objective: this._objective,
             fitness: this._fitness,            
             decode: this._decode_nice,

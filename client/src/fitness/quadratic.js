@@ -27,12 +27,13 @@ class Quadratic extends Fitness {
         this._b = 4*this._a/this._z1/this._z1;
     }
 
-    _description = () => (
-        <div>
-            <p>Fitness function is <b>y = {this._a}-(x-{this._c})<sup>2</sup>/{(1/this._b).toFixed(2)}</b> for <b>x</b> in range <b>(0..{this._z1+1})</b>.</p> 
+    _doc = () => {
+        let desc = `<div>
+            <p>Fitness function is <b>y = ${this._a}-(x-${this._c})<sup>2</sup>/${(1/this._b).toFixed(2)}</b> for <b>x</b> in range <b>(0..${this._z1+1})</b>.</p> 
             <p>Hit the <i>Evolve!</i> button and let the algorithm find the value of <b>x</b> (column phenotype) that maximizes the fitness function <b>y</b>.</p>
-        </div>
-    )
+        </div>`;
+        return desc;
+    }
 
     _objective = x => {
         return this._a - this._b*(x - this._c)*(x - this._c);
@@ -50,7 +51,7 @@ class Quadratic extends Fitness {
                 .padStart(this._nbit,"0")
                 .slice(-this._nbit)
                 .split("")
-                .map(e=>parseInt(e))
+                .map(e=>parseInt(e, 10))
     
     // Beautifier function is the same as decoder
     _decode_nice = b => this._decode(b)
