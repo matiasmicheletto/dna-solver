@@ -11,6 +11,7 @@ const PopTable = (props) => {
                     <th>Genotype</th>
                     <th>Phenotype</th>
                     <th>Fitness</th>
+                    <th>Objective</th>
                 </tr>
             </thead>
             <tbody>
@@ -21,6 +22,7 @@ const PopTable = (props) => {
                             <td>{p.genotype}</td>
                             <td>{p.phenotype}</td>
                             <td>{p.fitness.toFixed(2)}</td>
+                            <td>{p.objective}</td>
                         </tr> 
                     )
                 }

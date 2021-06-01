@@ -27,17 +27,16 @@ class Quadratic extends Fitness {
         this._b = 4*this._a/this._z1/this._z1;
     }
 
-    _doc = () => {
-        let desc = `<div>
-            <p>Fitness function is <b>y = ${this._a}-(x-${this._c})<sup>2</sup>/${(1/this._b).toFixed(2)}</b> for <b>x</b> in range <b>(0..${this._z1+1})</b>.</p> 
+    _doc = () => `<div>
+            <p>Fitness function is <b>y = ${this._a}-(x-${this._c})<sup>2</sup>/${(1/this._b).toFixed(2)}</b> for <b>x</b> in range <b>(0..${this._z1+1})</b> (BCD encoding).</p> 
             <p>Hit the <i>Evolve!</i> button and let the algorithm find the value of <b>x</b> (column phenotype) that maximizes the fitness function <b>y</b>.</p>
-        </div>`;
-        return desc;
-    }
+        </div>`
 
     _objective = x => {
         return this._a - this._b*(x - this._c)*(x - this._c);
     }
+
+    _objective_nice = x => this._fitness(x).toFixed(2)
 
     _fitness = x => {
         return this._objective(this._decode(x));

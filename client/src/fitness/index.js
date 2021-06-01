@@ -26,11 +26,15 @@ This attributes are the following:
         * output: Objective output. May be number, array or object.
     - fitness: Fitness function to evaluate and compare solutions.
         * type: Function.
-        * input: Objective output.  May be number, array or object.
-        * output: Should return a non negative scalar number (integer or float). 
+        * input: Array. Encoded candidate solution (genotype).
+        * output: Should return a non negative scalar number (integer or float).     
     - decode_nice: Function for decoding a chromosome's genotype returning a human-readable format.
         * type: Function.
         * input: Optimization variable. May be number, array or object.
+        * output: String.
+    - objective_nice: Objective function to be optimized that returns the output as readable format. 
+        * type: Function.
+        * input: Array. Encoded optimization variable (gneotype).
         * output: String.
     - rand_encoded: Function to generate a random individual during initialization. 
         * type: Function.
@@ -62,6 +66,10 @@ class Fitness { // Fitness model class
         return b.join("-");
     }
 
+    _objective_nice(x) {
+        return x;
+    }
+
     _rand_encoded() {
         return Math.random();
     }
@@ -69,7 +77,7 @@ class Fitness { // Fitness model class
     get config() { // Return references to private methods
         return {
             doc: this._doc,
-            objective: this._objective,
+            objective: this._objective_nice,
             fitness: this._fitness,            
             decode: this._decode_nice,
             rand_encoded: this._rand_encoded

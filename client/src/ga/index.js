@@ -157,10 +157,11 @@ class GA { // GA model class
         return {            
             generation: this._generation,
             fitness_evals: this._ff_evs,
-            population: this._population.map( p => ( // Add phenotypes to population 
+            population: this._population.map( p => ( // Add phenotypes and objective values to population 
                 {
                     ...p,
                     phenotype: this._config.decode(p.genotype), 
+                    objective: this._config.objective(p.genotype)
                 }
             ))
         }
