@@ -29,7 +29,7 @@ Configuration object:
     - crossover: Crossover operator.
         * type: SINGLE or DOUBLE.
     - mutation: Mutation operator.
-        * type: BITFLIP, SWITCH or RAND.
+        * type: BITFLIP, SWAP or RAND.
 */
 import { probability, random_select } from "../tools";
 
@@ -48,7 +48,7 @@ const crossover = {
 
 const mutation = {
     BITFLIP: "bitflip", // Only for bitstring encoding
-    SWITCH: "switch",
+    SWAP: "swap",
     RAND: "rand" // Uses mut_gen as random generator
 };
 
@@ -59,7 +59,7 @@ const default_config = { // Default parameters for simple scalar function
     mut_fr: 0.6,
     mut_gen: () => Math.round(Math.random()),
     cross_prob: 0.8, 
-    elitism: 1,
+    elitism: 2,
     rank_r: 0.002,
     tourn_k: 3,
     selection: selection.ROULETTE,
@@ -101,10 +101,11 @@ class GA { // GA model class
     }
 
     reset() { // Restarts de algorithm
+        // Generate random genotypes for each individual and evaluates its condition
         this._init(this._population);
         // Sort population (selection requires ranked individuals)
         this._sort_pop();
-        // Retart counters
+        // Restart counters
         this._generation = 0; // Generation counter
         this._ff_evs = 0; // Fitness function evaluations counter        
         this._best_hist = [this._population[0].fitness]; // Historic values of best fitness
@@ -122,7 +123,16 @@ class GA { // GA model class
     }
 
     _fitness(ind) { // This fitness function evaluates the k-th individual condition
-        this._population[ind].fitness = this._config.fitness(this._population[ind].genotype);
+
+        const g = this._population[ind].genotype;
+        const f = this._config.fitness(g);
+        // Using new object increases memory usage but avoids modifying referenced copies
+        this._population[ind] = {
+            genotype: g,
+            fitness: f,
+            evaluated: true
+        };
+        this._population[ind].evaluated = true;
         this._ff_evs++;
     }
 
@@ -212,8 +222,8 @@ class GA { // GA model class
             case mutation.BITFLIP:
                 this._mutate = this._bitflip_mutation;
                 break;
-            case mutation.SWITCH:
-                this._mutate = this._switch_mutation;
+            case mutation.SWAP:
+                this._mutate = this._swap_mutation;
                 break;
             case mutation.RAND:
                 this._mutate = this._rand_allele_mutation;
@@ -294,7 +304,16 @@ class GA { // GA model class
         const p = Math.floor(Math.random() * (this._population[k1].genotype.length - 2) + 1); // Crossover point
         const g1 = [...this._population[k1].genotype.slice(0, p), ...this._population[k2].genotype.slice(p)];
         const g2 = [...this._population[k2].genotype.slice(0, p), ...this._population[k1].genotype.slice(p)];        
-        return [{genotype: g1, fitness: Infinity}, {genotype: g2, fitness: Infinity}]; // Offspring is not evaluated yet
+        this._population[k1] = {
+            genotype: g1,
+            fitness: 0,
+            evaluated: false
+        }
+        this._population[k2] = {
+            genotype: g2,
+            fitness: 0,
+            evaluated: false
+        }
     }
 
     _double_point_crossover(k1, k2) {
@@ -313,7 +332,17 @@ class GA { // GA model class
         const g1 = [...this._population[k1].genotype.slice(0, p1), ...this._population[k2].genotype.slice(p1, p2), ...this._population[k1].genotype.slice(p2)];
         const g2 = [...this._population[k2].genotype.slice(0, p1), ...this._population[k1].genotype.slice(p1, p2), ...this._population[k2].genotype.slice(p2)];
 
-        return [{genotype: g1, fitness: Infinity}, {genotype: g2, fitness: Infinity}]; // Offspring is not evaluated yet
+        this._population[k1] = {
+            genotype: g1,
+            fitness: 0,
+            evaluated: false
+        }
+
+        this._population[k2] = {
+            genotype: g2,
+            fitness: 0,
+            evaluated: false
+        }
     }
 
     _pmx_crossover(k1, k2) {
@@ -328,8 +357,8 @@ class GA { // GA model class
         const x1 = Math.floor(Math.random() * (s.length - 1));
         const x2 = x1 + Math.floor(Math.random() * (s.length - x1));
 
-        let g1 = Array.from(s);
-        let g2 = Array.from(t);
+        let g1 = [...Array.from(s)];
+        let g2 = [...Array.from(t)];
 
         for (let i = x1; i < x2; i++) {
             g1[i] = t[i];
@@ -352,46 +381,79 @@ class GA { // GA model class
                 g2[i] = _map2[g2[i]];
         }
 
-        return [{genotype: g1, fitness: Infinity}, {genotype: g2, fitness: Infinity}]; // Offspring is not evaluated yet;
+        this._population[k1] = {
+            genotype: g1,
+            fitness: 0,
+            evaluated: false
+        }
+
+        this._population[k2] = {
+            genotype: g2,
+            fitness: 0,
+            evaluated: false
+        }
     }
 
 
     /// Mutation
 
     _bitflip_mutation(ind) { 
-        // Applies bitflip mutation to individual "ind".
-        for(let k = 0; k < this._population[ind].genotype.length; k++) // For every allele
+        // Applies bitflip mutation to individual "ind". This method is stochastic so no changes may be applied
+        let changes = false;
+        let newg = [...this._population[ind].genotype]; // Copy of the original genotype
+        for(let k = 0; k < newg.length; k++) // For every allele
             if( probability(this._config.mut_prob) ){ 
-                this._population[ind].genotype[k] = this._population[ind].genotype[k] ? 0 : 1; // Bitflip
-                this._population[ind].fitness = Infinity;
+                newg[k] = newg[k] ? 0 : 1; // Bitflip
+                changes = true;
             }
+        if(changes){ // Mark individual as not evaluated
+            this._population[ind] = {
+                genotype: newg,
+                fitness: 0,
+                evaluated: false
+            }
+        }
     }
 
-    _switch_mutation(ind) {
-        // Applies allele position switch to individual "ind"
-
-        for(let k = 0; k < this._population[ind].genotype.length; k++) // For every allele
+    _swap_mutation(ind) {
+        // Applies allele position swap to individual "ind". This method is stochastic so no changes may be applied
+        let changes = false;
+        let newg = [...this._population[ind].genotype]; // Copy of the original genotype
+        for(let k = 0; k < newg.length; k++) // For every allele
             if( probability(this._config.mut_prob) ){ 
                 let p = k;
                 while(p === k)
-                    p = Math.floor(Math.random() * this._population[ind].genotype.length); // The other position
-                
-                // Switch positions
-                const temp = this._population[ind].genotype[k];
-                this._population[ind].genotype[k] = this._population[ind].genotype[p];
-                this._population[ind].genotype[p] = temp;
-                
-                this._population[ind].fitness = Infinity;
+                    p = Math.floor(Math.random() * newg.length); // The other position
+                // Swap positions                
+                [newg[k], newg[p]] = [newg[p], newg[k]];
+                changes = true;
             }
+        if(changes){ // Mark individual as not evaluated
+            this._population[ind] = {
+                genotype: newg,
+                fitness: 0,
+                evaluated: false
+            }
+        }
     }
 
     _rand_allele_mutation(ind) {
-        // Selects a random value for a random selected allele
-        for(let k = 0; k < this._population[ind].genotype.length; k++) // For every allele
+        // Selects a random value for a random selected allele. This method is stochastic so no changes may be applied
+        let changes = false;
+        let newg = [...this._population[ind].genotype]; // Copy of the original genotype
+        for(let k = 0; k < newg.length; k++) // For every allele
             if( probability(this._config.mut_prob) ){ 
-                this._population[ind].genotype[k] = this._config.mut_gen();                
-                this._population[ind].fitness = Infinity;
+                newg[k] = this._config.mut_gen();                
+                changes = true;
             }
+
+        if(changes){ // Mark individual as not evaluated
+            this._population[ind] = {
+                genotype: newg,
+                fitness: 0,
+                evaluated: false
+            }
+        }
     }
 
     _mut_selection() {        
@@ -405,27 +467,34 @@ class GA { // GA model class
     
     /// Iteration
 
-    evolve(){ // Compute a generation cycle
+    evolve(){ // Compute a generation cycle. Population list is sorted by fitness value
         // Select parents list for crossover
         const cr_selected = this._cr_selection(); 
+
+        // Copy elite individuals if elitism is configured
+        const elite = this._config.elitism > 0 ? [...this._population.slice(0, this._config.elitism)] : null;
         
         // Obtain the children list and push into population
         for(let k = 0; k < cr_selected.length-1; k += 2)
-            if(probability(this._config.cross_prob)){
-                //const children = this._crossover(cr_selected[k], cr_selected[k+1]);
-                //this._population[cr_selected[k]] = children[0];
-                //this._population[cr_selected[k+1]] = children[1];
-                this._population.push(...this._crossover(cr_selected[k], cr_selected[k+1])); 
-            }
+            if(probability(this._config.cross_prob))
+                this._crossover(cr_selected[k], cr_selected[k+1]);                
         
         // Apply mutation
         const mut_selected = this._mut_selection();
         for(let j in mut_selected)
             this._mutate(mut_selected[j]);
 
-        // Compute population fitness values and sort from best to worst
-        this._population.map( (p, ind) => this._fitness(ind) );
+        // Compute population fitness values for not evaluated individuals
+        this._population.filter( p => !p.evaluated ).map( (p, ind) => this._fitness(ind) );
+
+        // Restore elite individuals to population (already evaluated)
+        if(this._config.elitism > 0)
+            this._population.push(...elite);            
+
+        // Sort population from best to worst fitness
         this._sort_pop();
+
+        // Remove individuals that not survive 
         this._population.splice(this._config.pop_size); 
         
         // Record the new best and average values

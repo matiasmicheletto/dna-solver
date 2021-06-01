@@ -11,8 +11,8 @@ let fitness = new Fitness();
 
 const config = { // GA parameters  
   pop_size: 15, 
-  mut_prob: 0.3,
-  mutation: mutation.SWITCH,
+  mut_prob: 0.1,
+  mutation: mutation.SWAP,
   crossover: crossover.PMX,
   ...fitness.config
 };
