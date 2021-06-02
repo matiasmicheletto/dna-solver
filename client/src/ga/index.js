@@ -122,16 +122,8 @@ class GA { // GA model class
         }                
     }
 
-    _fitness(ind) { // This fitness function evaluates the k-th individual condition
-
-        const g = this._population[ind].genotype;
-        const f = this._config.fitness(g);
-        // Using new object increases memory usage but avoids modifying referenced copies
-        this._population[ind] = {
-            genotype: g,
-            fitness: f,
-            evaluated: true
-        };
+    _fitness(ind) { // This fitness function evaluates the ind-th individual condition
+        this._population[ind].fitness = this._config.fitness(this._population[ind].genotype);
         this._population[ind].evaluated = true;
         this._ff_evs++;
     }
@@ -473,7 +465,7 @@ class GA { // GA model class
         const cr_selected = this._cr_selection(); 
 
         // Copy elite individuals if elitism is configured
-        const elite = this._config.elitism > 0 ? [...this._population.slice(0, this._config.elitism)] : null;
+        const elite = this._config.elitism > 0 ? [...this._population.slice(0, this._config.elitism)] : null;        
         
         // Obtain the children list and push into population
         for(let k = 0; k < cr_selected.length-1; k += 2)
@@ -486,7 +478,10 @@ class GA { // GA model class
             this._mutate(mut_selected[j]);
 
         // Compute population fitness values for not evaluated individuals
-        this._population.filter( p => !p.evaluated ).map( (p, ind) => this._fitness(ind) );
+        this._population.forEach( (p, ind) => {
+            if(!p.evaluated) 
+                this._fitness(ind);
+        });
 
         // Restore elite individuals to population (already evaluated)
         if(this._config.elitism > 0)

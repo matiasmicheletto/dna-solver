@@ -7,12 +7,10 @@ class NQueens  extends Fitness {
     
     constructor(N = 8) {
         super({_N: N});        
-        this._max = this._get_max_conflict(this._N); 
     }
 
     set N(val) {
         this._N = val;
-        this._max = this._get_max_conflict(this._N);
     }
 
     // Max possible conflicts in a NxN chess board
@@ -42,7 +40,7 @@ class NQueens  extends Fitness {
         return this._objective(columns) + " conflicts";
     }
 
-    _fitness = x => this._max - this._objective(x);
+    _fitness = x => 100 / ( this._objective(x) + 1 );
 
     _decode_nice = b => b.join("-")
 

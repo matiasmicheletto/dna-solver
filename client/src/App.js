@@ -5,15 +5,15 @@ import Dashboard from "./components/dashboard";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles.css';
 import GA, {crossover, mutation} from './ga';
-import Fitness from './fitness/quadratic';
+import Fitness from './fitness/tsp';
 
 let fitness = new Fitness();
 
 const config = { // GA parameters  
   pop_size: 15, 
   mut_prob: 0.1,
-  //mutation: mutation.RAND,
-  //crossover: crossover.PMX,
+  mutation: mutation.SWAP,
+  crossover: crossover.PMX,
   ...fitness.config
 };
 
