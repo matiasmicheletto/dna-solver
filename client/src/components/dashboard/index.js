@@ -1,83 +1,36 @@
-import React, {useState} from 'react';
-import PopTable from '../poptable';
-import { Row, Col, Card, Button } from 'react-bootstrap';
-import Parse from 'html-react-parser';
+import React, { useState } from 'react';
+import { Button } from 'react-bootstrap';
+import FitnessSelect from './fitness_select';
+import { fitness as fitness_type } from '../../manager';
+import random_name from '../../tools/random_names';
 
 const Dashboard = (props) => {
 
-    const [gaState, setGAState] = useState(props.ga.status);
-    const [tms, setTms] = useState(0); // Algorithm timing is done externally
-    const [limit, setLimit] = useState(100); // Upper limit for FFW optimization
-    //const [desc, setDesc] = useState(props.ga.problem_description);
-    
-    const iteration = () => { // Execute a single step of the algorithm and render
-        props.ga.evolve();
-        setGAState(props.ga.status);
+    const [f_type, setFType] = useState(fitness_type.TSP);
+    const [list, setList] = useState([]);
+
+    const run = () => {
+        props.manager.add_fitness(f_type);
+        setList([...props.manager.fitness]);
     }
 
-    const go = () => { // Single iteration button callback
-        const start = Date.now();
-        iteration();
-        setTms(tms + Date.now() - start);
-    }
-
-    const fast_fw = () => { // FFW button callback
-        const start = Date.now();
-        const loop = () => { // Recursive function
-            if(props.ga.generation < limit)
-                setTimeout(()=>{ // When using timeout, a render is performed on every loop
-                    iteration();
-                    loop();
-                }, 10);
-            else{ 
-                setLimit(limit+100); // Increase limit for next 100 generations
-                setTms(tms + Date.now() - start);
-            }
-        }
-        loop();
-    }
-
-    const reset = () => { // Restart algorithm button callback
-        props.ga.reset();
-        setGAState(props.ga.status);
-        setLimit(100); 
-        setTms(0);
+    const fitnessSelection = e => {
+        setFType(e.target.value);
     }
 
     return (
-        <Row>
-            <Row style={{marginBottom: "20px"}}>
-                <h3>Optimization problem</h3>
-                {Parse(props.ga.problem_info)}
-            </Row>
-            <Row md="auto" style={{marginBottom: "20px"}}>
-                <Col md="auto">
-                    <Row style={{marginBottom: "5px"}}>
-                        <Button variant="primary" onClick={go} title="Next generation">Evolve!</Button>
-                    </Row>
-                    <Row style={{marginBottom: "5px"}}>
-                        <Button variant="secondary" onClick={fast_fw} title="Advance 100 generations">Fast forward</Button>
-                    </Row>
-                    <Row style={{marginBottom: "5px"}}>
-                        <Button variant="danger" onClick={reset} title="Reset algorithm">Restart</Button>
-                    </Row>
-                </Col>
-                <Col md="auto">
-                    <Card>
-                        <Card.Body>
-                            <p><b>Current generation:</b> {gaState.generation}</p>
-                            <p><b>Objective function evaluations:</b> {gaState.fitness_evals}</p>
-                            <p><b>Running time:</b> {tms} ms.</p>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
+        <div>
+            <FitnessSelect onChange={fitnessSelection} />
+        
+            <Button onClick={run}>Add</Button>
             
-            <Row>
-                <PopTable pop={gaState.population} />
-            </Row>
-        </Row>
-    )
+            {
+                list.map( (f, ind) => (
+                    <p key={ind}>{random_name()} -- {f.type}</p>
+                ))
+            }
+        </div>
+    );
 }
 
 export default Dashboard;

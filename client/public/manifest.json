@@ -1,6 +1,6 @@
 {
-  "short_name": "SGApp",
-  "name": "Simple Genetic Algorithm App",
+  "short_name": "SGANode",
+  "name": "Genetic Experiments",
   "icons": [
     {
       "src": "favicon.ico",

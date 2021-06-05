@@ -45,7 +45,7 @@ class Tsp extends Fitness {
             case distance.HAVERSINE: 
                 this._distance = this._haversine;
                 this._unit = "km";
-                break;            
+                break;
         }
         // Weight matrix values should be updated using the new distance equation
         this._weights = coord_to_weight_matrix(this._places, this._distance);
@@ -64,19 +64,19 @@ class Tsp extends Fitness {
             shortest possible route that visits each city exactly once and returns to the origin city?" It is an NP-hard 
             problem in combinatorial optimization, important in theoretical computer science and operations research.</p>`
 
-    _objective = x => {        
+    _objective = x => {
         let d = 0; // Total distance traveled
-        for(let k = 0; k < x.length-1; k++)        
+        for(let k = 0; k < x.length-1; k++)
             d += this._weights[ x[k] ][ x[k+1] ];
         d += this._weights[ x[x.length-1] ][ x[0] ]; // Returning to start point
         return d;
     }
 
-    _objective_nice = x => {        
+    _objective_nice = x => {
         return this._objective(x).toFixed(2) + " " + this._unit;
     }
 
-    _fitness = x => has_duplicates(x) ? Infinity : 100/this._objective(x)
+    _fitness = x => has_duplicates(x) ? 0 : 100/this._objective(x)
 
     _decode_nice = b => b.join("-")
 

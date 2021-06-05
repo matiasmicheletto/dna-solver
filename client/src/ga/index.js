@@ -5,24 +5,26 @@ Implements a generic and configurable GA based optimizer.
 
 Configuration object:    
     - doc: Problem description provided by fitness function model.
-        * type: String.
+        * type: Function. The output string is rendered using problem parameters.
+        * input: None.
+        * output: String.
     - pop_size: Population size, number of chromosomes.
         * type: Non zero even Number (integer).
+    - elitism: Number of elite individuals. Elite individuals are force-preserved through generations.
+        * type: Number (integer).
+    - cross_prob: Crossover probability (probability that a pair of selected individuals to be crossovered).
+        * type: Float number between 0 and 1.
     - mut_prob: Mutation probability (probability of an allele to change).
-        * type: Float number between 0 and 1. Usually 1/(bitstring length)
+        * type: Float number between 0 and 1. Usually 1/(bitstring length).
     - mut_fr: Mutation fraction (proportion of individuals to be exposed to mutation).    
         * type: Number.
     - mut_gen: Allele generator for mutation.    
         * type: Function.
         * input: None.
         * ouput: Number.
-    - cross_prob: Crossover probability (probability that a pair of selected individuals to be crossovered).
-        * type: Float number between 0 and 1.
-    - elitism: Number of elite individuals. Elite individuals are force-preserved through generations.
-        * type: Number (integer)
     - rank_r: Ranking parameter (In case of ranking based selection). High r increases selective pressure. 
         * type: Float number between 0 and 2/(pop_size*(pop_size-1)).
-    - tourn_k: K parameter for tournament selection method
+    - tourn_k: K parameter for tournament selection method.
         * type: Integer number, usually between 2 and 5.
     - selection: Selection operator.
         * type: ROULETTE, RANK or TOURNAMENT.
@@ -55,11 +57,11 @@ const mutation = {
 const default_config = { // Default parameters for simple scalar function
     doc: "N/D",
     pop_size: 20, 
+    elitism: 2,
+    cross_prob: 0.8, 
     mut_prob: 0.2, 
     mut_fr: 0.6,
     mut_gen: () => Math.round(Math.random()),
-    cross_prob: 0.8, 
-    elitism: 2,
     rank_r: 0.002,
     tourn_k: 3,
     selection: selection.ROULETTE,
@@ -461,13 +463,14 @@ class GA { // GA model class
     /// Iteration
 
     evolve(){ // Compute a generation cycle. Population list is sorted by fitness value
-        // Select parents list for crossover
-        const cr_selected = this._cr_selection(); 
-
+        
         // Copy elite individuals if elitism is configured
         const elite = this._config.elitism > 0 ? [...this._population.slice(0, this._config.elitism)] : null;        
         
-        // Obtain the children list and push into population
+        // Select parents list for crossover
+        const cr_selected = this._cr_selection(); 
+
+        // Apply crossover to selected individuals
         for(let k = 0; k < cr_selected.length-1; k += 2)
             if(probability(this._config.cross_prob))
                 this._crossover(cr_selected[k], cr_selected[k+1]);                

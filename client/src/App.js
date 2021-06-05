@@ -4,20 +4,9 @@ import TopNavbar from "./components/topnavbar";
 import Dashboard from "./components/dashboard";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles.css';
-import GA, {crossover, mutation} from './ga';
-import Fitness from './fitness/tsp';
+import OptManager from './manager';
 
-let fitness = new Fitness();
-
-const config = { // GA parameters  
-  pop_size: 15, 
-  mut_prob: 0.1,
-  mutation: mutation.SWAP,
-  crossover: crossover.PMX,
-  ...fitness.config
-};
-
-const ga = new GA(config);
+const om = new OptManager();
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -36,7 +25,7 @@ const App = () => {
         isLoading ? 
         <p>loading...</p>
         :
-        <Dashboard ga={ga}/>
+        <Dashboard manager={om}/>
       }
     </Container>
   );
