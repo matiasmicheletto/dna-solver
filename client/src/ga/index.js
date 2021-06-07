@@ -33,7 +33,8 @@ Configuration object:
     - mutation: Mutation operator.
         * type: BITFLIP, SWAP or RAND.
 */
-import { probability, random_select } from "../tools";
+import { probability, random_select, generate_id, random_name } from "../tools";
+
 
 // Enumerators
 const selection = {
@@ -83,6 +84,9 @@ class GA { // GA model class
             return;
         }
 
+        // The optimizer should be always linked to a fitness function
+        this._fitness_id = this._config.fitness_id;
+
         // Create and initialize the array of individuals
         this._population = new Array(this._config.pop_size);
         this.reset(); // Init and sort the array
@@ -98,6 +102,9 @@ class GA { // GA model class
         this.selection = this._config.selection;
         this.mutation = this._config.mutation;
         this.crossover = this._config.crossover;
+
+        this._id = generate_id(); // Object identifier
+        this._name = random_name(); // Readable identifier (may be repeated)
 
         console.log("GA initialized.");
     }
@@ -135,7 +142,19 @@ class GA { // GA model class
 
     /// Getters
 
-    get generation() { // Current step number or generation
+    get name() {
+        return this._name;
+    }
+
+    get id() {
+        return this._id;
+    }
+
+    get fitness_id() {
+        return this._fitness_id;
+    }
+
+    get generation() {
         return this._generation;
     }
 
@@ -148,7 +167,9 @@ class GA { // GA model class
     }
 
     get status() { // Algorithm metrics (may be slow)
-        return {            
+        return {        
+            best_hist: this._best_hist,
+            avg_hist: this._avg_hist,
             generation: this._generation,
             fitness_evals: this._ff_evs,
             population: this._population.map( p => ( // Add phenotypes and objective values to population 

@@ -28,7 +28,12 @@ class OptManager {
         return this._fitness_list;
     }
 
+    get ga() {
+        return this._ga_list;
+    }
+
     add_fitness = type => {
+        // Create new fitness function
         let f;        
         switch(type) {
             case fitness.TSP:
@@ -40,28 +45,40 @@ class OptManager {
             case fitness.QUADRATIC:
                 f = new Quadratic();
                 break;
+        }        
+        this._fitness_list.push(f);        
+        return f.id;
+    }
+
+    remove_fitness = id => {
+        // Delete fitness model from list and all its optimizers
+        const index = this._fitness_list.findIndex(el => el.id === id);
+        if(index !== -1)
+            this._fitness_list.splice(index,1);
+    }
+
+    set_fitness_config(id, param, value) {
+        // Configure a fitness model parameter
+        const index = this._fitness_list.findIndex(el => el.id === id);
+        if(index !== -1)
+            this._fitness_list[index].fitness[param] = value;
+    }
+
+    add_ga = fitness_id => {        
+        // Add an optimizer for a given fitness function
+        const index = this._fitness_list.findIndex(el => el.id === fitness_id);
+        if(index !== -1){
+            const ga = new GA({...this._fitness_list[index].config});
+            this._ga_list.push(ga);
+            return ga.id;            
         }
-        const insertion_idx = this._fitness_list.push({
-            fitness: f,
-            type: type
-        });        
-        return insertion_idx;
     }
 
-    set_fitness_config(index, param, value) {
-        this._fitness_list[index].fitness[param] = value;
-    }
-
-    add_ga_to_fitness = index => {        
-        const insertion_idx = this._ga_list.push({
-            ga: new GA({...this._fitness_list[index].fitness.config}),
-            fitness: index
-        });
-        return insertion_idx;
-    }
-
-    remove_ga = ind => {        
-        this._ga_list.splice(ind,1);
+    remove_ga = id => {              
+        // Delete an optimizer from list
+        const index = this._ga_list.findIndex(el => el.id === id);
+        if(index !== -1)        
+            this._ga_list.splice(index,1);
     }
 }
 

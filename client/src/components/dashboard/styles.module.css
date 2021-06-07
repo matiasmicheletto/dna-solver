@@ -1,0 +1,29 @@
+.FitnessSelectContainer {
+    margin: 20px;
+}
+
+.FitnessCard {
+    margin: 20px;
+}
+
+.GAList {
+    margin-bottom: 10px!important;
+}
+
+.BtnRnd {
+    display: flex!important;
+    justify-content: center!important;
+    align-items: center!important;
+    border-radius: 50% !important;
+    padding: 0!important;
+}
+
+.AddFitnessBtn {
+    height: 50px;
+    width: 50px;    
+}
+
+.AddGABtn {
+    height: 40px;
+    width: 40px;
+}

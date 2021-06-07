@@ -44,10 +44,13 @@ This attributes are the following:
 Other GA configuration parameters can be added to overwrite the default ones.
 */
 
+import { generate_id } from '../tools';
+
 class Fitness { // Fitness model class
     constructor(params) {
         for(let attr in params)
             this[attr] = params[attr];
+        this._id = generate_id();
     }
 
     _doc() {
@@ -74,8 +77,13 @@ class Fitness { // Fitness model class
         return Math.random();
     }
 
+    get id() { // Fitness unique identifier
+        return this._id;
+    }
+
     get config() { // Return references to private methods
         return {
+            fitness_id: this._id,
             doc: this._doc,
             objective: this._objective_nice,
             fitness: this._fitness,            

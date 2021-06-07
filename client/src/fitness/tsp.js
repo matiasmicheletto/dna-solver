@@ -57,6 +57,10 @@ class Tsp extends Fitness {
         this._weights = coord_to_weight_matrix(this._places, this._distance);
     }
 
+    get name() {
+        return "Travelling Salesperson";
+    }
+
     // Using arrow functions here to override parent class methods (not working other way)
 
     _doc = () => `<p>The <a href="https://en.wikipedia.org/wiki/Travelling_salesman_problem">Travelling Salesperson Problem (TSP)</a> 

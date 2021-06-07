@@ -1,0 +1,16 @@
+.Container {
+    background-color: #eeeeee!important;
+}
+
+.BtnRnd {
+    display: flex!important;
+    justify-content: center!important;
+    align-items: center!important;
+    border-radius: 50% !important;
+    padding: 0!important;
+}
+
+.RemoveGABtn {    
+    height: 30px;
+    width: 30px;
+}

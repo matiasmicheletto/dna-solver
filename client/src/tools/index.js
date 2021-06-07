@@ -1,18 +1,25 @@
-const replace_char = function(str, ind, rep) { 
-    // Change a single char of a string (btw strings are immutable in js)
-    return str.substring(0, ind) + rep + str.substring(ind + 1);
-}
+import { adjs, nouns } from './strings';
 
-const probability = (p) => { 
-    // Returns true with probability p
-    return Math.random() < p;
-}
+// Change a single char of a string (btw strings are immutable in js)
+const replace_char = (str, ind, rep) =>  str.substring(0, ind) + rep + str.substring(ind + 1);
+
+// Returns true with probability p
+const probability = p => (Math.random() < p);
+
+// Generates a random non repeating string identifier
+const generate_id = () => Math.random().toString(36).substr(2)+Date.now();
+
+// Random integer in range (0..max)
+const randint = max => Math.floor(Math.random()*max);
+
+// Generates a random string name (adjective-space-noun)
+const random_name = () => adjs[randint(adjs.length)] + " " + nouns[randint(nouns.length)];
 
 const random_select = (n, range) => { 
     // Returns array of "n" indexes within the specified "range"
     var arr = [];
     while(arr.length < n){
-        var r = Math.floor(Math.random() * range);
+        var r = randint(range);
         if(arr.indexOf(r) === -1) arr.push(r);
     }
     return arr;
@@ -21,7 +28,7 @@ const random_select = (n, range) => {
 const shuffle_array = (array) => {
     // Durstenfeld shuffle algorithm
     for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
+        const j = randint(i+1);
         [array[i], array[j]] = [array[j], array[i]];
     }
 }
@@ -54,11 +61,14 @@ const coord_to_weight_matrix = (p, dist) => {
         }
     }
     return w;
-}
+}    
+    
 
 export { 
     replace_char, 
     probability, 
+    generate_id,
+    random_name,
     random_select, 
     shuffle_array, 
     has_duplicates,

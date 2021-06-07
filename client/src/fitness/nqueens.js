@@ -50,6 +50,10 @@ class NQueens  extends Fitness {
         return numbers;
     }
 
+    get name() {
+        return "N Queens";
+    }
+
     get config() { // Overwrite the random allele generator function
         // Adding a GA module configuration attribute will overwrite the default one
         let c = super.config;
