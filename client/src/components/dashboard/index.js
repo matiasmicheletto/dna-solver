@@ -1,32 +1,23 @@
-import React, { useState } from 'react';
-import { Card, ListGroup, Button, Row, Col } from 'react-bootstrap';
-import { FaPlus, FaMinus } from 'react-icons/fa';
+import React, { useState, useContext } from 'react';
+import { Button, Row, Col } from 'react-bootstrap';
+import { FaPlus } from 'react-icons/fa';
 import FitnessSelect from './fitness_select';
 import { fitness as fitness_type } from '../../manager';
 import FitnessItem from '../fitnessitem';
-import GAItem from '../gaitem';
 import classes from './styles.module.css';
+import { OMContext } from '../../ManagerContext';
 
-const Dashboard = (props) => {
+const Dashboard = props => {
+
+    const om = useContext(OMContext);
 
     const [f_type, setFType] = useState(fitness_type.TSP);
     const [fitness_list, setFitnessList] = useState([]);
-    const [ga_list, setGAList] = useState([]);
 
     const add_fitness = () => {
-        props.manager.add_fitness(f_type);
-        setFitnessList([...props.manager.fitness]);
+        om.add_fitness(f_type);
+        setFitnessList([...om.fitness]);
     };
-
-    const add_ga = fitness_id => {
-        props.manager.add_ga(fitness_id);
-        setGAList([...props.manager.ga]);
-    };
-
-    const remove_ga = ga_id => {
-        props.manager.remove_ga(ga_id);        
-        setGAList([...props.manager.ga]);        
-    }
 
     const fitnessSelection = e => { // Fitness select callback
         setFType(e.target.value);
@@ -37,37 +28,7 @@ const Dashboard = (props) => {
             <Row className={classes.FitnessSelectContainer}>
                 <FitnessSelect onChange={fitnessSelection} />
             </Row>
-
-            {
-                fitness_list.map( (fitness, ind) => (
-                    <Card key={ind} className={classes.FitnessCard}>
-                        <Card.Body>
-                            <Row>
-                                <FitnessItem fitness={fitness}></FitnessItem>
-                            </Row>
-                            <Row>
-                                <ListGroup className={classes.GAList}>
-                                {    
-                                    ga_list.map( (ga, ind2) => (
-                                        ga.fitness_id === fitness.id && <GAItem key={ind2} ga={ga} remove={remove_ga}/>
-                                    ))
-                                }
-                                </ListGroup>
-                            </Row>
-                            <Row>
-                                <Col sm={{span: 1, offset:11}}>
-                                    <Button 
-                                        className={[classes.BtnRnd, classes.AddGABtn]} 
-                                        onClick={()=>add_ga(fitness.id)}
-                                        title="Add Optimizer">
-                                        <FaPlus />
-                                    </Button>
-                                </Col>
-                            </Row>
-                        </Card.Body>
-                    </Card>
-                ))
-            }
+            {fitness_list.map( (f, ind) => <FitnessItem key={ind} fitness={f} /> )}
             <Row>
                 <Col sm={{span: 1, offset:11}}>
                     <Button 

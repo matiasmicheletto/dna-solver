@@ -4,9 +4,8 @@ import TopNavbar from "./components/topnavbar";
 import Dashboard from "./components/dashboard";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles.css';
-import OptManager from './manager';
+import OMProvider from './ManagerContext';
 
-const om = new OptManager();
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -15,7 +14,7 @@ const App = () => {
     setTimeout(() => {
       setIsLoading(false);
       console.log("Loading complete");
-    }, 2000);
+    }, 1000);
   }, []);
 
   return (
@@ -23,9 +22,11 @@ const App = () => {
       <TopNavbar />      
       { 
         isLoading ? 
-        <p>loading...</p>
+        <p>Loading...</p>
         :
-        <Dashboard manager={om}/>
+        <OMProvider>
+          <Dashboard />
+        </OMProvider>
       }
     </Container>
   );

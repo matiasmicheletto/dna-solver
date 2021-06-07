@@ -2,14 +2,6 @@
     margin: 20px;
 }
 
-.FitnessCard {
-    margin: 20px;
-}
-
-.GAList {
-    margin-bottom: 10px!important;
-}
-
 .BtnRnd {
     display: flex!important;
     justify-content: center!important;
@@ -23,7 +15,4 @@
     width: 50px;    
 }
 
-.AddGABtn {
-    height: 40px;
-    width: 40px;
-}
+
