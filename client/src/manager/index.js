@@ -5,16 +5,23 @@ Thid model allows to manage the evolutionary optimization analysis for a given o
 Multiple fitness functions can be created and for each, a GA based optimizer can be created.
 */
 
+import GA from '../ga';
 import Tsp from '../fitness/tsp';
 import NQueens from '../fitness/nqueens';
 import Quadratic from '../fitness/quadratic';
-import GA from '../ga';
+
 
 // Enumerators
-const fitness = {
+export const fitness_types = {
     TSP: "tsp",
     NQUEENS: "nqueens",
     QUADRATIC: "quadratic"
+}
+
+export const fitness_names = {
+    TSP: "Travelling Salesperson",
+    NQUEENS: "N-Queens",
+    QUADRATIC: "Parabola"
 }
 
 class OptManager {
@@ -24,11 +31,11 @@ class OptManager {
         this._ga_list = [];
     }
 
-    get fitness() {        
+    get fitness() {
         return this._fitness_list;
     }
 
-    get ga() {
+    get ga() { 
         return this._ga_list;
     }
 
@@ -37,13 +44,13 @@ class OptManager {
         let f;        
         switch(type) {
             default:
-            case fitness.TSP:
+            case fitness_types.TSP:
                 f = new Tsp();
                 break;
-            case fitness.NQUEENS:
+            case fitness_types.NQUEENS:
                 f = new NQueens();                
                 break;
-            case fitness.QUADRATIC:
+            case fitness_types.QUADRATIC:
                 f = new Quadratic();
                 break;
         }        
@@ -54,8 +61,16 @@ class OptManager {
     remove_fitness = id => {
         // Delete fitness model from list and all its optimizers
         const index = this._fitness_list.findIndex(el => el.id === id);
-        if(index !== -1)
+        if(index !== -1){
             this._fitness_list.splice(index,1);
+            // Search and remove attached optimizers
+            let ga_idxs = []
+            this._ga_list.forEach( g => {
+                if(g.fitness_id === id)
+                    ga_idxs.push(g.id);
+            });
+            ga_idxs.forEach( id => this.remove_ga(id) );
+        }
     }
 
     set_fitness_config(id, param, value) {
@@ -65,7 +80,7 @@ class OptManager {
             this._fitness_list[index].fitness[param] = value;
     }
 
-    add_ga = fitness_id => {        
+    add_ga = fitness_id => {
         // Add an optimizer for a given fitness function
         const index = this._fitness_list.findIndex(el => el.id === fitness_id);
         if(index !== -1){
@@ -75,7 +90,7 @@ class OptManager {
         }
     }
 
-    remove_ga = id => {              
+    remove_ga = id => {
         // Delete an optimizer from list
         const index = this._ga_list.findIndex(el => el.id === id);
         if(index !== -1)        
@@ -84,4 +99,3 @@ class OptManager {
 }
 
 export default OptManager;
-export {fitness};
