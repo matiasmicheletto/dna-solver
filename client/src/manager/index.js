@@ -36,6 +36,7 @@ class OptManager {
         // Create new fitness function
         let f;        
         switch(type) {
+            default:
             case fitness.TSP:
                 f = new Tsp();
                 break;

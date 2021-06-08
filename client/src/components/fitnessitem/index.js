@@ -3,7 +3,7 @@ import { Card, ListGroup,  Button, Row, Col } from 'react-bootstrap';
 import GAItem from '../gaitem';
 import { FaPlus } from 'react-icons/fa';
 import classes from './styles.module.css';
-import { OMContext } from '../../ManagerContext';
+import { OMContext } from '../../context/ManagerContext';
 
 const FitnessItem = props => {
 

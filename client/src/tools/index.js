@@ -1,21 +1,24 @@
 import { adjs, nouns } from './strings';
 
 // Change a single char of a string (btw strings are immutable in js)
-const replace_char = (str, ind, rep) =>  str.substring(0, ind) + rep + str.substring(ind + 1);
+export const replace_char = (str, ind, rep) =>  str.substring(0, ind) + rep + str.substring(ind + 1);
 
 // Returns true with probability p
-const probability = p => (Math.random() < p);
+export const probability = p => (Math.random() < p);
 
 // Generates a random non repeating string identifier
-const generate_id = () => Math.random().toString(36).substr(2)+Date.now();
+export const generate_id = () => Math.random().toString(36).substr(2)+Date.now();
 
 // Random integer in range (0..max)
-const randint = max => Math.floor(Math.random()*max);
+export const randint = max => Math.floor(Math.random()*max);
+
+// Capitalize string
+export const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
 
 // Generates a random string name (adjective-space-noun)
-const random_name = () => adjs[randint(adjs.length)] + " " + nouns[randint(nouns.length)];
+export const random_name = () => capitalize(adjs[randint(adjs.length)]) + " " + capitalize(nouns[randint(nouns.length)]);
 
-const random_select = (n, range) => { 
+export const random_select = (n, range) => { 
     // Returns array of "n" indexes within the specified "range"
     var arr = [];
     while(arr.length < n){
@@ -25,7 +28,7 @@ const random_select = (n, range) => {
     return arr;
 }
 
-const shuffle_array = (array) => {
+export const shuffle_array = (array) => {
     // Durstenfeld shuffle algorithm
     for (let i = array.length - 1; i > 0; i--) {
         const j = randint(i+1);
@@ -33,7 +36,7 @@ const shuffle_array = (array) => {
     }
 }
 
-const has_duplicates = arr => {
+export const has_duplicates = arr => {
     // Search for duplicated numbers in array    
     let temp = Array.from(arr);
     for (let i = 0; i < temp.length; i++) {
@@ -46,7 +49,7 @@ const has_duplicates = arr => {
     return false;
 }
 
-const coord_to_weight_matrix = (p, dist) => {
+export const coord_to_weight_matrix = (p, dist) => {
     // Returns the weight matrix for set of points "p" using provided distance function "dist"
     const N = p.length;
     let w = [];
@@ -62,15 +65,3 @@ const coord_to_weight_matrix = (p, dist) => {
     }
     return w;
 }    
-    
-
-export { 
-    replace_char, 
-    probability, 
-    generate_id,
-    random_name,
-    random_select, 
-    shuffle_array, 
-    has_duplicates,
-    coord_to_weight_matrix 
-};

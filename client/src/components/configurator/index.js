@@ -5,7 +5,7 @@ import FitnessSelect from '../fitnessselect';
 import { fitness as fitness_type } from '../../manager';
 import FitnessItem from '../fitnessitem';
 import classes from './styles.module.css';
-import { OMContext } from '../../ManagerContext';
+import { OMContext } from '../../context/ManagerContext';
 
 const Configurator = props => {
 

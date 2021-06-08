@@ -1,36 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Container } from "react-bootstrap";
 import TopNavbar from "./components/topnavbar";
 import Dashboard from "./components/dashboard";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles.css';
-import OMProvider from './ManagerContext';
-
+import OMProvider from './context/ManagerContext';
+import { LoadingContext } from './context/LoadingContext';
 
 const App = () => {
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-      console.log("Loading complete");
-    }, 1000);
-  }, []);
+  const [loading, setLoading] = useState(true);
 
   return (
     <Container>
-      <TopNavbar />      
-      { 
-        isLoading ? 
-        <p>Loading...</p>
-        :
+      <LoadingContext.Provider value={{loading, setLoading}}>
+        <TopNavbar/>
         <OMProvider>
           <Dashboard />
         </OMProvider>
-      }
+      </LoadingContext.Provider>
     </Container>
   );
 };
-
 
 export default App;
