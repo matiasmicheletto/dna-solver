@@ -2,6 +2,12 @@
     margin: 20px;
 }
 
+.FitnessListContainer {
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid lightgray;
+}
+
 .BtnRnd {
     display: flex!important;
     justify-content: center!important;

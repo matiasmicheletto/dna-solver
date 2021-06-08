@@ -73,11 +73,11 @@ class OptManager {
         }
     }
 
-    set_fitness_config(id, param, value) {
+    set_fitness_config = (id, param, value) => {
         // Configure a fitness model parameter
         const index = this._fitness_list.findIndex(el => el.id === id);
         if(index !== -1)
-            this._fitness_list[index].fitness[param] = value;
+            this._fitness_list[index][param] = value;
     }
 
     add_ga = fitness_id => {
@@ -95,6 +95,29 @@ class OptManager {
         const index = this._ga_list.findIndex(el => el.id === id);
         if(index !== -1)        
             this._ga_list.splice(index,1);
+    }
+
+    set_ga_config = (id, param, value) => {
+        // Configure an optimizer parameter
+        const index = this._ga_list.findIndex(el => el.id === id);
+        if(index !==-1)
+            this._ga_list[index][param] = value;
+    }
+
+    optimize = async max_generations => {
+        // Run a finite number of iterations for all optimizers
+        return new Promise((fulfill, reject) => {
+            for(let g = 0; g < this._ga_list.length; g++)
+                for(let gen = 0; gen < max_generations; gen++)
+                    this._ga_list[g].evolve();
+            fulfill();
+        });
+    }
+
+    reset = () => {
+        // Restart all the optimizers
+        for(let g = 0; g < this._ga_list.length; g++)
+            this._ga_list[g].reset();
     }
 }
 

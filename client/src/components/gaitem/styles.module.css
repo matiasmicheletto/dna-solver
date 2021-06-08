@@ -1,16 +1,19 @@
 .Container {
-    background-color: #eeeeee!important;
+    background-color: lightblue!important;
 }
 
-.BtnRnd {
+.MenuContainer {
+    display: inline-flex;
+    align-items: center;
+}
+
+.MenuGABtn {    
     display: flex!important;
     justify-content: center!important;
     align-items: center!important;
     border-radius: 50% !important;
     padding: 0!important;
-}
-
-.RemoveGABtn {        
+    margin-left: 5px;
     height: 30px;
     width: 30px;
 }

@@ -15,7 +15,7 @@ const Dashboard = () => {
     return (
         <Row>
             {loading && <Preloader />}
-            <Configurator />
+            <Configurator />             
         </Row>
     );
 };

@@ -32,24 +32,26 @@ const Configurator = () => {
             <Row className={classes.FitnessSelectContainer} md="auto">
                 <FitnessSelect onChange={fitnessSelection} />
             </Row>
-            <Row>
-            {
-                fitness_list.length > 0 ?
-                    fitness_list.map( (f, ind) => <FitnessItem key={ind} fitness={f} remove={remove_fitness}/> )
-                :
-                    <center><h4>No objective functions added yet</h4></center>
-            }
-            </Row>
-            <Row>
-                <Col sm={{span: 1, offset:11}} align="right">
-                    <Button 
-                        variant="success"
-                        className={[classes.BtnRnd, classes.AddFitnessBtn]} 
-                        onClick={add_fitness}
-                        title="Add Fitness Function">
-                        <FaPlus />
-                    </Button>                    
-                </Col>
+            <Row className={classes.FitnessListContainer}>
+                <Row>
+                {
+                    fitness_list.length > 0 ?
+                        fitness_list.map( (f, ind) => <FitnessItem key={ind} fitness={f} remove={remove_fitness}/> )
+                    :
+                        <center><h4>No objective functions added yet</h4></center>
+                }
+                </Row>
+                <Row>
+                    <Col sm={{span: 1, offset:11}} align="right">
+                        <Button 
+                            variant="success"
+                            className={[classes.BtnRnd, classes.AddFitnessBtn]} 
+                            onClick={add_fitness}
+                            title="Add Fitness Function">
+                            <FaPlus />
+                        </Button>                    
+                    </Col>
+                </Row>
             </Row>
         </div>
     );

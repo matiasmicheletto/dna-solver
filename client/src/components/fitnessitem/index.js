@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Card, ListGroup,  Button, Row, Col } from 'react-bootstrap';
 import GAItem from '../gaitem';
-import { FaPlus, FaTimes } from 'react-icons/fa';
+import { FaDna, FaTimes, FaEllipsisV } from 'react-icons/fa';
 import classes from './styles.module.css';
 import { OMContext } from '../../context/ManagerContext';
 
@@ -28,6 +28,12 @@ const FitnessItem = props => {
                         <h4>{props.fitness.name}</h4>
                     </Col>
                     <Col align="right">
+                        <Button 
+                            variant="flat"
+                            onClick={()=>{}}
+                            title="Configure Fitness">
+                            <FaEllipsisV />
+                        </Button>
                         <Button 
                             variant="flat"
                             onClick={()=>{props.remove(props.fitness.id)}}
@@ -58,7 +64,7 @@ const FitnessItem = props => {
                             className={[classes.BtnRnd, classes.AddGABtn]} 
                             onClick={()=>add_ga(props.fitness.id)}
                             title="Add Optimizer">
-                            <FaPlus />
+                            <FaDna />
                         </Button>
                     </Col>
                 </Row>
