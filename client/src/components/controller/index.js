@@ -10,16 +10,14 @@ const Controller = () => {
     const om = useContext(OMContext);
 
     const run = () => {
-        om.optimize(100)
-        .then(()=>{
-            console.log("Optimization finished");
-            console.log(om.results);
+        om.optimize(1, 100)
+        .then(res=>{
+            console.log(res);
         });
     }
 
     const reset = () => {
         om.reset();
-        console.log("Optimizers restarted");
     }
 
     return (

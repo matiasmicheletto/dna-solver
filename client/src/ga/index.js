@@ -168,6 +168,8 @@ class GA { // GA model class
 
     get status() { // Algorithm metrics (may be slow)
         return {    
+            name: this._name,
+            id: this._id,
             best: this._config.decode(this._population[0].genotype),
             best_fitness: this._population[0].fitness,
             best_hist: this._best_hist,
@@ -521,7 +523,7 @@ class GA { // GA model class
         
         // Record the new best and average values
         this._best_hist.push(this._population[0].fitness);
-        this._avg_hist.push( this._fitness_sum / this._config.pop_size );
+        this._avg_hist.push( this._fitness_sum() / this._config.pop_size );
 
         this._generation++;
     }

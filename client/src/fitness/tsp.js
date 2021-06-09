@@ -1,6 +1,7 @@
 
 import Fitness from './index';
 import { shuffle_array, has_duplicates, coord_to_weight_matrix } from "../tools";
+import { mutation, crossover } from '../ga';
 
 //////////// TRAVELLING SALESPERSON PROBLEM /////////////////
 
@@ -59,6 +60,14 @@ class Tsp extends Fitness {
 
     get name() {
         return "Travelling Salesperson";
+    }
+
+    get config() { // Overwrite the allele generator and crossover operator config
+        // Adding a GA module configuration attributes will overwrite the defaults one
+        let c = super.config;
+        c.mutation = mutation.SWAP;
+        c.crossover = crossover.PMX;
+        return c;
     }
 
     // Using arrow functions here to override parent class methods (not working other way)

@@ -11,7 +11,7 @@ const Dashboard = () => {
     setTimeout(() => {
         setLoading(false);
         console.log("Loading complete");
-    }, 2000);    
+    }, 1000);    
     
     return (
         <Row>

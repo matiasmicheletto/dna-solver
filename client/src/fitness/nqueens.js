@@ -55,7 +55,7 @@ class NQueens  extends Fitness {
     }
 
     get config() { // Overwrite the random allele generator function
-        // Adding a GA module configuration attribute will overwrite the default one
+        // Adding a GA module configuration attributes will overwrite the defaults one
         let c = super.config;
         c.mut_gen = () => Math.floor(Math.random()*this._N);
         return c;

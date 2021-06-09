@@ -102,18 +102,23 @@ class OptManager {
             this._ga_list[index][param] = value;
     }
 
-    optimize = async max_generations => {
-        // Run a finite number of iterations for all optimizers
+    optimize = async (rounds, iters, reset = true) => {
+        // Run a finite number of iterations and return results
+        if(reset) this.reset();
+        const len = this._ga_list.length;
+        let results = [];
         return new Promise((fulfill, reject) => {
-            for(let g = 0; g < this._ga_list.length; g++)
-                for(let gen = 0; gen < max_generations; gen++)
-                    this._ga_list[g].evolve();
-            fulfill();
+            for(let r = 0; r < rounds; r++){
+                let partial = {}; // Results per optimizer
+                for(let g = 0; g < len; g++){
+                    for(let gen = 0; gen < iters; gen++)
+                        this._ga_list[g].evolve();
+                    partial[this._ga_list[g].id] = this._ga_list[g].status;
+                }
+                results.push(partial); // Results per round
+            }
+            fulfill(results);
         });
-    }
-
-    get results() {
-        return this._ga_list.map( g => g.status );
     }
 
     reset = () => {
