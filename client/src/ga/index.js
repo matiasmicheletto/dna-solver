@@ -167,7 +167,9 @@ class GA { // GA model class
     }
 
     get status() { // Algorithm metrics (may be slow)
-        return {        
+        return {    
+            best: this._config.decode(this._population[0].genotype),
+            best_fitness: this._population[0].fitness,
             best_hist: this._best_hist,
             avg_hist: this._avg_hist,
             generation: this._generation,

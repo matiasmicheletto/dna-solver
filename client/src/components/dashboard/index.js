@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import { Row } from 'react-bootstrap';
-import Configurator from '../configurator';
 import { LoadingContext } from '../../context/LoadingContext';
 import Preloader from '../preloader';
+import Configurator from '../configurator';
+import Controller from '../controller';
 
 const Dashboard = () => {
     const { loading, setLoading } = useContext(LoadingContext);
@@ -15,7 +16,8 @@ const Dashboard = () => {
     return (
         <Row>
             {loading && <Preloader />}
-            <Configurator />             
+            <Configurator />
+            <Controller />
         </Row>
     );
 };

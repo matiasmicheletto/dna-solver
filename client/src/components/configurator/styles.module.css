@@ -1,12 +1,12 @@
-.FitnessSelectContainer {
-    padding-top: 3px;
-}
-
-.FitnessListContainer {
+.Container {
     padding: 15px;
     border-radius: 5px;
     align-content: center;
     border: 1px solid lightgray;
+}
+
+.FitnessSelectContainer {
+    padding-top: 3px;
 }
 
 .BtnRnd {

@@ -112,6 +112,10 @@ class OptManager {
         });
     }
 
+    get results() {
+        return this._ga_list.map( g => g.status );
+    }
+
     reset = () => {
         // Restart all the optimizers
         for(let g = 0; g < this._ga_list.length; g++)

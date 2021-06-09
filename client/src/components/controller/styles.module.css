@@ -1,0 +1,12 @@
+.Container {
+    margin-top: 20px!important;
+    padding: 15px;
+    border-radius: 5px;
+    align-content: center;
+    text-align: center;
+    border: 1px solid lightgray;
+}
+
+.ControlBtn {
+    margin:5px;
+}
