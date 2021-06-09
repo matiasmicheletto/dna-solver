@@ -8,16 +8,16 @@ import { OMContext } from '../../context/ManagerContext';
 const FitnessItem = props => {
 
     const om = useContext(OMContext);
-    const [ga_list, setGAList] = useState(om.ga);
+    const [ga_list, setGAList] = useState(om.get_ga_list(props.fitness.id));
 
     const add_ga = fitness_id => {
         om.add_ga(fitness_id);
-        setGAList([...om.ga]);
+        setGAList(om.get_ga_list(props.fitness.id));
     };
 
     const remove_ga = ga_id => {
         om.remove_ga(ga_id);        
-        setGAList([...om.ga]);        
+        setGAList(om.get_ga_list(props.fitness.id));        
     }
 
     return (
@@ -45,14 +45,10 @@ const FitnessItem = props => {
             </Card.Title>
             <Card.Body>
                 <Row>
-                    <ListGroup className={classes.GAList}>
+                    <ListGroup className={classes.GAList}>                        
                     {    
                         ga_list.length > 0 ?
-                            ga_list.map( (ga, ind) => (
-                                (ga.fitness_id === props.fitness.id )
-                                && 
-                                <GAItem key={ind} ga={ga} remove={remove_ga}/>
-                            ))
+                            ga_list.map( ga => <GAItem key={ga.id} ga={ga} remove={remove_ga}/> )
                         :
                             <center><h4>No optimizers added yet</h4></center>
                     }

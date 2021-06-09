@@ -11,16 +11,16 @@ const Configurator = () => {
 
     const om = useContext(OMContext);
     const [f_type, setFType] = useState(fitness_types.TSP);
-    const [fitness_list, setFitnessList] = useState(om.fitness);
+    const [fitness_list, setFitnessList] = useState(om.fitness_list);
 
     const add_fitness = () => {
         om.add_fitness(f_type);
-        setFitnessList([...om.fitness]);
+        setFitnessList([...om.fitness_list]);
     };
 
     const remove_fitness = id => {
         om.remove_fitness(id);
-        setFitnessList([...om.fitness]);
+        setFitnessList([...om.fitness_list]);
     }
 
     const fitnessSelection = e => { // Fitness select callback
@@ -29,20 +29,20 @@ const Configurator = () => {
 
     return (
         <div>
-            <Row className={classes.FitnessSelectContainer} md="auto">
-                <FitnessSelect onChange={fitnessSelection} />
-            </Row>
             <Row className={classes.FitnessListContainer}>
-                <Row>
+                <Row style={{margin:"0px"}}>
                 {
                     fitness_list.length > 0 ?
-                        fitness_list.map( (f, ind) => <FitnessItem key={ind} fitness={f} remove={remove_fitness}/> )
+                        fitness_list.map( f => <FitnessItem key={f.id} fitness={f} remove={remove_fitness}/> )
                     :
-                        <center><h4>No objective functions added yet</h4></center>
+                        <center style={{margin:"50px 0px 50px 0px"}}><h4>No objective functions added yet</h4></center>
                 }
                 </Row>
                 <Row>
-                    <Col sm={{span: 1, offset:11}} align="right">
+                    <Col xs={{span:8, offset:3}} md={{span:6, offset:5}} lg={{span:3, offset:8}} className={classes.FitnessSelectContainer}>
+                        <FitnessSelect onChange={fitnessSelection} />
+                    </Col>
+                    <Col xs="1" align="right">
                         <Button 
                             variant="success"
                             className={[classes.BtnRnd, classes.AddFitnessBtn]} 

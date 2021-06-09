@@ -31,13 +31,11 @@ class OptManager {
         this._ga_list = [];
     }
 
-    get fitness() {
+    get fitness_list() {
         return this._fitness_list;
     }
 
-    get ga() { 
-        return this._ga_list;
-    }
+    get_ga_list = fitness_id => this._ga_list.filter(g => g.fitness_id===fitness_id);
 
     add_fitness = type => {
         // Create new fitness function

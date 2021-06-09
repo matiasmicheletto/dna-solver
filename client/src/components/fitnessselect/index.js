@@ -5,8 +5,7 @@ import { fitness_types, fitness_names } from '../../manager';
 const FitnessSelect = props => {
     return (
         <Form>
-            <Form.Group controlId="exampleForm.ControlSelect1">
-                <Form.Label>Objective Function Selector</Form.Label>
+            <Form.Group>
                 <Form.Control as="select" onChange={props.onChange}>
                 {
                     Object.keys(fitness_types).map((f, ind) => (
