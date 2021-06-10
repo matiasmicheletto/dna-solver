@@ -159,7 +159,13 @@ class GA { // GA model class
     }
 
     get population() { // Population or individual list
-        return this._population;
+        return this._population.map( p => ( // Add phenotypes and objective values
+            {
+                ...p,
+                phenotype: this._config.decode(p.genotype), 
+                objective: this._config.objective(p.genotype)
+            }
+        ));
     }
 
     get problem_info() { // Problem description
@@ -172,6 +178,7 @@ class GA { // GA model class
             id: this._id,
             best: this._config.decode(this._population[0].genotype),
             best_fitness: this._population[0].fitness,
+            best_objective: this._config.objective(this._population[0].genotype),
             best_hist: this._best_hist,
             avg_hist: this._avg_hist,
             generation: this._generation,

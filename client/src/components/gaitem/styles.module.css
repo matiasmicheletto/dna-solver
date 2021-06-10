@@ -1,5 +1,19 @@
 .Container {
     background-color: lightblue!important;
+    margin-top: 5px;
+}
+
+.GAStatus {
+    line-height: 10px;
+}
+
+.GAName {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.GAStatusDetails {
+    margin-left: 10px;
 }
 
 .MenuContainer {

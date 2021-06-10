@@ -2,11 +2,24 @@
     margin-top: 20px!important;
     padding: 15px;
     border-radius: 5px;
-    align-content: center;
-    text-align: center;
     border: 1px solid lightgray;
 }
 
+.Label {
+    text-align: left;
+}
+
+.Form {
+    text-align: left;
+}
+
+.BtnContainer {
+    margin-top: 20px;
+    align-content: center;
+    text-align: center;
+}
+
 .ControlBtn {
+    min-width: 100px;
     margin:5px;
 }

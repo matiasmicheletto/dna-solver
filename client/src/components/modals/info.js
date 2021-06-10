@@ -5,7 +5,7 @@ import EmptyLGModal from './templates';
 const InfoModal = props => (
     <EmptyLGModal {...props} title="About this software">
         <Modal.Body>
-            <p>This is a NodeJS and ReactJS based web application that allows the users to test 
+            <p>This is a NodeJS and ReactJS based web application that allows its users to test 
             genetic algorithms optimizers with many different configurations to compare their 
             performance in solving the most common problems present in the combinatorial 
             optimization literature.</p>

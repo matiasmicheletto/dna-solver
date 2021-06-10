@@ -102,19 +102,20 @@ class OptManager {
             this._ga_list[index][param] = value;
     }
 
-    optimize = async (rounds, iters, reset = true) => {
-        // Run a finite number of iterations and return results
-        if(reset) this.reset();
+    optimize = async (rounds, iters, progressCallback = null) => {
+        // Run a finite number of iterations and return results        
         const len = this._ga_list.length;
         let results = [];
         return new Promise((fulfill, reject) => {
             for(let r = 0; r < rounds; r++){
                 let partial = {}; // Results per optimizer
                 for(let g = 0; g < len; g++){
+                    this._ga_list[g].reset(); // Restart the optimizer before the round        
                     for(let gen = 0; gen < iters; gen++)
                         this._ga_list[g].evolve();
                     partial[this._ga_list[g].id] = this._ga_list[g].status;
                 }
+                if(progressCallback) progressCallback(Math.round(r/rounds*100));
                 results.push(partial); // Results per round
             }
             fulfill(results);
