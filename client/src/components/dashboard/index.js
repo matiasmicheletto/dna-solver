@@ -6,12 +6,7 @@ import Configurator from '../configurator';
 import Controller from '../controller';
 
 const Dashboard = () => {
-    const { loading, setLoading } = useContext(LoadingContext);
-    
-    setTimeout(() => {
-        setLoading(false);
-        console.log("Loading complete");
-    }, 1000);    
+    const { loading } = useContext(LoadingContext);
     
     return (
         <Row>

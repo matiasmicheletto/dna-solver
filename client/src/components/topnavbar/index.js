@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react';
-import { Navbar, Nav, Spinner } from 'react-bootstrap';
-import { LoadingContext } from '../../context/LoadingContext';
+import React, { useState } from 'react';
+import { Navbar, Nav } from 'react-bootstrap';
+//import { LoadingContext } from '../../context/LoadingContext';
 import logo from '../../img/logo_uns.png';
 import { FaGithub, FaInfoCircle, FaQuestionCircle } from 'react-icons/fa';
 import InfoModal from '../modals/info';
@@ -8,7 +8,7 @@ import classes from './styles.module.css';
 
 const TopNavbar = () => {
 
-  const { loading } = useContext(LoadingContext);
+  //const { loading } = useContext(LoadingContext);
   const [info, showInfo] = useState(false);
 
   return (
@@ -29,11 +29,13 @@ const TopNavbar = () => {
             <FaQuestionCircle size={25} />
           </Nav.Link>
         </Nav>
+        {/*
         <Nav className={["justify-content-end", classes.SpinnerContainer]}>
           <Nav.Link>
             {loading && <Spinner animation="border" variant="light"/>}
           </Nav.Link>
         </Nav>
+        */}
       </Navbar.Collapse>
       <InfoModal show={info} onHide={()=>showInfo(false)}/>
     </Navbar>  

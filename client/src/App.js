@@ -9,16 +9,16 @@ import { LoadingContext } from './context/LoadingContext';
 
 const App = () => {
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   return (
     <Container>
-      <LoadingContext.Provider value={{loading, setLoading}}>
-        <TopNavbar/>
+      <TopNavbar/>
         <OMProvider>
-          <Dashboard />
+          <LoadingContext.Provider value={{loading, setLoading}}>
+            <Dashboard />
+          </LoadingContext.Provider>
         </OMProvider>
-      </LoadingContext.Provider>
     </Container>
   );
 };
