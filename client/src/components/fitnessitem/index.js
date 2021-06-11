@@ -11,11 +11,13 @@ const FitnessItem = props => {
     const [ga_list, setGAList] = useState(om.get_ga_list(props.fitness.id));
 
     const add_ga = fitness_id => {
+        om.reset();
         om.add_ga(fitness_id);        
         setGAList(om.get_ga_list(props.fitness.id));
     };
 
     const remove_ga = ga_id => {
+        om.reset();
         om.remove_ga(ga_id);        
         setGAList(om.get_ga_list(props.fitness.id));        
     }

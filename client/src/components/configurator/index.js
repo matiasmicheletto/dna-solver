@@ -14,11 +14,13 @@ const Configurator = () => {
     const [fitness_list, setFitnessList] = useState(om.fitness_list);
 
     const add_fitness = () => {
+        om.reset();
         om.add_fitness(f_type);
         setFitnessList([...om.fitness_list]);
     };
 
     const remove_fitness = id => {
+        om.reset();
         om.remove_fitness(id);
         setFitnessList([...om.fitness_list]);
     }

@@ -9,7 +9,7 @@ import GA from '../ga';
 import Tsp from '../fitness/tsp';
 import NQueens from '../fitness/nqueens';
 import Quadratic from '../fitness/quadratic';
-import { hsl2rgb } from '../tools';
+import { hsl2rgb, matrix_columnwise_avg } from '../tools';
 
 
 // Enumerators
@@ -84,7 +84,7 @@ class OptManager {
         // An evenly distributed hue colors are assigned to each one.
         const len = this._ga_list.length;
         for(let g = 0; g < len; g++){
-            const color = hsl2rgb(g/len, .5, .7);
+            const color = hsl2rgb(g/len, .5, .7); // Equally spaced colors
             this._ga_list[g].color = `rgb(${color[0]},${color[1]},${color[2]})`;
         }
     }
@@ -95,7 +95,7 @@ class OptManager {
         if(index !== -1){
             const ga = new GA({...this._fitness_list[index].config});
             this._ga_list.push(ga);            
-            this._update_ga_colors();
+            this._update_ga_colors(); // The list of colors is assigned
             return ga.id;            
         }
     }
@@ -119,19 +119,38 @@ class OptManager {
         return new Promise((fulfill, reject) => {
             const len = this._ga_list.length;
             let by_round = [];
-            let by_optimizer = {};
             for(let r = 0; r < rounds; r++){
-                let round_results = {}; // Results per optimizer
-                for(let g = 0; g < len; g++){
+                let round_results = {}; // Results per optimizer (entries are the ids)
+                for(let g = 0; g < len; g++){ // For each optimizer
                     this._ga_list[g].reset(); // Restart the optimizer before the round        
-                    for(let gen = 0; gen < iters; gen++)
+                    const start = Date.now();
+                    for(let gen = 0; gen < iters; gen++) // Evolve "iter" generations
                         this._ga_list[g].evolve();
-                    round_results[this._ga_list[g].id] = this._ga_list[g].status;
+                    const elapsed = Date.now() - start; // Time in ms during evolution
+                    round_results[this._ga_list[g].id] = {
+                        ...this._ga_list[g].status,
+                        elapsed: elapsed
+                    }
                 }
+                // Emit progress callback
                 if(progressCallback) progressCallback(Math.round(r/rounds*100));
-                by_round.push(round_results); // Results per round
+                by_round.push(round_results); // Push the results for the current round
             }
 
+            // After completing all the rounds, calculate the metrics
+            let by_optimizer = {};
+            for(let g = 0; g < len; g++){ // For each optimizer
+                let best_matrix = [];
+                let avg_matrix = [];
+                for(let r = 0; r < rounds; r++){
+                    best_matrix.push(by_round[r][this._ga_list[g].id].best_hist);
+                    avg_matrix.push(by_round[r][this._ga_list[g].id].avg_hist);
+                }
+                by_optimizer[this._ga_list[g].id] = {
+                    best_hist: matrix_columnwise_avg(best_matrix),
+                    avg_hist: matrix_columnwise_avg(avg_matrix)
+                };
+            }
             fulfill({by_round:by_round, by_optimizer:by_optimizer});
         });
     }

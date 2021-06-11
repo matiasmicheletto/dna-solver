@@ -91,3 +91,15 @@ export const coord_to_weight_matrix = (p, dist) => {
     }
     return w;
 }    
+
+export const matrix_columnwise_avg = matrix => {
+    // Calculate the average accross a single columns of a matrix
+    // Matrix should have same number of columns for every row!
+    const numrows = matrix.length;
+    const numcols = matrix[0].length;
+    let avgs = new Array(numcols).fill(0);
+    for(let row = 0; row < numrows; row++)
+        for(let col = 0; col < numcols; col++)
+            avgs[col] = (avgs[col]*row + matrix[row][col]) / (row+1); // cummulative avg
+    return avgs;
+}

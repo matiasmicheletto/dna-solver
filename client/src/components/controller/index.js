@@ -46,7 +46,7 @@ const Controller = props => {
                         <Form.Control 
                             type="number" 
                             placeholder="10" 
-                            min="0"
+                            min="1"
                             max="100"
                             defaultValue={rounds}
                             onChange={v=>setRounds(parseInt(v.target.value))}/>                    
@@ -55,7 +55,7 @@ const Controller = props => {
                         <Form.Label>Generations</Form.Label>
                         <Form.Control 
                             type="number" 
-                            min="0"
+                            min="1"
                             max="1000"
                             defaultValue={iters} 
                             onChange={v=>setIters(parseInt(v.target.value))}/>
