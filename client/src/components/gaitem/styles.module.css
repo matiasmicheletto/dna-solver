@@ -1,10 +1,9 @@
-.Container {
-    background-color: lightblue!important;
+.Container {    
     margin-top: 5px;
 }
 
 .GAStatus {
-    line-height: 10px;
+    line-height: 15px;
 }
 
 .GAName {
@@ -13,12 +12,11 @@
 }
 
 .GAStatusDetails {
-    margin-left: 10px;
+    margin-left: 15px;    
 }
 
-.MenuContainer {
-    display: inline-flex;
-    align-items: center;
+.GAStatusDetails p {
+    margin-bottom: 8px;
 }
 
 .MenuGABtn {    

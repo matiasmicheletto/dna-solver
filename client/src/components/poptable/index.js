@@ -4,7 +4,7 @@ import { Table } from 'react-bootstrap';
 const PopTable = (props) => {
 
     return (
-        <Table striped bordered hover>
+        <Table striped bordered hover responsive>
             <thead>
                 <tr>
                     <th>#</th>

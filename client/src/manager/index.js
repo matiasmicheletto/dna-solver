@@ -9,6 +9,7 @@ import GA from '../ga';
 import Tsp from '../fitness/tsp';
 import NQueens from '../fitness/nqueens';
 import Quadratic from '../fitness/quadratic';
+import { hsl2rgb } from '../tools';
 
 
 // Enumerators
@@ -78,12 +79,23 @@ class OptManager {
             this._fitness_list[index][param] = value;
     }
 
+    _update_ga_colors = () => {
+        // Optimizers use colors to visually differentiate them.
+        // An evenly distributed hue colors are assigned to each one.
+        const len = this._ga_list.length;
+        for(let g = 0; g < len; g++){
+            const color = hsl2rgb(g/len, .5, .7);
+            this._ga_list[g].color = `rgb(${color[0]},${color[1]},${color[2]})`;
+        }
+    }
+
     add_ga = fitness_id => {
         // Add an optimizer for a given fitness function
         const index = this._fitness_list.findIndex(el => el.id === fitness_id);
         if(index !== -1){
             const ga = new GA({...this._fitness_list[index].config});
-            this._ga_list.push(ga);
+            this._ga_list.push(ga);            
+            this._update_ga_colors();
             return ga.id;            
         }
     }
@@ -103,22 +115,24 @@ class OptManager {
     }
 
     optimize = async (rounds, iters, progressCallback = null) => {
-        // Run a finite number of iterations and return results        
-        const len = this._ga_list.length;
-        let results = [];
+        // Run a finite number of iterations and return results                
         return new Promise((fulfill, reject) => {
+            const len = this._ga_list.length;
+            let by_round = [];
+            let by_optimizer = {};
             for(let r = 0; r < rounds; r++){
-                let partial = {}; // Results per optimizer
+                let round_results = {}; // Results per optimizer
                 for(let g = 0; g < len; g++){
                     this._ga_list[g].reset(); // Restart the optimizer before the round        
                     for(let gen = 0; gen < iters; gen++)
                         this._ga_list[g].evolve();
-                    partial[this._ga_list[g].id] = this._ga_list[g].status;
+                    round_results[this._ga_list[g].id] = this._ga_list[g].status;
                 }
                 if(progressCallback) progressCallback(Math.round(r/rounds*100));
-                results.push(partial); // Results per round
+                by_round.push(round_results); // Results per round
             }
-            fulfill(results);
+
+            fulfill({by_round:by_round, by_optimizer:by_optimizer});
         });
     }
 

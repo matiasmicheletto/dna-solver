@@ -18,6 +18,32 @@ export const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
 // Generates a random string name (adjective-space-noun)
 export const random_name = () => capitalize(adjs[randint(adjs.length)]) + " " + capitalize(nouns[randint(nouns.length)]);
 
+export const hue2rgb = (p, q, h) => {
+    // Color conversion
+    if (h < 0) h += 1;
+    if (h > 1) h -= 1;
+    if (h < 1/6) return p + (q - p) * 6 * h;
+    if (h < 1/2) return q;
+    if (h < 2/3) return p + (q - p) * (2/3 - h) * 6;
+    return p;
+}
+
+export const hsl2rgb = (h, s, l) => {
+    // Color conversion
+    let r, g, b = l; // In case s == 0, set all values to luminance
+
+    if (s !== 0) {
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+
+        r = hue2rgb(p, q, h + 1/3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1/3);
+    }
+
+    return [ Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255) ];
+}
+
 export const random_select = (n, range) => { 
     // Returns array of "n" indexes within the specified "range"
     var arr = [];
