@@ -22,11 +22,9 @@ const Controller = props => {
         // will change the state on the dashboard, and trigger
         // a render.
         setTimeout(()=>{
-            om.optimize(rounds, iters)
-            .then(res=>{
-                console.log(res);
-                setLoading(false);
-            });
+            om.optimize(rounds, iters);
+            console.log(om.results);
+            setLoading(false);
         }, 1);
     }
 

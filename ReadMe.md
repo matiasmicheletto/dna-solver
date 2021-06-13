@@ -8,6 +8,10 @@
 
 A Node.js web application for testing and visualizing a Simple Genetic Algorithm performance and behaviour.
 
+This project was developed under the context of the final work for the posgraduate course *"Advanced Techniques for Evolutionary Computation"*  by [Dr. Ignacio Ponzoni](https://cs.uns.edu.ar/~ip/) at [DCIC](https://cs.uns.edu.ar/~devcs/) (UNS).
+
+---
+
 Try the latest version [here](http://sganode.herokuapp.com/) or use this application locally running the following commands:
 
 ```bash
@@ -18,8 +22,14 @@ $ npm run build
 $ npm run start
 ```
 
-This project was developed under the context of the final work for the posgraduate course *"Advanced Techniques for Evolutionary Computation"*  by [Dr. Ignacio Ponzoni](https://cs.uns.edu.ar/~ip/) at [DCIC](https://cs.uns.edu.ar/~devcs/) (UNS).
+If you wish to use only the optimization module via scripting (without GUI), checkout the [examples](examples) folder or run them with the following commands:
 
+```bash
+$ git clone https://github.com/matiasmicheletto/sganode
+$ cd sganode
+$ npm install cli-progress
+$ node examples/optimization.mjs
+```
 
 Author: [Matías Micheletto](https://matiasmicheletto.github.com)  
 Email: [matias.micheletto@uns.edu.ar](mailto:matias.micheletto@uns.edu.ar)  

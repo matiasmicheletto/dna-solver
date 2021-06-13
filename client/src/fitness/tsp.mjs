@@ -1,11 +1,11 @@
 
-import Fitness from './index';
-import { shuffle_array, has_duplicates, coord_to_weight_matrix } from "../tools";
-import { mutation, crossover } from '../ga';
+import Fitness from './index.mjs';
+import { shuffle_array, has_duplicates, coord_to_weight_matrix } from "../tools/index.mjs";
+import { mutation, crossover } from '../ga/index.mjs';
 
 //////////// TRAVELLING SALESPERSON PROBLEM /////////////////
 
-const distance = { // Distance functions
+export const distance = { // Distance functions
     EUCLIDEAN: "euclidean",
     MANHATTAN: "manhattan",
     HAVERSINE: "haversine"

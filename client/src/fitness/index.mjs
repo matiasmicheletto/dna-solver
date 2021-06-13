@@ -16,7 +16,9 @@ For example:
 
 This attributes are the following:
 
-    - description: Problem description with HTML format.
+    - fitness_id: Model identifier.
+        * type: Unique string.
+    - doc: Problem description with HTML format.
         * type: Function.
         * input: None.
         * output: Component. 
@@ -44,7 +46,7 @@ This attributes are the following:
 Other GA configuration parameters can be added to overwrite the default ones.
 */
 
-import { generate_id } from '../tools';
+import { generate_id } from '../tools/index.mjs';
 
 class Fitness { // Fitness model class
     constructor(params) {

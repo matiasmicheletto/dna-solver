@@ -1,4 +1,4 @@
-import Fitness from './index';
+import Fitness from './index.mjs';
 
 ////////// INVERTED QUADRATIC /////////////
 // Fitness function y = a - b*(x-c)^2;

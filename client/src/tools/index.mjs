@@ -1,4 +1,4 @@
-import { adjs, nouns } from './strings';
+import { adjs, nouns } from './strings.mjs';
 
 // Change a single char of a string (btw strings are immutable in js)
 export const replace_char = (str, ind, rep) =>  str.substring(0, ind) + rep + str.substring(ind + 1);
@@ -7,7 +7,7 @@ export const replace_char = (str, ind, rep) =>  str.substring(0, ind) + rep + st
 export const probability = p => (Math.random() < p);
 
 // Generates a random non repeating string identifier
-export const generate_id = () => Math.random().toString(36).substr(2)+Date.now();
+export const generate_id = () => "_" + Math.random().toString(36).substr(2) + Date.now();
 
 // Random integer in range (0..max)
 export const randint = max => Math.floor(Math.random()*max);
@@ -92,7 +92,13 @@ export const coord_to_weight_matrix = (p, dist) => {
     return w;
 }    
 
-export const matrix_columnwise_avg = matrix => {
+// Mean or average of an array
+export const array_mean = arr => arr.reduce((r, a) => a + r, 0)/arr.length;
+
+// Mean or average of an array of objects with a numeric attribute
+export const obj_array_mean = (arr, attr) => arr.reduce((r, a) => a[attr] + r, 0)/arr.length;
+
+export const matrix_columnwise_mean = matrix => {
     // Calculate the average accross a single columns of a matrix
     // Matrix should have same number of columns for every row!
     const numrows = matrix.length;

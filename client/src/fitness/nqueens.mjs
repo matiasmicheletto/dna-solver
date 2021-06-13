@@ -1,5 +1,5 @@
-import Fitness from './index';
-import { shuffle_array } from "../tools";
+import Fitness from './index.mjs';
+import { shuffle_array } from "../tools/index.mjs";
 
 ////////// N-QUEENS PROBLEM /////////////
 

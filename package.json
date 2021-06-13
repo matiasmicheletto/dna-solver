@@ -31,6 +31,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "bootstrap": "^5.0.0",
+    "cli-progress": "^3.9.0",
     "cors": "^2.8.5",
     "cross-fetch": "^3.1.4",
     "dotenv": "^9.0.0",

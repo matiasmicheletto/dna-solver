@@ -3,11 +3,7 @@ Genetic Algorithm Class Module
 ------------------------------
 Implements a generic and configurable GA based optimizer.
 
-Configuration object:    
-    - doc: Problem description provided by fitness function model.
-        * type: Function. The output string is rendered using problem parameters.
-        * input: None.
-        * output: String.
+Configuration object:        
     - pop_size: Population size, number of chromosomes.
         * type: Non zero even Number (integer).
     - elitism: Number of elite individuals. Elite individuals are force-preserved through generations.
@@ -33,7 +29,7 @@ Configuration object:
     - mutation: Mutation operator.
         * type: BITFLIP, SWAP or RAND.
 */
-import { probability, random_select, generate_id, random_name } from "../tools";
+import { probability, random_select, generate_id, random_name } from "../tools/index.mjs";
 
 
 // Enumerators
@@ -56,11 +52,10 @@ const mutation = {
 };
 
 const default_config = { // Default parameters for simple scalar function
-    doc: "N/D",
     pop_size: 20, 
     elitism: 2,
     cross_prob: 0.8, 
-    mut_prob: 0.2, 
+    mut_prob: 0.1, 
     mut_fr: 0.6,
     mut_gen: () => Math.round(Math.random()),
     rank_r: 0.002,
@@ -106,7 +101,7 @@ class GA { // GA model class
         this._id = generate_id(); // Object identifier
         this._name = random_name(); // Readable identifier (may be repeated)
 
-        console.log("GA initialized.");
+        console.log(`New optimizer "${this._name}" initialized (ID: ${this._id}).`);
     }
 
     reset() { // Restarts de algorithm
@@ -208,6 +203,30 @@ class GA { // GA model class
         this._rank_q = this._config.rank_r*(this._config.pop_size-1)/2 + 1/this._config.pop_size;
     }
 
+    set elitism(e) {        
+        this._config.elitism = e;
+    }
+
+    set cross_prob(v) {        
+        this._config.cross_prob = v;
+    }
+    
+    set mut_prob(v) {        
+        this._config.mut_prob = v;
+    }
+    
+    set mut_fr(v) {        
+        this._config.mut_fr = v;
+    }
+        
+    set rank_r(v) {        
+        this._config.rank = v;
+    }
+    
+    set tourn_k(v) {        
+        this._config.tourn_k = v;
+    }
+
     set selection(s) { 
         // Set the selection method
         switch(s){
@@ -223,7 +242,7 @@ class GA { // GA model class
                 break;            
         }
         this._config.selection = s;
-    }
+    }    
 
     set crossover(c) {
         // Set the crossover method
