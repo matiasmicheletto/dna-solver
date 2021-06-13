@@ -42,23 +42,22 @@ class OptManager {
         return this._results;
     }
 
-    get plainResults() {
+    getPlainResults = config => {
         // Generate a readable string output for the results
         const output = this._ga_list.map( ga => {
             const st = ga.status;
-            return `
-Name:                           ${st.name}
-Id:                             ${st.id}
-Current generation:             ${st.generation}
-Fitness evaluations (average):  ${this._results.by_optimizer[st.id].avg_fitness_evals}
-Round elapsed time (average):   ${this._results.by_optimizer[st.id].avg_elapsed}
-Average best fitness:           ${this._results.by_optimizer[st.id].avg_best_fitness}
-Best solution in all rounds:    ${this._results.by_optimizer[st.id].abs_best_solution}
-Best fitness in all rounds:     ${this._results.by_optimizer[st.id].abs_best_fitness}
-Best objective in all rounds:   ${this._results.by_optimizer[st.id].abs_best_objective}
-`;
+            return `\r\x1b[31m${config[st.id]}\x1b[0m
+                    \rName:                           ${st.name} 
+                    \rId:                             ${st.id}
+                    \rCurrent generation:             ${st.generation}
+                    \rFitness evaluations (average):  ${this._results.by_optimizer[st.id].avg_fitness_evals}
+                    \rRound elapsed time (average):   ${this._results.by_optimizer[st.id].avg_elapsed} ms. 
+                    \rBest fitness (average):         ${this._results.by_optimizer[st.id].avg_best_fitness}
+                    \rBest fitness (all rounds):      ${this._results.by_optimizer[st.id].abs_best_fitness}
+                    \rBest solution (all rounds):     ${this._results.by_optimizer[st.id].abs_best_solution}
+                    \rBest objective (all rounds):    ${this._results.by_optimizer[st.id].abs_best_objective}\n`;
         });
-        return output.join("\n---------------------------------\n");
+        return output.join("\n------------------------------------------------------\n");
     }
 
     get_ga_list = fitness_id => this._ga_list.filter(g => g.fitness_id===fitness_id);
@@ -107,10 +106,8 @@ Best objective in all rounds:   ${this._results.by_optimizer[st.id].abs_best_obj
     set_ga_config = (id, param, value) => {
         // Configure an optimizer model parameter
         const index = this._ga_list.findIndex(el => el.id === id);
-        if(index !== -1){
+        if(index !== -1)
             this._ga_list[index][param] = value;
-            //this._configured[id][param] = value; // TODO record the configuration change
-        }
     }
 
     _update_ga_colors = () => {
@@ -170,13 +167,20 @@ Best objective in all rounds:   ${this._results.by_optimizer[st.id].abs_best_obj
             let avg_best_fitness = [];
             let avg_fitness_evals = [];
             let avg_elapsed = [];
-            for(let r = 0; r < rounds; r++){
+            let abs_best_fitness = 0;
+            let abs_best_sol = null;
+            let abs_best_obj = null;
+            for(let r = 0; r < rounds; r++){ // For each round
                 best_matrix.push(by_round[r][this._ga_list[g].id].best_hist);
                 avg_matrix.push(by_round[r][this._ga_list[g].id].avg_hist);
                 avg_best_fitness.push(by_round[r][this._ga_list[g].id].best_fitness);
                 avg_fitness_evals.push(by_round[r][this._ga_list[g].id].fitness_evals);
                 avg_elapsed.push(by_round[r][this._ga_list[g].id].elapsed);
-                 // TODO: calculate max absolute values
+                if(by_round[r][this._ga_list[g].id].best_fitness > abs_best_fitness) {
+                    abs_best_fitness = by_round[r][this._ga_list[g].id].best_fitness;
+                    abs_best_sol = by_round[r][this._ga_list[g].id].best;
+                    abs_best_obj = by_round[r][this._ga_list[g].id].best_objective;
+                }
             }
 
             by_optimizer[this._ga_list[g].id] = {                
@@ -187,12 +191,13 @@ Best objective in all rounds:   ${this._results.by_optimizer[st.id].abs_best_obj
                 avg_best_fitness: array_mean(avg_best_fitness),
                 avg_fitness_evals: array_mean(avg_fitness_evals),
                 avg_elapsed: array_mean(avg_elapsed),
-                // Better solutions across all rounds (TODO complete this)
-                abs_best_fitness: null, // TODO
-                abs_best_solution: null, // TODO
-                abs_best_objective: null // TODO
+                // Better solutions across all rounds
+                abs_best_fitness: abs_best_fitness,
+                abs_best_solution: abs_best_sol, 
+                abs_best_objective: abs_best_obj 
             };
         }
+        if(progressCallback) progressCallback(100); // Progress complete
         this._results = {by_round:by_round, by_optimizer:by_optimizer};
     }
 

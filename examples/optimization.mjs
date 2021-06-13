@@ -72,8 +72,8 @@ om.set_ga_config(ga_ids[2], "selection", selection.TOURNAMENT);
 ///////// Run the optimization analysis //////////
 
 // To test the optimizers performance, we are running 10 rounds of 100 generations each
-const rounds = 10;
-const iters = 100;
+const rounds = 25;
+const iters = 50;
 
 // A progress bar is used to visualize the progress (useful in case of heavy problems)
 const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
@@ -89,7 +89,19 @@ progressBar.stop(); // Stop the progress bar after finnishing
 
 // The results are returned as an object with two parts, the results by round
 // and a more general result for each optimizer. To get the complete results 
-// we can use the "results" getter of the Optimization Manager. 
-// But first we are just using plain text output, so we use the plainResults 
-// getter to display this information on the terminal:
-process.stdout.write(om.plainResults);
+// we can use the "results" getter of the Optimization Manager, which allows
+// to present a detailed information of the analysis results.
+// In this case, we're just showing some basic and plain text results, so we
+// use the getPlainResults() method that returns a string with the summarized
+// results for each optimizer.
+// In order to identify which result corresponds to each optimizer, we can
+// add extra optional information according to the configuration we selected 
+// before, so we define the following object first:
+const config = {};
+config[ga_ids[0]] = "Roulette selection method";
+config[ga_ids[1]] = "Ranking selection method (r=0.002)";
+config[ga_ids[2]] = "Tournament selection method (k=3)";
+
+// Finally, we pass this object to the getPlainResults() method to get our
+// analysis result:
+process.stdout.write(om.getPlainResults(config));
