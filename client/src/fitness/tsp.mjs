@@ -7,6 +7,7 @@ import { mutation, crossover } from '../ga/index.mjs';
 
 export const distance = { // Distance functions
     EUCLIDEAN: "euclidean",
+    PSEUDOEUCLIDEAN: "pseudoeuclidean",
     MANHATTAN: "manhattan",
     HAVERSINE: "haversine"
 }
@@ -37,6 +38,10 @@ class Tsp extends Fitness {
             default: // Default distance function is euclidean
             case distance.EUCLIDEAN:
                 this._distance = this._euclidean_dist;
+                this._unit = "";
+                break;
+            case distance.PSEUDOEUCLIDEAN:
+                this._distance = this._pseudoeuclidean_dist;
                 this._unit = "";
                 break;
             case distance.MANHATTAN:
@@ -100,6 +105,12 @@ class Tsp extends Fitness {
     }
 
     _euclidean_dist = (p1, p2) => Math.sqrt((p1[0]-p2[0])*(p1[0]-p2[0])+(p1[1]-p2[1])*(p1[1]-p2[1]))
+
+    _pseudoeuclidean_dist = (p1, p2) => {
+        const rij = Math.sqrt( ((p1[0] - p2[0]) * (p1[0] - p2[0]) + (p1[1] - p2[1]) * (p1[1] - p2[1])) / 10.0 );
+        const tij = Math.round(rij);
+        return (tij < rij) ? tij + 1 : tij;
+    }
 
     _manhattan_dist = (p1, p2) => Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1])
 
