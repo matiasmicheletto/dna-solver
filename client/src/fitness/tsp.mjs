@@ -5,11 +5,12 @@ import { mutation, crossover } from '../ga/index.mjs';
 
 //////////// TRAVELLING SALESPERSON PROBLEM /////////////////
 
-export const distance = { // Distance functions
+export const distance = { // Distance functions enumerator
+    EXPLICIT: "explicit", // Weight matrix is already provided
     EUCLIDEAN: "euclidean",
-    PSEUDOEUCLIDEAN: "pseudoeuclidean",
+    PSEUDOEUCLIDEAN: "pseudoeuclidean", // From att type (tsplib)
     MANHATTAN: "manhattan",
-    HAVERSINE: "haversine"
+    HAVERSINE: "haversine" // For geospatial data
 }
 
 const default_places = [ 
@@ -24,11 +25,14 @@ const default_places = [
 ];
 
 class Tsp extends Fitness {
-    constructor(places = default_places, dist = distance.EUCLIDEAN) {
+    constructor(places = default_places, dist = distance.EUCLIDEAN, weight_matrix = null) {
         super({_places: places}); 
 
-        // Set the distance function
-        this.distance = dist;
+        // If distance function is provided, set the distance function and calculate the weight matrix
+        if(dist !== distance.EXPLICIT)
+            this.distance = dist;
+        else // If weight matrix is provided, no need to use distance function
+            this._weights = weight_matrix;
     }
 
     /// SETTERS
@@ -36,31 +40,39 @@ class Tsp extends Fitness {
     set distance(d) {
         switch(d){
             default: // Default distance function is euclidean
+            case distance.EXPLICIT:
+                this._dist_function = () => null,
+                this._unit = "";
+                break;
             case distance.EUCLIDEAN:
-                this._distance = this._euclidean_dist;
+                this._dist_function = this._euclidean_dist;
                 this._unit = "";
                 break;
             case distance.PSEUDOEUCLIDEAN:
-                this._distance = this._pseudoeuclidean_dist;
+                this._dist_function = this._pseudoeuclidean_dist;
                 this._unit = "";
                 break;
             case distance.MANHATTAN:
-                this._distance = this._manhattan_dist;
+                this._dist_function = this._manhattan_dist;
                 this._unit = "blocks";
                 break;
             case distance.HAVERSINE: 
-                this._distance = this._haversine;
+                this._dist_function = this._haversine;
                 this._unit = "km";
                 break;
         }
         // Weight matrix values should be updated using the new distance equation
-        this._weights = coord_to_weight_matrix(this._places, this._distance);
+        this._weights = coord_to_weight_matrix(this._places, this._dist_function);
     }
-
+ 
     set places(p) {
         this._places = p;
         // Weight matrix values should be updated using the new distance equation
-        this._weights = coord_to_weight_matrix(this._places, this._distance);
+        this._weights = coord_to_weight_matrix(this._places, this._dist_function);
+    }
+
+    set weight_matrix(w) {
+        this._weights = w;
     }
 
     get name() {
@@ -94,7 +106,7 @@ class Tsp extends Fitness {
         return this._objective(x).toFixed(2) + " " + this._unit;
     }
 
-    _fitness = x => has_duplicates(x) ? 0 : 100/this._objective(x)
+    _fitness = x => has_duplicates(x) ? 0 : 10000/this._objective(x)
 
     _decode_nice = b => b.join("-")
 
@@ -104,9 +116,12 @@ class Tsp extends Fitness {
         return numbers;
     }
 
+    ////// DISTANCE FUNCTIONS //////
+
     _euclidean_dist = (p1, p2) => Math.sqrt((p1[0]-p2[0])*(p1[0]-p2[0])+(p1[1]-p2[1])*(p1[1]-p2[1]))
 
     _pseudoeuclidean_dist = (p1, p2) => {
+        // For att problem (see tsplib documentation)
         const rij = Math.sqrt( ((p1[0] - p2[0]) * (p1[0] - p2[0]) + (p1[1] - p2[1]) * (p1[1] - p2[1])) / 10.0 );
         const tij = Math.round(rij);
         return (tij < rij) ? tij + 1 : tij;

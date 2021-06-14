@@ -96,18 +96,22 @@ class OptManager {
         }
     }
 
-    set_fitness_config = (id, param, value) => {
-        // Configure a fitness model parameter
+    set_fitness_config = (id, config) => {
+        // Configure a fitness model set of parameters
+        // This takes into account that some config parameters can be setter functions
         const index = this._fitness_list.findIndex(el => el.id === id);
         if(index !== -1)
-            this._fitness_list[index][param] = value;
+            for(let param in config)
+                this._fitness_list[index][param] = config[param];
     }
 
-    set_ga_config = (id, param, value) => {
+    set_ga_config = (id, config) => {
         // Configure an optimizer model parameter
+        // This takes into account that some config parameters can be setter functions
         const index = this._ga_list.findIndex(el => el.id === id);
         if(index !== -1)
-            this._ga_list[index][param] = value;
+            for(let param in config)
+                this._ga_list[index][param] = config[param];
     }
 
     _update_ga_colors = () => {
@@ -138,7 +142,7 @@ class OptManager {
             this._ga_list.splice(index,1);
     }
 
-    optimize = (rounds, iters, progressCallback = null) => {
+    optimize = (rounds, iters, progressCallback = null, finishCallback = null) => {
         const len = this._ga_list.length;
         let by_round = [];
         for(let r = 0; r < rounds; r++){
@@ -158,6 +162,7 @@ class OptManager {
             if(progressCallback) progressCallback(Math.round(r/rounds*100));
             by_round.push(round_results); // Push the results for the current round
         }
+        if(progressCallback) progressCallback(100); // Progress complete
 
         // After completing all the rounds, calculate the metrics
         let by_optimizer = {};
@@ -197,7 +202,7 @@ class OptManager {
                 abs_best_objective: abs_best_obj 
             };
         }
-        if(progressCallback) progressCallback(100); // Progress complete
+        if(finishCallback) finishCallback();
         this._results = {by_round:by_round, by_optimizer:by_optimizer};
     }
 
