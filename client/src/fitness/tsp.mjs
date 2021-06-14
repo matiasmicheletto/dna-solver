@@ -41,7 +41,7 @@ class Tsp extends Fitness {
         switch(d){
             default: // Default distance function is euclidean
             case distance.EXPLICIT:
-                this._dist_function = () => null,
+                this._dist_function = () => null;
                 this._unit = "";
                 break;
             case distance.EUCLIDEAN:

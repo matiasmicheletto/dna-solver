@@ -107,7 +107,6 @@ class OptManager {
 
     set_ga_config = (id, config) => {
         // Configure an optimizer model parameter
-        // This takes into account that some config parameters can be setter functions
         const index = this._ga_list.findIndex(el => el.id === id);
         if(index !== -1)
             for(let param in config)

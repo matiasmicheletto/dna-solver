@@ -72,10 +72,11 @@ om.set_ga_config(ga_ids[2], {selection: selection.TOURNAMENT});
 const rounds = 20;
 const iters = 50;
 
+// Show some information before starting...
+process.stdout.write(`Running ${rounds} rounds of ${iters} iterations...\n`);
 // A progress bar is used to visualize the progress (useful in case of heavy problems)
 const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
-// Show some information before starting...
-process.stdout.write(`Running ${rounds} rounds of ${iters} iterations...`);
+
 
 
 // Lets run the optimization analysis, updating the progress bar after the

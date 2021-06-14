@@ -22,7 +22,7 @@ $ npm run build
 $ npm run start
 ```
 
-If you wish to use only the optimization module via scripting (without GUI), checkout the [examples](examples) folder or run them with the following commands:
+If you wish to use only the optimization module via scripting (without GUI), checkout the [examples](examples) folder and run them without the need to install other packages, using the following commands:
 
 ```bash
 $ git clone https://github.com/matiasmicheletto/sganode

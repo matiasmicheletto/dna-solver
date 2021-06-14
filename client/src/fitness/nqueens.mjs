@@ -1,5 +1,6 @@
 import Fitness from './index.mjs';
 import { shuffle_array } from "../tools/index.mjs";
+import { mutation, crossover } from '../ga/index.mjs';
 
 ////////// N-QUEENS PROBLEM /////////////
 
@@ -58,6 +59,7 @@ class NQueens  extends Fitness {
         // Adding a GA module configuration attributes will overwrite the defaults one
         let c = super.config;
         c.mut_gen = () => Math.floor(Math.random()*this._N);
+        c.mutation = mutation.RAND // Rand operator uses mut_gen function
         return c;
     }
 

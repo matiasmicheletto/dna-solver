@@ -47,7 +47,7 @@ const crossover = {
 
 const mutation = {
     BITFLIP: "bitflip", // Only for bitstring encoding
-    SWAP: "swap",
+    SWAP: "swap", // Swap positions
     RAND: "rand" // Uses mut_gen as random generator
 };
 
