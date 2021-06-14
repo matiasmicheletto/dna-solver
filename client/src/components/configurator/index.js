@@ -30,7 +30,8 @@ const Configurator = () => {
     };
 
     return (
-        <Row className={classes.Container}>
+        <div className={classes.Container}>
+            <h5>Experiment status</h5>
             <Row style={{margin:"0px"}}>
             {
                 fitness_list.length > 0 ?
@@ -53,7 +54,7 @@ const Configurator = () => {
                     </Button>                    
                 </Col>
             </Row>
-        </Row>
+        </div>
     );
 }
 

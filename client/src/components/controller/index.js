@@ -23,7 +23,6 @@ const Controller = props => {
         // a render.
         setTimeout(()=>{
             om.optimize(rounds, iters);
-            console.log(om.results);
             setLoading(false);
         }, 1);
     }
@@ -35,7 +34,7 @@ const Controller = props => {
 
     return (
         <div className={classes.Container}>
-            <h5 className={classes.Label}>Optimization control</h5>        
+            <h5>Experiment control</h5>
             
             <Form className={classes.Form}>
                 <Row>

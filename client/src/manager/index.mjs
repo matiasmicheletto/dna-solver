@@ -30,7 +30,7 @@ class OptManager {
     constructor(){
         this._fitness_list = []; // List of fitness functions added to the analysis
         this._ga_list = []; // List of optimizers linked to the fitness functions
-        this._results = {by_round:null, by_optimizer:null}; // Results to complete
+        this._results = {by_round:null, by_optimizer:null, ready:false}; // Results to complete
         this._configured = {}; // This object records the configurations modified
     }
 
@@ -187,7 +187,9 @@ class OptManager {
                 }
             }
 
-            by_optimizer[this._ga_list[g].id] = {                
+            by_optimizer[this._ga_list[g].id] = {
+                name: this._ga_list[g].name,
+                color: this._ga_list[g].color,
                 // Arrays for plotting optimization performance
                 best_hist: matrix_columnwise_mean(best_matrix),
                 avg_hist: matrix_columnwise_mean(avg_matrix),
@@ -202,14 +204,14 @@ class OptManager {
             };
         }
         if(finishCallback) finishCallback();
-        this._results = {by_round:by_round, by_optimizer:by_optimizer};
+        this._results = {by_round:by_round, by_optimizer:by_optimizer, ready:true};
     }
 
     reset = () => {
         // Restart all the optimizers and clear analysis results
         for(let g = 0; g < this._ga_list.length; g++)
             this._ga_list[g].reset();
-        this._results = {by_round:null, by_optimizer:null};
+        this._results = {by_round:null, by_optimizer:null, ready:false};
     }
 
 }

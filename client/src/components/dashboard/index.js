@@ -4,6 +4,7 @@ import { LoadingContext } from '../../context/LoadingContext';
 import Preloader from '../preloader';
 import Configurator from '../configurator';
 import Controller from '../controller';
+import Plotter from '../plotter';
 
 const Dashboard = () => {
     const { loading } = useContext(LoadingContext);
@@ -19,6 +20,7 @@ const Dashboard = () => {
             {loading && <Preloader />}
             <Configurator />
             <Controller onChange={()=>setUpdate(!update)}/>
+            <Plotter />
         </Row>
     );
 };
