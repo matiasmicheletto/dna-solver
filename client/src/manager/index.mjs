@@ -154,7 +154,8 @@ class OptManager {
                 const elapsed = Date.now() - start; // Time in ms during evolution
                 round_results[this._ga_list[g].id] = {
                     ...this._ga_list[g].status,
-                    elapsed: elapsed
+                    elapsed: elapsed,
+                    color: this._ga_list[g].color
                 }
             }
             // Emit progress callback
@@ -205,6 +206,7 @@ class OptManager {
         }
         if(finishCallback) finishCallback();
         this._results = {by_round:by_round, by_optimizer:by_optimizer, ready:true};
+        console.log(by_round);
     }
 
     reset = () => {

@@ -113,7 +113,7 @@ class GA { // GA model class
         this._generation = 0; // Generation counter
         this._ff_evs = 0; // Fitness function evaluations counter        
         this._best_hist = [this._population[0].fitness]; // Historic values of best fitness
-        this._avg_hist = [this._population[0].fitness]; // Historic values of population average fitness
+        this._avg_hist = [this._fitness_sum() / this._config.pop_size]; // Historic values of population average fitness
     }
 
     _init(pop) { // Initialize/resets population genotypes

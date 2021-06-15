@@ -1,6 +1,6 @@
 import Fitness from './index.mjs';
 import { shuffle_array } from "../tools/index.mjs";
-import { mutation, crossover } from '../ga/index.mjs';
+import { mutation } from '../ga/index.mjs';
 
 ////////// N-QUEENS PROBLEM /////////////
 

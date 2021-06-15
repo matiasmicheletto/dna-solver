@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Highcharts from 'highcharts';
 
 const LinePlot = props => {
 
     const config = {
+        chart:{
+            height: "100%"
+        },
         title: {
             text: props.config.title
         },        
@@ -20,31 +23,12 @@ const LinePlot = props => {
                 text: props.config.xaxis
             }
         },
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle'
-        },
-        series: props.config.series,
-        responsive: {
-            rules: [{
-                condition: {
-                    maxWidth: 500
-                },
-                chartOptions: {
-                    legend: {
-                        layout: 'horizontal',
-                        align: 'center',
-                        verticalAlign: 'bottom'
-                    }
-                }
-            }]
-        }
+        series: props.config.series
     };
 
     useEffect(()=>{
         Highcharts.chart(props.id, config);
-    })
+    });
 
     return (
         <figure className="highcharts-figure">
