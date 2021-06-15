@@ -3,13 +3,24 @@ import { Button, ListGroup, Row, Col, Collapse } from 'react-bootstrap';
 import { FaTrashAlt, FaTools, FaEye } from 'react-icons/fa';
 import classes from './styles.module.css';
 import PopTable from '../poptable';
+import GAConfigForm from '../gaconfigform';
 
 const GAItem = props => {
     const [showPop, setShowPop] = useState(false);
+    const [showConfig, setShowConfig] = useState(false);
+    const [gaconfig, setGAConfig] = useState(props.ga.config);
+    // Dummy setstate for updating forms
+    const [update, setUpdate] = useState(false); 
 
-    const ga = props.ga.status;
+    const updateGAParam = (param, value) => {
+        // No need to use the manager to set the config
+        props.ga[param] = value; 
+        setGAConfig(props.ga.config);
+        setUpdate(!update);
+    }
 
-    const color = props.ga.color ? props.ga.color : "lightblue"
+    const ga = props.ga.status;    
+    const color = props.ga.color ? props.ga.color : "lightblue";
 
     return (
         <ListGroup.Item className={classes.Container} style={{backgroundColor:color}}>
@@ -33,7 +44,10 @@ const GAItem = props => {
                             <Button 
                                 className={classes.MenuGABtn}
                                 variant="success"
-                                onClick={()=>setShowPop(!showPop)}
+                                onClick={()=>{
+                                    setShowPop(!showPop);
+                                    setShowConfig(false);
+                                }}
                                 title="View population">
                                 <FaEye />
                             </Button>
@@ -41,7 +55,11 @@ const GAItem = props => {
                         <Col sm="12" md="4" className="p-0">
                             <Button 
                                 className={classes.MenuGABtn}
-                                onClick={()=>{}}
+                                onClick={()=>{
+                                        setShowConfig(!showConfig);
+                                        setShowPop(false);
+                                    }
+                                }
                                 title="Configure Optimizer">
                                 <FaTools />
                             </Button>
@@ -61,6 +79,11 @@ const GAItem = props => {
             <Collapse in={showPop}>
                 <Row>
                     <PopTable pop={ga.population}></PopTable>
+                </Row>
+            </Collapse>
+            <Collapse in={showConfig}>
+                <Row>
+                    <GAConfigForm current={gaconfig} onChange={updateGAParam}/>
                 </Row>
             </Collapse>
         </ListGroup.Item>

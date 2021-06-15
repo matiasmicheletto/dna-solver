@@ -60,6 +60,16 @@ class OptManager {
         return output.join("\n------------------------------------------------------\n");
     }
 
+    printGAConfigs = () => {
+        // Just a debug helper function
+        console.log("GA Configurations:");
+        this._ga_list.forEach(g => {
+            console.log(g.status);
+            console.log(g.config);
+            console.log("----------");
+        });
+    }
+
     get_ga_list = fitness_id => this._ga_list.filter(g => g.fitness_id===fitness_id);
 
     add_fitness = type => {

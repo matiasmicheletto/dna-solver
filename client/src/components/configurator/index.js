@@ -31,7 +31,7 @@ const Configurator = () => {
 
     return (
         <div className={classes.Container}>
-            <h5>Experiment status</h5>
+            <h5>Experiment configuration</h5>
             <Row style={{margin:"0px"}}>
             {
                 fitness_list.length > 0 ?

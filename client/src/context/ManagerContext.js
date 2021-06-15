@@ -1,5 +1,5 @@
 import React, {createContext} from 'react';
-import OptManager from '../manager';
+import OptManager from '../manager/index.mjs';
 
 export const OMContext = createContext();
 

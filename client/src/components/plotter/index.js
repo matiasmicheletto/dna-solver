@@ -5,7 +5,7 @@ import { OMContext } from '../../context/ManagerContext';
 import LinePlot from '../plots/lineplot';
 import BarPlot from '../plots/barplot';
 
-const Plotter = props => {
+const Plotter = () => {
 
     const om = useContext(OMContext);            
     const results = om.results; // Only using results from the manager
