@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, ListGroup, Table, CloseButton } from 'react-bootstrap';
 import classes from './styles.module.css';
 import { OMContext } from '../../context/ManagerContext';
 import LinePlot from '../plots/lineplot';
@@ -85,7 +85,6 @@ const Plotter = props => {
                 });                
             }
         });
-
         show = true;
     }
     
@@ -105,6 +104,45 @@ const Plotter = props => {
                 <Col sm="12" md="6">
                     <BarPlot id="elapsed" config={elapsed_bar_config}/>
                 </Col>
+            </Row>
+            <Row>
+                {
+                    Object.keys(results.by_optimizer).map(g => (
+                        <Col xl style={{marginBottom:"15px"}}>
+                            <div style={{backgroundColor: results.by_optimizer[g].color}} className={classes.ResultCard}>
+                                <h5>{results.by_optimizer[g].name}</h5>
+                                <Table striped bordered hover responsive>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>Fitness evaluations (average):</b></td>
+                                            <td>{results.by_optimizer[g].avg_fitness_evals}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Round elapsed time:</b></td>
+                                            <td>{results.by_optimizer[g].avg_elapsed} ms.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Best fitness (average):</b></td>
+                                            <td>{results.by_optimizer[g].avg_best_fitness.toFixed(3)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Best fitness (all rounds):</b></td>
+                                            <td>{results.by_optimizer[g].abs_best_fitness.toFixed(3)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Best solution (all rounds):</b></td>
+                                            <td>{results.by_optimizer[g].abs_best_solution}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Best objective (all rounds):</b></td>
+                                            <td>{results.by_optimizer[g].abs_best_objective}</td>
+                                        </tr>
+                                    </tbody>
+                                </Table>
+                            </div>
+                        </Col>
+                    ))
+                }
             </Row>
         </div>
     );

@@ -164,7 +164,7 @@ class OptManager {
         }
         if(progressCallback) progressCallback(100); // Progress complete
 
-        // After completing all the rounds, calculate the metrics
+        // After completing all the rounds, calculate the metrics by optimizer
         let by_optimizer = {};
         for(let g = 0; g < len; g++){ // For each optimizer
             let best_matrix = [];
@@ -206,7 +206,6 @@ class OptManager {
         }
         if(finishCallback) finishCallback();
         this._results = {by_round:by_round, by_optimizer:by_optimizer, ready:true};
-        console.log(by_round);
     }
 
     reset = () => {
