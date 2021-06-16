@@ -3,23 +3,23 @@ import { Card, ListGroup,  Button, Row, Col } from 'react-bootstrap';
 import GAItem from '../gaitem';
 import { FaDna, FaTimes, FaEllipsisV } from 'react-icons/fa';
 import classes from './styles.module.css';
-import { OMContext } from '../../context/ManagerContext';
+import { ExperimentCtx } from '../../context/ExperimentCtx';
 
 const FitnessItem = props => {
 
-    const om = useContext(OMContext);
-    const [ga_list, setGAList] = useState(om.get_ga_list(props.fitness.id));
+    const experiment = useContext(ExperimentCtx);
+    const [ga_list, setGAList] = useState(experiment.get_ga_list(props.fitness.id));
 
     const add_ga = fitness_id => {
-        om.reset();
-        om.add_ga(fitness_id);        
-        setGAList(om.get_ga_list(props.fitness.id));
+        experiment.reset();
+        experiment.add_ga(fitness_id);        
+        setGAList(experiment.get_ga_list(props.fitness.id));
     };
 
     const remove_ga = ga_id => {
-        om.reset();
-        om.remove_ga(ga_id);        
-        setGAList(om.get_ga_list(props.fitness.id));        
+        experiment.reset();
+        experiment.remove_ga(ga_id);        
+        setGAList(experiment.get_ga_list(props.fitness.id));        
     }
 
     return (

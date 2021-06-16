@@ -2,27 +2,27 @@ import React, { useState, useContext } from 'react';
 import { Button, Row, Col } from 'react-bootstrap';
 import { FaPlus } from 'react-icons/fa';
 import FitnessSelect from '../fitnessselect';
-import { fitness_types } from '../../manager';
+import { fitness_types } from '../../experiment';
 import FitnessItem from '../fitnessitem';
 import classes from './styles.module.css';
-import { OMContext } from '../../context/ManagerContext';
+import { ExperimentCtx } from '../../context/ExperimentCtx';
 
 const Configurator = () => {
 
-    const om = useContext(OMContext);
+    const experiment = useContext(ExperimentCtx);
     const [f_type, setFType] = useState(fitness_types.TSP);
-    const [fitness_list, setFitnessList] = useState(om.fitness_list);
+    const [fitness_list, setFitnessList] = useState(experiment.fitness_list);
 
     const add_fitness = () => {
-        om.reset();
-        om.add_fitness(f_type);
-        setFitnessList([...om.fitness_list]);
+        experiment.reset();
+        experiment.add_fitness(f_type);
+        setFitnessList([...experiment.fitness_list]);
     };
 
     const remove_fitness = id => {
-        om.reset();
-        om.remove_fitness(id);
-        setFitnessList([...om.fitness_list]);
+        experiment.reset();
+        experiment.remove_fitness(id);
+        setFitnessList([...experiment.fitness_list]);
     }
 
     const fitnessSelection = e => { // Fitness select callback

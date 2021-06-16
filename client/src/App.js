@@ -4,7 +4,7 @@ import TopNavbar from "./components/topnavbar";
 import Dashboard from "./components/dashboard";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles.css';
-import OMProvider from './context/ManagerContext';
+import ExperimentProvider from './context/ExperimentCtx';
 import { LoadingContext } from './context/LoadingContext';
 
 const App = () => {
@@ -14,11 +14,11 @@ const App = () => {
   return (
     <Container>
       <TopNavbar/>
-        <OMProvider>
+        <ExperimentProvider>
           <LoadingContext.Provider value={{loading, setLoading}}>
             <Dashboard />
           </LoadingContext.Provider>
-        </OMProvider>
+        </ExperimentProvider>
     </Container>
   );
 };

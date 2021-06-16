@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
-import { fitness_types, fitness_names } from '../../manager';
+import { fitness_types, fitness_names } from '../../experiment';
 
 const FitnessSelect = props => {
     return (

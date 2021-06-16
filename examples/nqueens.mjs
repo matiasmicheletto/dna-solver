@@ -1,5 +1,5 @@
 import cliProgress from 'cli-progress';
-import OptManager, { fitness_types } from '../client/src/manager/index.mjs';
+import Experiment, { fitness_types } from '../client/src/experiment/index.mjs';
 import { crossover, mutation } from '../client/src/ga/index.mjs';
 
 // In this second example, we are solving the N-Queens problem for the case N = 16. The NQueens 
@@ -16,28 +16,28 @@ import { crossover, mutation } from '../client/src/ga/index.mjs';
 
 ///////// Solution //////////
 
-// Build the manager and add the NQueens fitness model
-const om = new OptManager();
-const f_id = om.add_fitness(fitness_types.NQUEENS); 
+// Build the experiment manager and add the NQueens fitness model
+const experiment = new Experiment();
+const f_id = experiment.add_fitness(fitness_types.NQUEENS); 
 
 // Set the N value for the problem to 16
-om.set_fitness_config(f_id, {N: 16});
+experiment.set_fitness_config(f_id, {N: 16});
 
 // Now we initialize the optimizaers with some default configuration
 const ga_ids = [];
 for(let i = 0; i < 3; i++){
-    ga_ids.push(om.add_ga(f_id));
-    om.set_ga_config(ga_ids[i], {elitism: 3, pop_size: 30});
+    ga_ids.push(experiment.add_ga(f_id));
+    experiment.set_ga_config(ga_ids[i], {elitism: 3, pop_size: 30});
 }
 
-// Finally we configure the different crossover operators for each one:
-om.set_ga_config(ga_ids[0], {crossover: crossover.SINGLE});
-om.set_ga_config(ga_ids[1], {crossover: crossover.DOUBLE});
-om.set_ga_config(ga_ids[2], {crossover: crossover.PMX});
+// Then, we configure the different crossover operators for each one, and modifying
+// their names at the same time:
+experiment.set_ga_config(ga_ids[0], {crossover: crossover.SINGLE, name: "Single point crossover"});
+experiment.set_ga_config(ga_ids[1], {crossover: crossover.DOUBLE, name: "Double point crossover"});
 
 // In order to avoid repeated elements after mutation, PMX crossover should be used with 
 // the SWAP mutation operator, so we configure this as follows:
-om.set_ga_config(ga_ids[2], {mutation: mutation.SWAP});
+experiment.set_ga_config(ga_ids[2], {crossover: crossover.PMX, mutation: mutation.SWAP, name: "PMX operator crossover"});
 // Using PMX operator with RAND or BITFLIP mutation operators, may freeze the algorithm
 // as the PMX function will never find a result with no repeated elements.
 
@@ -56,12 +56,8 @@ const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_cla
 
 // Lets run the experiment
 progressBar.start(100, 0); 
-om.optimize(rounds, iters, p => progressBar.update(p));
+experiment.optimize(rounds, iters, p => progressBar.update(p));
 progressBar.stop(); 
 
 // Finally, we print the results
-const config = {};
-config[ga_ids[0]] = "Single point crossover";
-config[ga_ids[1]] = "Double point crossover";
-config[ga_ids[2]] = "PMX operator crossover";
-process.stdout.write(om.getPlainResults(config));
+process.stdout.write(experiment.getPlainResults());

@@ -1,6 +1,6 @@
 import cliProgress from 'cli-progress';
 import { readFile } from 'fs/promises';
-import OptManager, { fitness_types } from '../client/src/manager/index.mjs';
+import Experiment, { fitness_types } from '../client/src/experiment/index.mjs';
 import { selection } from '../client/src/ga/index.mjs';
 
 
@@ -20,24 +20,25 @@ const distance = instance.distance; // Distance function to calculate the weight
 
 ///////// Solution //////////
 
-// Build the manager to manage the optimization process and the result compiling
-const om = new OptManager();
+// Build the experiment manager to manage the optimization process and the result compiling
+const experiment = new Experiment();
 
-// We create a new fitness model of the TSP problem and add it to the manager.
-const f_id = om.add_fitness(fitness_types.TSP);
+// We create a new fitness model of the TSP problem and add it to the experiment.
+const f_id = experiment.add_fitness(fitness_types.TSP);
 
 // The problem configuration is setted up from the data we parsed before:
-om.set_fitness_config(f_id, {places:places, distance:distance});
+experiment.set_fitness_config(f_id, {places:places, distance:distance});
 
 // This time we're testing the crossover and mutation probability parameters, so we add
 // two optimizers with 30 individuals and rank selection method:
-const ga_ids = [om.add_ga(f_id), om.add_ga(f_id)];
+const ga_ids = [experiment.add_ga(f_id), experiment.add_ga(f_id)];
 for(let i in ga_ids)
-    om.set_ga_config(ga_ids[i], {selection:selection.RANK, pop_size:30});
+    experiment.set_ga_config(ga_ids[i], {selection:selection.RANK, pop_size:30});
 
-// Then we configure the desired probability parameters:
-om.set_ga_config(ga_ids[0], {mut_prob:0.001, cross_prob:0.8});
-om.set_ga_config(ga_ids[1], {mut_prob:0.002, cross_prob:0.5});
+// Then we configure the desired probability parameters and change the optimizers names:
+experiment.set_ga_config(ga_ids[0], {mut_prob:0.001, cross_prob:0.8, name: "Cross. prob.= 0.8, mut. prob.= 0.001"});
+experiment.set_ga_config(ga_ids[1], {mut_prob:0.002, cross_prob:0.5, name: "Cross. prob.= 0.5, mut. prob.= 0.002"});
+
 
 ///////// Run the optimization analysis //////////
 
@@ -52,13 +53,8 @@ const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_cla
 
 // Now, we run the optimization:
 progressBar.start(100, 0);
-om.optimize(rounds, iters, p => progressBar.update(p));
+experiment.optimize(rounds, iters, p => progressBar.update(p));
 progressBar.stop();
 
-// To identify our solvers, we add some extra information to the output:
-const config = {};
-config[ga_ids[0]] = "Crossover prob. = 0.8, mutation prob. = 0.001";
-config[ga_ids[1]] = "Crossover prob. = 0.5, mutation prob. = 0.002";
-
 // Finally, print the results:
-process.stdout.write(om.getPlainResults(config));
+process.stdout.write(experiment.getPlainResults());

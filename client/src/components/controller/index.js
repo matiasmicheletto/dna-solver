@@ -2,12 +2,12 @@ import React, { useContext, useState } from 'react';
 import { Button, Row, Col, Form } from 'react-bootstrap';
 import { FaPlay, FaUndo } from 'react-icons/fa';
 import classes from './styles.module.css';
-import { OMContext } from '../../context/ManagerContext';
+import { ExperimentCtx } from '../../context/ExperimentCtx';
 import { LoadingContext } from '../../context/LoadingContext';
 
 const Controller = props => {
 
-    const om = useContext(OMContext);
+    const experiment = useContext(ExperimentCtx);
     const {loading, setLoading} = useContext(LoadingContext);
 
     const [rounds, setRounds] = useState(10);
@@ -22,13 +22,13 @@ const Controller = props => {
         // will change the state on the dashboard, and trigger
         // a render.
         setTimeout(()=>{
-            om.optimize(rounds, iters);
+            experiment.optimize(rounds, iters);
             setLoading(false);
         }, 1);
     }
 
     const reset = () => {
-        om.reset();
+        experiment.reset();
         props.onChange(); // Trigger a dashboard update
     }
 

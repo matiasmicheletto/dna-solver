@@ -5,8 +5,8 @@ import EmptyLGModal from './templates';
 const HelpModal = props => (
     <EmptyLGModal {...props} title="How to use this application">
         <Modal.Body>
-            <p>The dashboard is divided in three sections: experiment status, control and results.</p>
-            <p>In the <b>Experiment status</b> section, the status of the selected fitness functions
+            <p>The dashboard is divided in three sections: configuration, control and results.</p>
+            <p>In the <b>Experiment configuration</b> section, the status of the selected fitness functions
             models is shown together with them corresponding optimizers for each one. Here you can add 
             fitness functions, optimizers and configure every desired parameter depending on the purpose 
             of the experiment. The population status for the evolutionary optimizers can be expanded or

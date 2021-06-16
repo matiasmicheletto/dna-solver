@@ -1,7 +1,7 @@
 /*
-Optimization Manager Class Module
+Experiment Class Module
 ---------------------------------
-Thid model allows to manage the evolutionary optimization analysis for a given optimization problem.
+This model allows to create and configure the evolutionary optimization analysis for a given optimization problem.
 Multiple fitness functions can be created and for each, a GA based optimizer can be created.
 */
 
@@ -25,7 +25,7 @@ export const fitness_names = {
     QUADRATIC: "Parabola"
 }
 
-class OptManager {
+class Experiment {
 
     constructor(){
         this._fitness_list = []; // List of fitness functions added to the analysis
@@ -42,12 +42,11 @@ class OptManager {
         return this._results;
     }
 
-    getPlainResults = config => {
+    getPlainResults = () => {
         // Generate a readable string output for the results
         const output = this._ga_list.map( ga => {
             const st = ga.status;
-            return `\r\x1b[31m${config[st.id]}\x1b[0m
-                    \rName:                           ${st.name} 
+            return `\rName:                           \x1b[31m${st.name}\x1b[0m
                     \rId:                             ${st.id}
                     \rCurrent generation:             ${st.generation}
                     \rFitness evaluations (average):  ${this._results.by_optimizer[st.id].avg_fitness_evals}
@@ -227,4 +226,4 @@ class OptManager {
 
 }
 
-export default OptManager;
+export default Experiment;

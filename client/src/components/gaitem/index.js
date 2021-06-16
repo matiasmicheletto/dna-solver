@@ -22,7 +22,7 @@ const GAItem = props => {
     const [update, setUpdate] = useState(false); 
 
     const updateGAParam = (param, value) => {
-        // No need to use the manager to set the config
+        // No need to use the experiment manager to set the config
         props.ga[param] = value; 
         setGAConfig(props.ga.config);
         setUpdate(!update);

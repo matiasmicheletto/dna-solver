@@ -1,14 +1,14 @@
 import React, { useContext } from 'react';
 import { Row, Col, ListGroup, Table, CloseButton } from 'react-bootstrap';
 import classes from './styles.module.css';
-import { OMContext } from '../../context/ManagerContext';
+import { ExperimentCtx } from '../../context/ExperimentCtx';
 import LinePlot from '../plots/lineplot';
 import BarPlot from '../plots/barplot';
 
 const Plotter = () => {
 
-    const om = useContext(OMContext);            
-    const results = om.results; // Only using results from the manager
+    const experiment = useContext(ExperimentCtx);            
+    const results = experiment.results; // Only using results from the experiment manager
     
     // This component has no state, it does nothing but showing results,
     // So its "constant state" is updated outside, so it changes when
