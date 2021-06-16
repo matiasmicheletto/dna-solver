@@ -185,6 +185,10 @@ class GA { // GA model class
     }
 
     /// Setters
+    set name(n) {
+        this._name = n;
+    }
+
     set pop_size(p) { 
         // Changing the population size adds or removes individuals regardless of the current state of the algorithm
         if(p > this._config.pop_size){ // Add individuals

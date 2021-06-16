@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Button, ListGroup, Row, Col, Collapse } from 'react-bootstrap';
+import { 
+    Button, 
+    ListGroup, 
+    Row, 
+    Col, 
+    Collapse, 
+    Form, 
+    InputGroup 
+} from 'react-bootstrap';
 import { FaTrashAlt, FaTools, FaEye } from 'react-icons/fa';
 import classes from './styles.module.css';
 import PopTable from '../poptable';
@@ -9,6 +17,7 @@ const GAItem = props => {
     const [showPop, setShowPop] = useState(false);
     const [showConfig, setShowConfig] = useState(false);
     const [gaconfig, setGAConfig] = useState(props.ga.config);
+    const [nameEdit, setNameEdit] = useState(false);
     // Dummy setstate for updating forms
     const [update, setUpdate] = useState(false); 
 
@@ -26,7 +35,25 @@ const GAItem = props => {
         <ListGroup.Item className={classes.Container} style={{backgroundColor:color}}>
             <Row>
                 <Col xs="11" md="10" xl="11" className={classes.GAStatus}>
-                    <p className={classes.GAName}><i>{ga.name}</i></p>
+                    {
+                        nameEdit ?
+                        <InputGroup as={Col} sm className={classes.NameInputGroup}>
+                            <InputGroup.Text className={classes.NameInputLabel}>New name</InputGroup.Text>
+                            <Form.Control
+                                className={classes.NameForm}
+                                type="text"
+                                placeholder="New name"                                
+                                defaultValue={props.ga.name}
+                                onChange={v => {props.ga.name = v.target.value;}}
+                            >
+                            </Form.Control>
+                            <Button                                 
+                                className={classes.NameInputButton}
+                                onClick={()=>setNameEdit(false)}>Update</Button>
+                        </InputGroup>
+                        :
+                        <p className={classes.GAName} onClick={()=>setNameEdit(true)}><i>{ga.name}</i></p>
+                    }
                     <Row className={classes.GAStatusDetails}>
                         <Col sm="12" md="6">
                             <p><b>Current generation:</b> {ga.generation}</p>
@@ -60,7 +87,7 @@ const GAItem = props => {
                                         setShowPop(false);
                                     }
                                 }
-                                title="Configure Optimizer">
+                                title="Configure optimizer">
                                 <FaTools />
                             </Button>
                         </Col>
@@ -69,7 +96,7 @@ const GAItem = props => {
                                 className={classes.MenuGABtn}
                                 variant="danger"
                                 onClick={()=>props.remove(ga.id)}
-                                title="Remove Optimizer">
+                                title="Remove optimizer">
                                 <FaTrashAlt />
                             </Button>
                         </Col>
