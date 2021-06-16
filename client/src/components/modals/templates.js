@@ -9,7 +9,7 @@ const EmptyLGModal = props => (
         {props.children}
         <Modal.Footer>
             <Button variant="secondary" onClick={props.onHide}>
-                Ok
+                Close
             </Button>            
         </Modal.Footer>
     </Modal>    
