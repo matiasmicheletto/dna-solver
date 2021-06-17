@@ -17,14 +17,6 @@ class NQueens  extends Fitness {
     // Max possible conflicts in a NxN chess board
     _get_max_conflict = n => n*(n + 1) / 2
 
-    _doc = () => `<div>
-            <p>The ${this._N} queens puzzle is the problem of placing ${this._N} chess queens on an ${this._N}x${this._N} 
-            chessboard so that no two queens threaten each other; thus, a solution requires that no two queens share 
-            the same row, column, or diagonal.</p>
-            <p>Candidate solutions are encoded using arrays of ${this._N} elements where each element corresponds to 
-            each column and its value indicates the row occupied by the queen of that column.</p>
-        </div>`
-
     _objective = columns => { // Counts the number of queens in conflict        
         let cntr = 0; // Conflict counter
         for(let col1=0; col1 < this._N-1; col1++){

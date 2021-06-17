@@ -1,14 +1,31 @@
 import React, { useState, useContext } from 'react';
-import { Card, ListGroup,  Button, Row, Col } from 'react-bootstrap';
-import GAItem from '../gaitem';
+import { 
+    Card, 
+    ListGroup,  
+    Button, 
+    Row, 
+    Col,
+    Collapse 
+} from 'react-bootstrap';
 import { FaDna, FaTimes, FaEllipsisV } from 'react-icons/fa';
-import classes from './styles.module.css';
 import { ExperimentCtx } from '../../context/ExperimentCtx';
+import FitnessConfig from '../fitnessconfig';
+import GAItem from '../gaitem';
+import classes from './styles.module.css';
+
+/*
+    FitnessItem component
+    ----------------------
+    This component renders a single fitness model with
+    it configuration component and the list of optimizers.
+    The adding or removing optimizer items is handled here.
+*/
 
 const FitnessItem = props => {
 
     const experiment = useContext(ExperimentCtx);
     const [ga_list, setGAList] = useState(experiment.get_ga_list(props.fitness.id));
+    const [config, showConfig] = useState(false);
 
     const add_ga = fitness_id => {
         experiment.reset();
@@ -22,6 +39,11 @@ const FitnessItem = props => {
         setGAList(experiment.get_ga_list(props.fitness.id));        
     }
 
+    const configure_fitness = config => {
+        experiment.set_fitness_config(props.fitness.id, config);
+        experiment.reset();
+    }
+
     return (
         <Card className={classes.FitnessCard}>
             <Card.Title className="p-2">
@@ -32,7 +54,7 @@ const FitnessItem = props => {
                     <Col align="right">
                         <Button 
                             variant="flat"
-                            onClick={()=>{}}
+                            onClick={()=>showConfig(!config)}
                             title="Configure Fitness">
                             <FaEllipsisV />
                         </Button>
@@ -44,6 +66,11 @@ const FitnessItem = props => {
                         </Button>
                     </Col>
                 </Row>
+                <Collapse in={config}>
+                    <Row>
+                        <FitnessConfig type={props.fitness.type} configure={configure_fitness} />
+                    </Row>
+                </Collapse>
             </Card.Title>
             <Card.Body>
                 <Row>

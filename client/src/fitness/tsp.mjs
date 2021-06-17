@@ -89,11 +89,6 @@ class Tsp extends Fitness {
 
     // Using arrow functions here to override parent class methods (not working other way)
 
-    _doc = () => `<p>The <a href="https://en.wikipedia.org/wiki/Travelling_salesman_problem">Travelling Salesperson Problem (TSP)</a> 
-            asks the following question: "Given a list of cities and the distances between each pair of cities, what is the 
-            shortest possible route that visits each city exactly once and returns to the origin city?" It is an NP-hard 
-            problem in combinatorial optimization, important in theoretical computer science and operations research.</p>`
-
     _objective = x => {
         let d = 0; // Total distance traveled
         for(let k = 0; k < x.length-1; k++)

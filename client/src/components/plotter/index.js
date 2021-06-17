@@ -115,11 +115,11 @@ const Plotter = () => {
                                     <tbody>
                                         <tr>
                                             <td><b>Fitness evaluations (average):</b></td>
-                                            <td>{results.by_optimizer[g].avg_fitness_evals}</td>
+                                            <td>{results.by_optimizer[g].avg_fitness_evals.toFixed(3)}</td>
                                         </tr>
                                         <tr>
                                             <td><b>Round elapsed time:</b></td>
-                                            <td>{results.by_optimizer[g].avg_elapsed} ms.</td>
+                                            <td>{results.by_optimizer[g].avg_elapsed.toFixed(3)} ms.</td>
                                         </tr>
                                         <tr>
                                             <td><b>Best fitness (average):</b></td>

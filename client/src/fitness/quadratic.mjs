@@ -31,11 +31,6 @@ class Quadratic extends Fitness {
         return "Parabola optimization";
     }
 
-    _doc = () => `<div>
-            <p>Fitness function is <b>y = ${this._a}-(x-${this._c})<sup>2</sup>/${(1/this._b).toFixed(2)}</b> for <b>x</b> in range <b>(0..${this._z1+1})</b> (BCD encoding).</p> 
-            <p>Hit the <i>Evolve!</i> button and let the algorithm find the value of <b>x</b> (column phenotype) that maximizes the fitness function <b>y</b>.</p>
-        </div>`
-
     _objective = x => {
         return this._a - this._b*(x - this._c)*(x - this._c);
     }

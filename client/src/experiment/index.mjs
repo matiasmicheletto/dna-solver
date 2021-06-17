@@ -86,6 +86,7 @@ class Experiment {
                 f = new Quadratic();
                 break;
         }        
+        f.type = type; // Add the type format
         this._fitness_list.push(f);        
         return f.id;
     }

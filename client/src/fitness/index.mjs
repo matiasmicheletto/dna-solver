@@ -55,10 +55,6 @@ class Fitness { // Fitness model class
         this._id = generate_id();
     }
 
-    _doc() {
-        return "N/D";
-    }
-
     _objective(x) {
         return x;
     }
@@ -86,7 +82,6 @@ class Fitness { // Fitness model class
     get config() { // Return references to private methods
         return {
             fitness_id: this._id,
-            doc: this._doc,
             objective: this._objective_nice,
             fitness: this._fitness,            
             decode: this._decode_nice,

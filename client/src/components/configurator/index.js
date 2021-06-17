@@ -7,6 +7,17 @@ import FitnessItem from '../fitnessitem';
 import classes from './styles.module.css';
 import { ExperimentCtx } from '../../context/ExperimentCtx';
 
+/*
+    Configurator Component
+    ----------------------
+    This component renders the "Experiment configuration" section.
+    It also provides the rendering of the fitness item list,
+    the fitness type selector, and manages the adding and removing
+    fitness models from the experiment.
+    The fitness configuration is handled in the FitnessItem
+    component.
+*/ 
+
 const Configurator = () => {
 
     const experiment = useContext(ExperimentCtx);
