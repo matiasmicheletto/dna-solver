@@ -30,9 +30,13 @@ This attributes are the following:
         * type: Function.
         * input: Array. Encoded candidate solution (genotype).
         * output: Should return a non negative scalar number (integer or float).     
+    - decode: Function for decoding genotypes and obtaining the optimization variable
+        * type: Function.
+        * input: Array.
+        * output: Optimnization variable.
     - decode_nice: Function for decoding a chromosome's genotype returning a human-readable format.
         * type: Function.
-        * input: Optimization variable. May be number, array or object.
+        * input: Array.
         * output: String.
     - objective_nice: Objective function to be optimized that returns the output as readable format. 
         * type: Function.
@@ -50,8 +54,8 @@ import { generate_id } from '../tools/index.mjs';
 
 class Fitness { // Fitness model class
     constructor(params) {
-        for(let attr in params)
-            this[attr] = params[attr];
+        for(let p in params)
+            this[p] = params[p];
         this._id = generate_id();
     }
 
@@ -62,6 +66,10 @@ class Fitness { // Fitness model class
     _fitness(x) {
         return this._objective(x);
     } 
+
+    _decode(x) {
+        return x.join("");
+    }
 
     _decode_nice(b) {
         return b.join("-");

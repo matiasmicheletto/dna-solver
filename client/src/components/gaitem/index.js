@@ -14,18 +14,23 @@ import PopTable from '../poptable';
 import GAConfigForm from '../gaconfigform';
 
 const GAItem = props => {
-    const [showPop, setShowPop] = useState(false);
-    const [showConfig, setShowConfig] = useState(false);
-    const [gaconfig, setGAConfig] = useState(props.ga.config);
-    const [nameEdit, setNameEdit] = useState(false);
-    // Dummy setstate for updating forms
-    const [update, setUpdate] = useState(false); 
+    const [showPop, setShowPop] = useState(false); // Expand/collapse population table
+    const [showConfig, setShowConfig] = useState(false); // Expand/collapse config form
+    const [gaconfig, setGAConfig] = useState(props.ga.config); // GA configuration state
+    const [nameEdit, setNameEdit] = useState(false); // Show/hide name editor input
+    const [name, setName] = useState(props.ga.name); // Current name state
+    const [update, setUpdate] = useState(false); // Dummy setstate for updating forms
 
     const updateGAParam = (param, value) => {
         // No need to use the experiment manager to set the config
         props.ga[param] = value; 
         setGAConfig(props.ga.config);
         setUpdate(!update);
+    }
+
+    const updateName = () => { // Callback for the update name button
+        props.ga.name = name;
+        setNameEdit(false);
     }
 
     const ga = props.ga.status;    
@@ -44,12 +49,15 @@ const GAItem = props => {
                                 type="text"
                                 placeholder="New name"                                
                                 defaultValue={props.ga.name}
-                                onChange={v => {props.ga.name = v.target.value;}}
+                                onChange={v => {setName(v.target.value)}}
                             >
                             </Form.Control>
                             <Button                                 
-                                className={classes.NameInputButton}
-                                onClick={()=>setNameEdit(false)}>Update</Button>
+                                className={classes.NameButtonOk}
+                                onClick={updateName}>Update</Button>
+                            <Button                                 
+                                className={classes.NameButtonCancel}
+                                onClick={()=>setNameEdit(false)}>Cancel</Button>
                         </InputGroup>
                         :
                         <p className={classes.GAName} onClick={()=>setNameEdit(true)}><i>{ga.name}</i></p>

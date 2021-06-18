@@ -3,28 +3,30 @@ import Fitness from './index.mjs';
 ////////// INVERTED QUADRATIC /////////////
 // Fitness function y = a - b*(x-c)^2;
 
+export const get_params = (nbit, a) => {
+    // First zero is z1 = 0, and the second is at 2^_nbit-1 (max range)
+    const z1 = Math.pow(2, nbit) - 1;
+    // Then we can calculate the value of b that makes the quadratic have a max of "a".
+    const b = 4*a/z1/z1;
+    // The max is in the middle between the zeros, so its z1/2.
+    const c = z1/2;
+    return [z1, b, c];
+}
+
 class Quadratic extends Fitness {
     constructor(nbit = 10, a = 1000) {
         super({_nbit: nbit, _a: a});
-
-        // First zero is z1 = 0, and the second is at 2^_nbit-1 (max range)
-        this._z1 = Math.pow(2, this._nbit) - 1;
-        // Then we can calculate the value of b that makes the quadratic have a max of "a".
-        this._b = 4*this._a/this._z1/this._z1;
-        // The max is in the middle between the zeros, so its z1/2.
-        this._c = this._z1/2;
+        [this._z1, this._b, this._c] = get_params(nbit, a);
     }
 
     set nbit(val) { // Update parameter nbit
         this._nbit = val;
-        this._z1 = Math.pow(2, this._nbit) - 1;        
-        this._b = 4*this._a/this._z1/this._z1;        
-        this._c = this._z1/2;
+        [this._z1, this._b, this._c] = get_params(val, this._a);
     }
 
     set a(val) { // Update parameter "a"
         this._a = val;
-        this._b = 4*this._a/this._z1/this._z1;
+        [this._z1, this._b, this._c] = get_params(this._nbit, val);
     }
 
     get name() {
