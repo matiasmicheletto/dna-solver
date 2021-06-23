@@ -3,7 +3,7 @@
     "comment": "drilling problem (Ludwig)",
     "type": "TSP",
     "dimension": 280,
-    "distance": "euclidean",
+    "distance": "EUCLIDEAN",
     "best": 2579,
     "coords": [
         [288,149],

@@ -3,7 +3,7 @@
    "type": "STSP",
    "comment": "29 cities in Bavaria, street distances (Groetschel,Juenger,Reinelt)",
    "dimension": 29,
-   "distance": "explicit",   
+   "distance": "EXPLICIT",   
    "best": 1610,
    "weight": [
       [0,107,241,190,124,80,316,76,152,157,283,133,113,297,228,129,348,276,188,150,65,341,184,67,221,169,108,45,167],

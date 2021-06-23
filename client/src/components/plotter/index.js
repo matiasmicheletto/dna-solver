@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Row, Col, ListGroup, Table, CloseButton } from 'react-bootstrap';
+import { Row, Col, Table } from 'react-bootstrap';
 import classes from './styles.module.css';
 import { ExperimentCtx } from '../../context/ExperimentCtx';
 import LinePlot from '../plots/lineplot';

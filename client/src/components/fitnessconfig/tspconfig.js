@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { 
     Row, 
     Col, 
@@ -12,6 +12,88 @@ import classes from './styles.module.css';
 import { LoadingContext } from '../../context/LoadingContext';
 import { distance } from '../../fitness/tsp';
 
+
+const PlacesTable = props => ( // Table for listing the coordinates
+    <Table striped bordered hover responsive>
+        <thead>
+            <tr>
+                <th>Spot</th>
+                <th>X</th>
+                <th>Y</th>
+            </tr>
+        </thead>
+        <tbody>
+            {
+                props.places.map( (p,ind) => 
+                    <tr key={ind}>
+                        <td>{ind+1}</td>
+                        <td>{p[0].toFixed(2)}</td>
+                        <td>{p[1].toFixed(2)}</td>
+                    </tr> 
+                )
+            }
+        </tbody>
+    </Table>
+);
+
+const WeightMatrixTable = props => ( // Table for showing the weight matrix of destinations graph
+    <Table striped bordered hover responsive>
+        <thead>
+            <tr>
+                <th></th>
+                {props.weights.map( (row, ind) => <th key={ind}>{ind+1}</th>)}
+            </tr>
+        </thead>
+        <tbody>
+            {
+                props.weights.map( (row,ind) => 
+                    <tr key={ind}>
+                        <td><b>{ind+1}</b></td>
+                        {row.map( (col, ind2) => <td key={ind2}>{col !== 0 ? col.toFixed(2) : "-"}</td>)}
+                    </tr> 
+                )
+            }
+        </tbody>
+    </Table>
+);
+
+// This component renders the collapsible tables for places and weight matrix
+const Collapsible = props => {
+    const [open, setOpen] = useState(false);
+    return (
+        <div>
+            <Row>
+                <Col>
+                    <Button 
+                        variant="flat"
+                        onClick={()=>setOpen(!open)}>
+                        {
+                            open ?                         
+                            <div>
+                                Hide {props.name}
+                                <FaChevronUp />
+                            </div>    
+                            :
+                            <div>
+                                Show {props.name}
+                                <FaChevronDown />
+                            </div>
+                        }
+                    </Button>
+                </Col>
+            </Row>
+            <Collapse in={open}>
+                <Row>
+                    {props.places && <PlacesTable places={props.places} />}
+                    {props.weights && <WeightMatrixTable weights={props.weights} />}
+                </Row>
+            </Collapse>
+        </div>
+    );
+};
+
+
+
 /*
     TSPConfig Component
     -----------------------
@@ -21,163 +103,65 @@ import { distance } from '../../fitness/tsp';
 */
 
 
-const PlacesCollapsible = props => {
-    const [open, setOpen] = useState(false);
-
-    return (
-        <div>
-            <Row>
-                <Col>
-                    <Button 
-                        variant="flat"
-                        onClick={()=>setOpen(!open)}>
-                        {
-                            open ?                         
-                            <div>
-                                Hide cities table
-                                <FaChevronUp />
-                            </div>    
-                            :
-                            <div>
-                                Show cities table
-                                <FaChevronDown />
-                            </div>
-                        }
-                    </Button>
-                </Col>
-            </Row>
-            <Collapse in={open}>
-                <Row>
-                    <Table striped bordered hover responsive>
-                        <thead>
-                            <tr>
-                                <th>City</th>
-                                <th>X</th>
-                                <th>Y</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                props.places.map( (p,ind) => 
-                                    <tr key={ind}>
-                                        <td>{ind+1}</td>
-                                        <td>{p[0]}</td>
-                                        <td>{p[1]}</td>
-                                    </tr> 
-                                )
-                            }
-                        </tbody>
-                    </Table>
-                </Row>
-            </Collapse>
-        </div>
-    );
-};
-
-const WeightCollapsible = props => {
-
-    const [open, setOpen] = useState(false);
-
-    console.log(props.weight);
-
-    return (
-        <div>
-            <Row>
-                <Col>
-                    <Button 
-                        variant="flat"
-                        onClick={()=>setOpen(!open)}>
-                        {
-                            open ?                         
-                            <div>
-                                Hide distances matrix
-                                <FaChevronUp />
-                            </div>    
-                            :
-                            <div>
-                                Show distance matrix
-                                <FaChevronDown />
-                            </div>
-                        }
-                    </Button>
-                </Col>
-            </Row>
-            <Collapse in={open}>
-                <Row>
-                    <Table striped bordered hover responsive>
-                        <thead>
-                            <tr>
-                                <th></th>
-                                {
-                                    props.weight.map( (row, ind) => 
-                                        <th key={ind}>{ind+1}</th>
-                                    )
-                                }
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                props.weight.map( (row,ind) => 
-                                    <tr key={ind}>
-                                        <td>{ind+1}</td>
-                                        {
-                                            row.map( (col, ind2) => 
-                                                <td key={ind2}>{col.toFixed(2)}</td>
-                                            )
-                                        }
-                                    </tr> 
-                                )
-                            }
-                        </tbody>
-                    </Table>
-                </Row>
-            </Collapse>
-        </div>
-    )
-}
-
-
 const TSPConfig = props => {
-    
-    // Configuration file format
-    // In case of using json file, then, all the configuration should be provided by this file
-    // When using csv, then all the other parameters should be specified.
-    const [format, setFormat] = useState("json");
-
     // Preloader is used when loading .json or .csv data
     const {loading, setLoading} = useContext(LoadingContext);
 
+    // To customize the file inputs, we use refs to trigger the click event from other buttons
+    const configInputEl = useRef(null);
+    const placesInputEl = useRef(null);
+    const weightsInputEl = useRef(null);
+    
+
+    // The following functions should be moved to the TSP module
     const parseJson = data => { // Get coordinate list from json data
-        const content = JSON.parse(data);
-        return content?.coords?.length > 0 ? content.coords : [];
+        let config = {};
+        let content = {};
+        try{
+            content = JSON.parse(data);
+        } catch(e) { // TODO show toast
+            console.log("Error while parsing the json file.");
+        }
+        const name = content.name;
+        const places = content?.coords?.length > 0 ? content.coords : [];
+        const dist = content.distance;
+        if(places.length > 0 && dist in distance){ // Controls coords vector and distance function
+            config.places = places;
+            config.distance = distance[dist];
+            if(distance[dist] === distance.EXPLICIT){ // or dist==="EXPLICIT"
+                if(content?.weight?.length > 0) // Controls weight matrix 
+                    config.weight_matrix = content.weight;
+                else
+                    return false;
+            }
+            if(name) config.name = name;
+        }
+        return config;
     }
 
-    const parseCsv = data => {
-        return [];
+    const csv2Array = data => {
+        let array = [];
+        const lines = data.split('\n');
+        for(let l = 0; l < lines.length; l++)
+            array.push(lines[l].split(',').map(el=>parseInt(el)));
+        return array;
     }
 
-    const fileUploaded = event => {
-        setLoading(true);
-        const file = event.target.files[0];
+    const fileUploaded = (file, type, param) => {                
         if(file){
+            setLoading(true);
             let reader = new FileReader();
-            reader.onload = content => {
-                let places = [];
-                switch(format){
-                    case "json":
-                        places = parseJson(content.target.result);
-                        break;
-                    case "csv":
-                        places = parseCsv(content.target.result);
-                        break;
-                    default:
-                        places = [];
+            reader.onload = content => {                
+                let config = {};
+                if(type === "json"){
+                    config = parseJson(content.target.result);        
+                    console.log(config);
+                }else{
+                    const data = csv2Array(content.target.result);
+                    config[param] = data;
                 }
+                props.configure(config);   
                 setLoading(false);
-                if(places.length > 0)
-                    props.configure({places: places});                
-                else // TODO: An error toast should be shown here
-                    console.log("Error when parsing file!");
             };
             reader.readAsText(file);
         }
@@ -193,38 +177,69 @@ const TSPConfig = props => {
                 combinatorial optimization, important in theoretical computer science and operations research.</p>
             </div>
             <Row>
-                <Col>
-                    <Form.Group>
-                        <Form.Label>Configuration file format</Form.Label>
-                        <Form.Control as="select" onChange={v => setFormat(v.target.value)}>
-                            <option value="json">JSON</option>
-                            <option value="csv">CSV</option>
+                <Col md="9">
+                    <p>If you already have a JSON formatted TSP configuration file, upload it pressing the following button:</p>
+                </Col>
+                <Col md="3">
+                    <Form.Group>                        
+                        <input                             
+                            type="file"                             
+                            ref={configInputEl} 
+                            style={{display:"none"}} 
+                            onChange={v => fileUploaded(v.target.files[0], "json", "")}/>
+                        <Button onClick={()=>configInputEl.current?.click()}>Select configuration file...</Button>
+                    </Form.Group>
+                </Col>
+            </Row>
+            <Row style={{marginTop: "15px"}}>
+                <Col md="9">
+                    <p>Otherwise, you can upload csv formatted file for the TSP coordinates:</p>
+                </Col>
+                <Col md="3">
+                    <Form.Group>                        
+                        <input                             
+                            type="file"                             
+                            ref={placesInputEl} 
+                            style={{display:"none"}} 
+                            onChange={v => fileUploaded(v.target.files[0], "csv", "places")}/>
+                        <Button onClick={()=>placesInputEl.current?.click()}>Select places CSV file...</Button>
+                    </Form.Group>
+                </Col>
+            </Row>
+            <Row style={{marginTop: "15px"}}>
+                <Col md="9">
+                    <p>The weight matrix is obtained by selecting the appropiate distance function. In case of "EXPLICIT" distance
+                        function is selected, then a distance matrix should be uploaded through a CSV file.</p>                    
+                </Col>
+                <Col md="3">
+                    <Form.Group>                        
+                        <Form.Control 
+                            as="select" 
+                            defaultValue={props.fitness.distance}
+                            onChange={v=>props.configure({distance:v.target.value})}
+                        >
+                        {
+                            Object.keys(distance).map((d, ind) => (
+                                <option key={ind} value={distance[d]}>{d}</option>
+                            ))
+                        }
                         </Form.Control>
                     </Form.Group>
-                </Col>
-                <Col style={{marginTop:"auto", marginBottom:"auto"}}>
-                    <Form.Group>
-                        <Form.File id="File Form Control" onChange={v => fileUploaded(v)}/>
-                    </Form.Group>
+                    {props.fitness.distance === distance.EXPLICIT && <Form.Group>                        
+                        <input                             
+                            type="file"                             
+                            ref={weightsInputEl} 
+                            style={{display:"none"}} 
+                            onChange={v => fileUploaded(v.target.files[0], "csv", "weight_matrix")}/>
+                        <Button onClick={()=>weightsInputEl.current?.click()}>Select distances CSV file...</Button>
+                    </Form.Group>}
                 </Col>
             </Row>
-            <Row>
-                <Form.Group>
-                    <Form.Label>Distance function</Form.Label>
-                    <Form.Control 
-                        as="select" 
-                        defaultValue={props.fitness.distance}
-                        onChange={v=>props.configure({distance:v.target.value})}>
-                        {
-                           Object.keys(distance).map((d, ind) => (
-                               <option key={ind} value={distance[d]}>{d}</option>
-                           ))
-                        }
-                    </Form.Control>
-                </Form.Group>
+            <Row style={{marginTop: "15px"}}>
+                <h5>Current configuration</h5>
+                <Collapsible name="coordinates list" places={props.fitness.places} />
+                <Collapsible name="weight matrix" weights={props.fitness.weight_matrix} />
             </Row>
-            <PlacesCollapsible places={props.fitness.places} />
-            <WeightCollapsible weight={props.fitness.weight_matrix} />
         </Form>
     );
 };

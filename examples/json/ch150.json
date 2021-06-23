@@ -4,7 +4,7 @@
     "comment": "150 city Problem (churritz)",
     "dimension": 150,
     "best": 6528,
-    "distance": "euclidean",
+    "distance": "EUCLIDEAN",
     "coords": [
         [37.4393516691,541.2090699418],
         [612.1759508571,494.3166877396],

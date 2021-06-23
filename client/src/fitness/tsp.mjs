@@ -28,6 +28,8 @@ class Tsp extends Fitness {
     constructor(places = default_places, dist = distance.EUCLIDEAN, weight_matrix = null) {
         super({_places: places}); 
 
+        this._name = "Travelling Salesperson";
+
         // If distance function is provided, set the distance function and calculate the weight matrix
         if(dist !== distance.EXPLICIT)
             this.distance = dist;
@@ -37,11 +39,15 @@ class Tsp extends Fitness {
 
     /// SETTERS
 
+    set name(n) {
+        this._name = n;
+    }
+
     set distance(d) {
         switch(d){
             default: // Default distance function is euclidean
             case distance.EXPLICIT:
-                this._dist_function = () => null;
+                this._dist_function = () => {};
                 this._unit = "";
                 break;
             case distance.EUCLIDEAN:
@@ -61,6 +67,7 @@ class Tsp extends Fitness {
                 this._unit = "km";
                 break;
         }
+
         this._distance = d;
         // Weight matrix values should be updated using the new distance equation
         if(d !== distance.EXPLICIT)
@@ -80,7 +87,7 @@ class Tsp extends Fitness {
     /// GETTERS
 
     get name() {
-        return "Travelling Salesperson";
+        return this._name;
     }
 
     get distance() {

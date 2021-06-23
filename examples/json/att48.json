@@ -3,7 +3,7 @@
     "comment" : "48 capitals of the US (Padberg/Rinaldi)",
     "type" : "TSP",
     "dimension" : "48",
-    "distance": "pseudoeuclidean",
+    "distance": "PSEUDOEUCLIDEAN",
     "best": 10628,
     "coords": [
         [6734,1453],

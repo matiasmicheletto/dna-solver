@@ -2,6 +2,7 @@ import cliProgress from 'cli-progress';
 import { readFile } from 'fs/promises';
 import Experiment, { fitness_types } from '../client/src/experiment/index.mjs';
 import { selection } from '../client/src/ga/index.mjs';
+import { distance } from '../client/src/fitness/tsp.mjs';
 
 
 // In this example we are solving the Symmetric Travelling Salesperson Problem (TSP),
@@ -15,7 +16,7 @@ const instance = JSON.parse(data); // Convert to object
 
 // And we can use the required configuration which is provided by this file:
 const places = instance.coords; // Coordinates of destinations
-const distance = instance.distance; // Distance function to calculate the weight matrix
+const dist = distance[instance.distance]; // Distance function to calculate the weight matrix
 
 
 ///////// Solution //////////
@@ -27,7 +28,7 @@ const experiment = new Experiment();
 const f_id = experiment.add_fitness(fitness_types.TSP);
 
 // The problem configuration is setted up from the data we parsed before:
-experiment.set_fitness_config(f_id, {places:places, distance:distance});
+experiment.set_fitness_config(f_id, {places:places, distance:dist});
 
 // This time we're testing the crossover and mutation probability parameters, so we add
 // two optimizers with 30 individuals and rank selection method:

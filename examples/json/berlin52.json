@@ -4,7 +4,7 @@
     "comment": "52 locations in Berlin (Groetschel)",
     "best": 7542,
     "dimension": 52,
-    "distance": "euclidean",
+    "distance": "EUCLIDEAN",
     "coords":[
         [565.0,575.0],
         [25.0,185.0],

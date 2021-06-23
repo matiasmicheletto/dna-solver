@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Form, InputGroup } from 'react-bootstrap';
 import classes from './styles.module.css';
-import { get_params } from '../../fitness/quadratic.mjs';
 
 /*
     QuadraticConfig Component
