@@ -81,14 +81,15 @@ export const coord_to_weight_matrix = (p, dist) => {
     let w = [];
     for(let j = 0; j < N-1; j++){
         if(!w[j]) w[j] = [];
-        w[j][j] = 0;
+        w[j][j] = 0; // Distance between same position is 0
         for(let k = j+1; k < N; k++){
             const d = dist(p[j], p[k]);
             w[j][k] = d;
             if(!w[k]) w[k] = [];
             w[k][j] = d;
         }
-    }
+        w[N-1][N-1] = 0; // Last element
+    }    
     return w;
 }    
 

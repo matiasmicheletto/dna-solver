@@ -7,6 +7,7 @@ import {
     Collapse,
     Button 
 } from 'react-bootstrap';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import classes from './styles.module.css';
 import { LoadingContext } from '../../context/LoadingContext';
 import { distance } from '../../fitness/tsp';
@@ -20,11 +21,124 @@ import { distance } from '../../fitness/tsp';
 */
 
 
+const PlacesCollapsible = props => {
+    const [open, setOpen] = useState(false);
+
+    return (
+        <div>
+            <Row>
+                <Col>
+                    <Button 
+                        variant="flat"
+                        onClick={()=>setOpen(!open)}>
+                        {
+                            open ?                         
+                            <div>
+                                Hide cities table
+                                <FaChevronUp />
+                            </div>    
+                            :
+                            <div>
+                                Show cities table
+                                <FaChevronDown />
+                            </div>
+                        }
+                    </Button>
+                </Col>
+            </Row>
+            <Collapse in={open}>
+                <Row>
+                    <Table striped bordered hover responsive>
+                        <thead>
+                            <tr>
+                                <th>City</th>
+                                <th>X</th>
+                                <th>Y</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                props.places.map( (p,ind) => 
+                                    <tr key={ind}>
+                                        <td>{ind+1}</td>
+                                        <td>{p[0]}</td>
+                                        <td>{p[1]}</td>
+                                    </tr> 
+                                )
+                            }
+                        </tbody>
+                    </Table>
+                </Row>
+            </Collapse>
+        </div>
+    );
+};
+
+const WeightCollapsible = props => {
+
+    const [open, setOpen] = useState(false);
+
+    console.log(props.weight);
+
+    return (
+        <div>
+            <Row>
+                <Col>
+                    <Button 
+                        variant="flat"
+                        onClick={()=>setOpen(!open)}>
+                        {
+                            open ?                         
+                            <div>
+                                Hide distances matrix
+                                <FaChevronUp />
+                            </div>    
+                            :
+                            <div>
+                                Show distance matrix
+                                <FaChevronDown />
+                            </div>
+                        }
+                    </Button>
+                </Col>
+            </Row>
+            <Collapse in={open}>
+                <Row>
+                    <Table striped bordered hover responsive>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                {
+                                    props.weight.map( (row, ind) => 
+                                        <th key={ind}>{ind+1}</th>
+                                    )
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                props.weight.map( (row,ind) => 
+                                    <tr key={ind}>
+                                        <td>{ind+1}</td>
+                                        {
+                                            row.map( (col, ind2) => 
+                                                <td key={ind2}>{col.toFixed(2)}</td>
+                                            )
+                                        }
+                                    </tr> 
+                                )
+                            }
+                        </tbody>
+                    </Table>
+                </Row>
+            </Collapse>
+        </div>
+    )
+}
+
+
 const TSPConfig = props => {
     
-    // Show and hide the collapse with places coordinates
-    const [showPlaces, setShowPlaces] = useState(false); 
-
     // Configuration file format
     // In case of using json file, then, all the configuration should be provided by this file
     // When using csv, then all the other parameters should be specified.
@@ -79,6 +193,22 @@ const TSPConfig = props => {
                 combinatorial optimization, important in theoretical computer science and operations research.</p>
             </div>
             <Row>
+                <Col>
+                    <Form.Group>
+                        <Form.Label>Configuration file format</Form.Label>
+                        <Form.Control as="select" onChange={v => setFormat(v.target.value)}>
+                            <option value="json">JSON</option>
+                            <option value="csv">CSV</option>
+                        </Form.Control>
+                    </Form.Group>
+                </Col>
+                <Col style={{marginTop:"auto", marginBottom:"auto"}}>
+                    <Form.Group>
+                        <Form.File id="File Form Control" onChange={v => fileUploaded(v)}/>
+                    </Form.Group>
+                </Col>
+            </Row>
+            <Row>
                 <Form.Group>
                     <Form.Label>Distance function</Form.Label>
                     <Form.Control 
@@ -93,51 +223,8 @@ const TSPConfig = props => {
                     </Form.Control>
                 </Form.Group>
             </Row>
-            <Row>
-                <Col>
-                    <Form.Group>
-                        <Form.Label>Destinations file format</Form.Label>
-                        <Form.Control as="select" onChange={v => setFormat(v.target.value)}>
-                            <option value="json">JSON</option>
-                            <option value="csv">CSV</option>
-                        </Form.Control>
-                    </Form.Group>
-                </Col>
-                <Col style={{marginTop:"auto", marginBottom:"auto"}}>
-                    <Form.Group>
-                        <Form.File id="File Form Control" onChange={v => fileUploaded(v)}/>
-                    </Form.Group>
-                </Col>
-            </Row>
-            <Row>
-                <Button onClick={()=>setShowPlaces(!showPlaces)}>
-                    Toggle coordinates
-                </Button>
-            </Row>
-            <Collapse in={showPlaces}>
-                <Row>
-                    <Table striped bordered hover responsive>
-                        <thead>
-                            <tr>
-                                <th>City</th>
-                                <th>X</th>
-                                <th>Y</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                props.fitness.places.map( (p,ind) => 
-                                    <tr key={ind}>
-                                        <td>{ind+1}</td>
-                                        <td>{p[0]}</td>
-                                        <td>{p[1]}</td>
-                                    </tr> 
-                                )
-                            }
-                        </tbody>
-                    </Table>
-                </Row>
-            </Collapse>
+            <PlacesCollapsible places={props.fitness.places} />
+            <WeightCollapsible weight={props.fitness.weight_matrix} />
         </Form>
     );
 };
