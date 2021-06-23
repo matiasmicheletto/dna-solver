@@ -109,10 +109,15 @@ class Experiment {
     set_fitness_config = (id, config) => {
         // Configure a fitness model set of parameters
         // This takes into account that some config parameters can be setter functions
+        // (which means that a background procedure is executed on parameter update)
         const index = this._fitness_list.findIndex(el => el.id === id);
-        if(index !== -1)
+        if(index !== -1){
             for(let param in config)
                 this._fitness_list[index][param] = config[param];
+            // When changing a fitness parameter, the optimizers should be initialized again
+            // with the new configuration
+            this.reset();
+        }
     }
 
     set_ga_config = (id, config) => {

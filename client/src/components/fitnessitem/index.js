@@ -24,8 +24,12 @@ import classes from './styles.module.css';
 const FitnessItem = props => {
 
     const experiment = useContext(ExperimentCtx);
+
     const [ga_list, setGAList] = useState(experiment.get_ga_list(props.fitness.id));
-    const [config, showConfig] = useState(false);
+    const [config, showConfig] = useState(false); // Controlling the collapse
+    
+    // Dummy state to trigger a rendering when updating a fitness parameter
+    const [update, setUpdate] = useState(false); 
 
     const add_ga = fitness_id => {
         experiment.reset();
@@ -34,22 +38,25 @@ const FitnessItem = props => {
     };
 
     const remove_ga = ga_id => {
-        experiment.reset();
         experiment.remove_ga(ga_id);        
+        experiment.reset();
         setGAList(experiment.get_ga_list(props.fitness.id));        
-    }
+    };
 
     const configure_fitness = config => {
         experiment.set_fitness_config(props.fitness.id, config);
-        experiment.reset();
-    }
+        // Switch dummy variable to trigger update
+        // This even render the optimizer items (gaitems), but its correct, 
+        // as a change in fitness parameter does affect the optimizers that are reinitialized
+        setUpdate(!update); 
+    };
 
     return (
         <Card className={classes.FitnessCard}>
             <Card.Title className="p-2">
                 <Row>
                     <Col>
-                        <h4>{props.fitness.name}</h4>
+                        <h5>{props.fitness.name}</h5>
                     </Col>
                     <Col align="right">
                         <Button 
@@ -68,7 +75,7 @@ const FitnessItem = props => {
                 </Row>
                 <Collapse in={config}>
                     <Row>
-                        <FitnessConfig type={props.fitness.type} configure={configure_fitness} />
+                        <FitnessConfig fitness={props.fitness} configure={configure_fitness} />
                     </Row>
                 </Collapse>
             </Card.Title>
@@ -95,7 +102,7 @@ const FitnessItem = props => {
                 </Row>
             </Card.Body>
         </Card>
-    )
+    );
 }
     
 export default FitnessItem;

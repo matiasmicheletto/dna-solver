@@ -90,7 +90,7 @@ const Plotter = () => {
     
     return (
         show && <div className={classes.Container}>
-            <h5>Experiment results</h5>
+            <h4>Experiment results</h4>
             <Row>
                 <Col sm="12" md="6">
                     <LinePlot id="best_hist" config={best_hist_config}/>                    

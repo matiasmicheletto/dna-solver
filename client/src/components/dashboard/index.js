@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import { Row } from 'react-bootstrap';
 import { LoadingContext } from '../../context/LoadingContext';
 import Preloader from '../preloader';
 import Configurator from '../configurator';
@@ -16,12 +15,12 @@ const Dashboard = () => {
     const [update, setUpdate] = useState(false); 
     
     return (
-        <Row>
+        <div>
             {loading && <Preloader />}
             <Configurator />
             <Controller onChange={()=>setUpdate(!update)}/>
             <Plotter />
-        </Row>
+        </div>
     );
 };
 

@@ -34,15 +34,15 @@ const Configurator = () => {
         experiment.reset();
         experiment.remove_fitness(id);
         setFitnessList([...experiment.fitness_list]);
-    }
+    };
 
-    const fitnessSelection = e => { // Fitness select callback
-        setFType(e.target.value);
+    const fitnessSelection = type => { // Fitness select callback
+        setFType(type);
     };
 
     return (
         <div className={classes.Container}>
-            <h5>Experiment configuration</h5>
+            <h4>Experiment configuration</h4>
             <Row style={{margin:"0px"}}>
             {
                 fitness_list.length > 0 ?

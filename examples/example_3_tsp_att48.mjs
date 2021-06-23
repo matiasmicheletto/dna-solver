@@ -9,8 +9,8 @@ import { selection } from '../client/src/ga/index.mjs';
 // (see http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/).
 // Datasets should be converted to json format, to ease the parsing. Then the file is 
 // imported using:
-const filename = './data/att48.json';
-const data = await readFile(new URL(filename, import.meta.url)); // Data is enoded as string
+const filename = './json/att48.json';
+const data = await readFile(new URL(filename, import.meta.url)); // Data is encoded as string
 const instance = JSON.parse(data); // Convert to object
 
 // And we can use the required configuration which is provided by this file:

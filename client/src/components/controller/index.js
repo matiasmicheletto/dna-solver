@@ -34,7 +34,7 @@ const Controller = props => {
 
     return (
         <div className={classes.Container}>
-            <h5>Experiment control</h5>
+            <h4>Experiment control</h4>
             
             <Form className={classes.Form}>
                 <Row>

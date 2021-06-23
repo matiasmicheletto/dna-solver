@@ -33,6 +33,26 @@ class Quadratic extends Fitness {
         return "Parabola optimization";
     }
 
+    get nbit() {
+        return this._nbit;
+    }
+
+    get a() {
+        return this._a;
+    }
+
+    get b() {
+        return this._b;
+    }
+
+    get c() {
+        return this._c;
+    }
+
+    get z1() {
+        return this._z1;
+    }
+    
     _objective = x => {
         return this._a - this._b*(x - this._c)*(x - this._c);
     }

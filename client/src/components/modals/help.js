@@ -30,7 +30,8 @@ const HelpModal = props => (
             <ul>
                 <li>
                     <b>Parabolic Optimization</b>: a simple parabolic function that encode its optimization variable
-                    as binary strings. In this case, the bitstring length is the only configurable parameter.
+                    as binary strings. In this case, the bitstring length and the maximum fitness value are the only 
+                    configurable parameters.
                 </li>
                 <li>
                     <b>N-Queen Problem</b>: The problem consist on finding a way of placing N queens on a NxN chess
@@ -39,12 +40,15 @@ const HelpModal = props => (
                     where each element corresponds to  each column and its value indicates the row occupied by the 
                     queen of that column. The value of N is the only configurable parameter.
                 </li>
-                <li>
-                    <b>Travelling Salesperson Problem</b>: The <a href="https://en.wikipedia.org/wiki/Travelling_salesman_problem">
+                <li><b>Travelling Salesperson Problem</b>: The <a href="https://en.wikipedia.org/wiki/Travelling_salesman_problem">
                     Travelling Salesperson Problem (TSP)</a> asks the following question: "Given a list of cities and 
                     the distances between each pair of cities, what is the shortest possible route that visits each city 
                     exactly once and returns to the origin city?" It is an NP-hard problem in combinatorial optimization, 
                     important in theoretical computer science and operations research.
+                    <br></br>
+                    Four different functions are provided to calculate distance between cities or destinations: Euclidean,
+                    Pseudoeuclidean, Manhattan and Haversine. It is also available the option of loading the distance matrix
+                    directly, in order to solve the asymmetric version of the problem.
                 </li>
             </ul>
 

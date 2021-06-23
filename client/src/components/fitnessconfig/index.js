@@ -14,7 +14,7 @@ import QuadraticConfig from './quadraticconfig';
 const FitnessConfig = props => {
     let component;
 
-    switch(props.type){
+    switch(props.fitness.type){
         case fitness_types.TSP:
             component = <TSPConfig {...props}/>;
             break;

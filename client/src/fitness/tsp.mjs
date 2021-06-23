@@ -61,8 +61,10 @@ class Tsp extends Fitness {
                 this._unit = "km";
                 break;
         }
+        this._distance = d;
         // Weight matrix values should be updated using the new distance equation
-        this._weights = coord_to_weight_matrix(this._places, this._dist_function);
+        if(d !== distance.EXPLICIT)
+            this._weights = coord_to_weight_matrix(this._places, this._dist_function);
     }
  
     set places(p) {
@@ -75,8 +77,22 @@ class Tsp extends Fitness {
         this._weights = w;
     }
 
+    /// GETTERS
+
     get name() {
         return "Travelling Salesperson";
+    }
+
+    get distance() {
+        return this._distance;
+    }
+
+    get places() {
+        return this._places;
+    }
+
+    get weight_matrix() {
+        return this._weights;
     }
 
     get config() { // Overwrite the allele generator and crossover operator config
