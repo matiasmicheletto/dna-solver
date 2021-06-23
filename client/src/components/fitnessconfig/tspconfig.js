@@ -1,6 +1,12 @@
-import { config } from 'dotenv';
 import React, { useState, useContext } from 'react';
-import { Row, Col, Form, Table, Collapse } from 'react-bootstrap';
+import { 
+    Row, 
+    Col, 
+    Form, 
+    Table, 
+    Collapse,
+    Button 
+} from 'react-bootstrap';
 import classes from './styles.module.css';
 import { LoadingContext } from '../../context/LoadingContext';
 import { distance } from '../../fitness/tsp';
@@ -10,35 +16,22 @@ import { distance } from '../../fitness/tsp';
     -----------------------
     This component renders the problem description and the
     form that allows to configure the parameters of the 
-    Travelling Salesman Problem.
-    For now this component configure almos everything and
-    handles its own state with the fitness parameters
-    but everything will be moved to the experiment manager
-    and the fitnessitem component will handle the rendering
+    Travelling Salesman Problem.    
 */
 
-const default_places = [ 
-    [40, 55],
-    [42, 58],
-    [48, 66],
-    [36, 54],
-    [50, 58],
-    [49, 64],
-    [48, 59],
-    [29, 62]
-];
-const default_distance = distance.EUCLIDEAN;
 
 const TSPConfig = props => {
+    
+    // Show and hide the collapse with places coordinates
+    const [showPlaces, setShowPlaces] = useState(false); 
 
-    const [conf, setConfig] = useState({places: default_places, distance: default_distance, weights:[]});
-    const [showPlaces, setShowPlaces] = useState(false);
+    // Configuration file format
+    // In case of using json file, then, all the configuration should be provided by this file
+    // When using csv, then all the other parameters should be specified.
+    const [format, setFormat] = useState("json");
 
     // Preloader is used when loading .json or .csv data
     const {loading, setLoading} = useContext(LoadingContext);
-    
-    // A change in this variable does not require a rendering, thus, its not a component state
-    let format = "json"; // Other value is "csv"
 
     const parseJson = data => { // Get coordinate list from json data
         const content = JSON.parse(data);
@@ -66,8 +59,11 @@ const TSPConfig = props => {
                     default:
                         places = [];
                 }
-                setConfig({...config, places: places});
                 setLoading(false);
+                if(places.length > 0)
+                    props.configure({places: places});                
+                else // TODO: An error toast should be shown here
+                    console.log("Error when parsing file!");
             };
             reader.readAsText(file);
         }
@@ -101,7 +97,7 @@ const TSPConfig = props => {
                 <Col>
                     <Form.Group>
                         <Form.Label>Destinations file format</Form.Label>
-                        <Form.Control as="select" onChange={v=>{format = v.target.value}}>
+                        <Form.Control as="select" onChange={v => setFormat(v.target.value)}>
                             <option value="json">JSON</option>
                             <option value="csv">CSV</option>
                         </Form.Control>
@@ -109,31 +105,38 @@ const TSPConfig = props => {
                 </Col>
                 <Col style={{marginTop:"auto", marginBottom:"auto"}}>
                     <Form.Group>
-                        <Form.File id="File Form Control" onChange={v=>fileUploaded(v)}/>
+                        <Form.File id="File Form Control" onChange={v => fileUploaded(v)}/>
                     </Form.Group>
                 </Col>
             </Row>
+            <Row>
+                <Button onClick={()=>setShowPlaces(!showPlaces)}>
+                    Toggle coordinates
+                </Button>
+            </Row>
             <Collapse in={showPlaces}>
-                <Table striped bordered hover responsive>
-                    <thead>
-                        <tr>
-                            <th>City</th>
-                            <th>X</th>
-                            <th>Y</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            conf.places.map( (p,ind) => 
-                                <tr key={ind}>
-                                    <td>{ind+1}</td>
-                                    <td>{p[0]}</td>
-                                    <td>{p[1]}</td>
-                                </tr> 
-                            )
-                        }
-                    </tbody>
-                </Table>
+                <Row>
+                    <Table striped bordered hover responsive>
+                        <thead>
+                            <tr>
+                                <th>City</th>
+                                <th>X</th>
+                                <th>Y</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                props.fitness.places.map( (p,ind) => 
+                                    <tr key={ind}>
+                                        <td>{ind+1}</td>
+                                        <td>{p[0]}</td>
+                                        <td>{p[1]}</td>
+                                    </tr> 
+                                )
+                            }
+                        </tbody>
+                    </Table>
+                </Row>
             </Collapse>
         </Form>
     );
