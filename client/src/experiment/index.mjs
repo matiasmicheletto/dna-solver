@@ -182,6 +182,8 @@ class Experiment {
         for(let g = 0; g < len; g++){ // For each optimizer
             let best_matrix = [];
             let avg_matrix = [];
+            let best_fs_matrix = [];
+            let avg_fs_matrix = [];
             let avg_best_fitness = [];
             let avg_fitness_evals = [];
             let avg_elapsed = [];
@@ -189,11 +191,16 @@ class Experiment {
             let abs_best_sol = null;
             let abs_best_obj = null;
             for(let r = 0; r < rounds; r++){ // For each round
+                // Historic values are saved in matrix shaped structures
                 best_matrix.push(by_round[r][this._ga_list[g].id].best_hist);
                 avg_matrix.push(by_round[r][this._ga_list[g].id].avg_hist);
+                best_fs_matrix.push(by_round[r][this._ga_list[g].id].best_fs_hist);
+                avg_fs_matrix.push(by_round[r][this._ga_list[g].id].avg_fs_hist);
+                // Scalar values are saved in arrays
                 avg_best_fitness.push(by_round[r][this._ga_list[g].id].best_fitness);
                 avg_fitness_evals.push(by_round[r][this._ga_list[g].id].fitness_evals);
                 avg_elapsed.push(by_round[r][this._ga_list[g].id].elapsed);
+                // Best values are updated on best found
                 if(by_round[r][this._ga_list[g].id].best_fitness > abs_best_fitness) {
                     abs_best_fitness = by_round[r][this._ga_list[g].id].best_fitness;
                     abs_best_sol = by_round[r][this._ga_list[g].id].best;
@@ -201,16 +208,19 @@ class Experiment {
                 }
             }
 
+            // Results by optimizer are averaged
             by_optimizer[this._ga_list[g].id] = {
                 name: this._ga_list[g].name,
                 color: this._ga_list[g].color,
                 // Arrays for plotting optimization performance
                 best_hist: matrix_columnwise_mean(best_matrix),
                 avg_hist: matrix_columnwise_mean(avg_matrix),
+                best_fs_hist: matrix_columnwise_mean(best_fs_matrix),
+                avg_fs_hist: matrix_columnwise_mean(avg_fs_matrix),
                 // Averaged values across rounds
                 avg_best_fitness: array_mean(avg_best_fitness),
                 avg_fitness_evals: array_mean(avg_fitness_evals),
-                avg_elapsed: array_mean(avg_elapsed),
+                avg_elapsed: array_mean(avg_elapsed),                
                 // Better solutions across all rounds
                 abs_best_fitness: abs_best_fitness,
                 abs_best_solution: abs_best_sol, 

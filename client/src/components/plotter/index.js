@@ -5,11 +5,53 @@ import { ExperimentCtx } from '../../context/ExperimentCtx';
 import LinePlot from '../plots/lineplot';
 import BarPlot from '../plots/barplot';
 
+const ResultsCard = props => (
+    <Row>
+        {
+            Object.keys(props.results.by_optimizer).map(g => (
+                <Col xl style={{marginBottom:"15px"}}>
+                    <div style={{backgroundColor: props.results.by_optimizer[g].color}} className={classes.ResultCard}>
+                        <h5>{props.results.by_optimizer[g].name}</h5>
+                        <Table striped bordered hover responsive>
+                            <tbody>
+                                <tr>
+                                    <td><b>Fitness evaluations (average):</b></td>
+                                    <td>{props.results.by_optimizer[g].avg_fitness_evals.toFixed(3)}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Round elapsed time:</b></td>
+                                    <td>{props.results.by_optimizer[g].avg_elapsed.toFixed(3)} ms.</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Best fitness (average):</b></td>
+                                    <td>{props.results.by_optimizer[g].avg_best_fitness.toFixed(3)}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Best fitness (all rounds):</b></td>
+                                    <td>{props.results.by_optimizer[g].abs_best_fitness.toFixed(3)}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Best solution (all rounds):</b></td>
+                                    <td>{props.results.by_optimizer[g].abs_best_solution}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Best objective (all rounds):</b></td>
+                                    <td>{props.results.by_optimizer[g].abs_best_objective}</td>
+                                </tr>
+                            </tbody>
+                        </Table>
+                    </div>
+                </Col>
+            ))
+        }
+    </Row>
+)
+
 const Plotter = () => {
 
     const experiment = useContext(ExperimentCtx);            
     const results = experiment.results; // Only using results from the experiment manager
-    
+
     // This component has no state, it does nothing but showing results,
     // So its "constant state" is updated outside, so it changes when
     // rendering.
@@ -26,6 +68,21 @@ const Plotter = () => {
     let avg_hist_config = { // Line plot of avg fitness evolution
         title:"Population fitness average",
         yaxis:"Fitness (average accross rounds)",
+        xaxis:"Generation number",
+        series:[]
+    };
+
+    // Evolution slopes
+    let best_slope_config = { // Line plot of best fitness slope
+        title:"Best fitness slope",
+        yaxis:"Final slope",
+        xaxis:"Generation number",
+        series:[]
+    };
+
+    let avg_slope_config = { // Line plot of pop avg slope
+        title:"Pop. fitness average slope",
+        yaxis:"Final slope",
         xaxis:"Generation number",
         series:[]
     };
@@ -57,6 +114,20 @@ const Plotter = () => {
             return {
                 name: results.by_optimizer[g].name,
                 data: results.by_optimizer[g].avg_hist,
+                color: results.by_optimizer[g].color
+            }
+        });
+        best_slope_config.series = Object.keys(results.by_optimizer).map(g => {
+            return {
+                name: results.by_optimizer[g].name,
+                data: results.by_optimizer[g].best_fs_hist,
+                color: results.by_optimizer[g].color
+            }
+        });
+        avg_slope_config.series = Object.keys(results.by_optimizer).map(g => {
+            return {
+                name: results.by_optimizer[g].name,
+                data: results.by_optimizer[g].avg_fs_hist,
                 color: results.by_optimizer[g].color
             }
         });
@@ -96,8 +167,18 @@ const Plotter = () => {
                     <LinePlot id="best_hist" config={best_hist_config}/>                    
                 </Col>
                 <Col sm="12" md="6">
+                    <LinePlot id="best_slope" config={best_slope_config}/>                    
+                </Col>
+            </Row>
+            <Row>
+            <Col sm="12" md="6">
                     <LinePlot id="avg_hist" config={avg_hist_config}/>                    
                 </Col>
+                <Col sm="12" md="6">
+                    <LinePlot id="avg_slope" config={avg_slope_config}/>                    
+                </Col>
+            </Row>
+            <Row>
                 <Col sm="12" md="6">
                     <BarPlot id="fitness_evals" config={fitness_bar_config}/>
                 </Col>
@@ -105,45 +186,7 @@ const Plotter = () => {
                     <BarPlot id="elapsed" config={elapsed_bar_config}/>
                 </Col>
             </Row>
-            <Row>
-                {
-                    Object.keys(results.by_optimizer).map(g => (
-                        <Col xl style={{marginBottom:"15px"}}>
-                            <div style={{backgroundColor: results.by_optimizer[g].color}} className={classes.ResultCard}>
-                                <h5>{results.by_optimizer[g].name}</h5>
-                                <Table striped bordered hover responsive>
-                                    <tbody>
-                                        <tr>
-                                            <td><b>Fitness evaluations (average):</b></td>
-                                            <td>{results.by_optimizer[g].avg_fitness_evals.toFixed(3)}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Round elapsed time:</b></td>
-                                            <td>{results.by_optimizer[g].avg_elapsed.toFixed(3)} ms.</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Best fitness (average):</b></td>
-                                            <td>{results.by_optimizer[g].avg_best_fitness.toFixed(3)}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Best fitness (all rounds):</b></td>
-                                            <td>{results.by_optimizer[g].abs_best_fitness.toFixed(3)}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Best solution (all rounds):</b></td>
-                                            <td>{results.by_optimizer[g].abs_best_solution}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Best objective (all rounds):</b></td>
-                                            <td>{results.by_optimizer[g].abs_best_objective}</td>
-                                        </tr>
-                                    </tbody>
-                                </Table>
-                            </div>
-                        </Col>
-                    ))
-                }
-            </Row>
+            <ResultsCard results={results} />
         </div>
     );
 }

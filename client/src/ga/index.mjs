@@ -24,6 +24,10 @@ Configuration object:
         * type: Float number between 0 and 2/(pop_size*(pop_size-1)).
     - tourn_k: K parameter for tournament selection method.
         * type: Integer number, usually between 2 and 5.
+    - best_fsw_factor: Window size for getting the best final slope value proportional to generation number.
+        * type: Float number.
+    - avg_fsw_factor: Window size for getting the average final slope value proportional to generation number.
+        * type: Float number.
     - selection: Selection operator.
         * type: ROULETTE, RANK or TOURNAMENT.
     - crossover: Crossover operator.
@@ -31,7 +35,13 @@ Configuration object:
     - mutation: Mutation operator.
         * type: BITFLIP, SWAP or RAND.
 */
-import { probability, random_select, generate_id, random_name } from "../tools/index.mjs";
+import { 
+    probability, 
+    random_select, 
+    generate_id, 
+    random_name, 
+    final_slope 
+} from "../tools/index.mjs";
 
 
 // Operators enumerators
@@ -64,6 +74,8 @@ const default_config = {
     mut_gen: () => Math.round(Math.random()), // Used for mutation.RAND
     rank_r: 0.002,
     tourn_k: 3,
+    best_fsw_factor: 0.2,
+    avg_fsw_factor: 0.5,
     selection: selection.ROULETTE,
     crossover: crossover.SINGLE,
     mutation: mutation.BITFLIP
@@ -114,8 +126,10 @@ export default class GA { // GA model class
         // Restart counters
         this._generation = 0; // Generation counter
         this._ff_evs = 0; // Fitness function evaluations counter
-        this._best_hist = [this._population[0].fitness]; // Historic values of best fitness
-        this._avg_hist = [this._fitness_sum() / this._config.pop_size]; // Historic values of population average fitness
+        this._best_hist = []; // Historic values of best fitness
+        this._avg_hist = []; // Historic values of population average fitness
+        this._best_fs_hist = [];
+        this._avg_fs_hist = [];
     }
 
     _eval(ind) { // This fitness function evaluates the ind-th individual condition
@@ -167,13 +181,20 @@ export default class GA { // GA model class
         return {
             name: this._name,
             id: this._id,
+            // Absolute values
             best: this._fitness.decode(this._population[0].genotype),
             best_fitness: this._population[0].fitness,
             best_objective: this._fitness.objective_str(this._population[0].genotype),
-            best_hist: this._best_hist,
-            avg_hist: this._avg_hist,
+            best_final_slope: this._best_final_slope,
+            avg_final_slope: this._avg_final_slope,
             generation: this._generation,
             fitness_evals: this._ff_evs,
+            // Historic values
+            best_hist: this._best_hist,
+            avg_hist: this._avg_hist,
+            best_fs_hist: this._best_fs_hist,
+            avg_fs_hist: this._avg_fs_hist,
+            // Current state of population
             population: this._population.map( p => ( // Add phenotypes and objective values to population 
                 {
                     ...p,
@@ -301,6 +322,22 @@ export default class GA { // GA model class
     _sort_pop() {
         // Sort population from best to worst fitness
         this._population.sort((a,b) => (b.fitness - a.fitness) );
+    }
+
+    _update_stats() {
+        // Record the new best and average values
+        this._best_hist.push(this._population[0].fitness);
+        this._avg_hist.push( this._fitness_sum() / this._config.pop_size );
+        
+        // Obtain the convergence metrics
+        const best_fsw = Math.ceil(this._config.best_fsw_factor*this._generation);
+        const avg_fsw = Math.ceil(this._config.avg_fsw_factor*this._generation);
+        this._best_final_slope = final_slope(this._best_hist, best_fsw);
+        this._avg_final_slope = final_slope(this._avg_hist, avg_fsw);
+
+        // Record the convergence metrics
+        this._best_fs_hist.push(this._best_final_slope); 
+        this._avg_fs_hist.push(this._avg_final_slope);
     }
 
 
@@ -561,9 +598,8 @@ export default class GA { // GA model class
         // Remove individuals that do not survive 
         this._population.splice(this._config.pop_size); 
 
-        // Record the new best and average values
-        this._best_hist.push(this._population[0].fitness);
-        this._avg_hist.push( this._fitness_sum() / this._config.pop_size );
+        // Save evolution metrics
+        this._update_stats();
 
         this._generation++;
     }

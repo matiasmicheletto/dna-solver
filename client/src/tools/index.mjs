@@ -26,7 +26,7 @@ export const hue2rgb = (p, q, h) => {
     if (h < 1/2) return q;
     if (h < 2/3) return p + (q - p) * (2/3 - h) * 6;
     return p;
-}
+};
 
 export const hsl2rgb = (h, s, l) => {
     // Color conversion
@@ -42,7 +42,7 @@ export const hsl2rgb = (h, s, l) => {
     }
 
     return [ Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255) ];
-}
+};
 
 export const random_select = (n, range) => { 
     // Returns array of "n" indexes within the specified "range"
@@ -52,7 +52,7 @@ export const random_select = (n, range) => {
         if(arr.indexOf(r) === -1) arr.push(r);
     }
     return arr;
-}
+};
 
 export const shuffle_array = (array) => {
     // Durstenfeld shuffle algorithm
@@ -60,7 +60,7 @@ export const shuffle_array = (array) => {
         const j = randint(i+1);
         [array[i], array[j]] = [array[j], array[i]];
     }
-}
+};
 
 export const has_duplicates = arr => {
     // Search for duplicated numbers in array    
@@ -73,7 +73,7 @@ export const has_duplicates = arr => {
             return true;
     }
     return false;
-}
+};
 
 export const coord_to_weight_matrix = (p, dist) => {
     // Returns the weight matrix for set of points "p" using provided distance function "dist"
@@ -91,7 +91,7 @@ export const coord_to_weight_matrix = (p, dist) => {
         w[N-1][N-1] = 0; // Last element
     }    
     return w;
-}    
+};    
 
 // Mean or average of an array
 export const array_mean = arr => arr.reduce((r, a) => a + r, 0)/arr.length;
@@ -109,4 +109,12 @@ export const matrix_columnwise_mean = matrix => {
         for(let col = 0; col < numcols; col++)
             avgs[col] = (avgs[col]*row + matrix[row][col]) / (row+1); // cummulative avg
     return avgs;
-}
+};
+
+export const final_slope = (data, window) => { 
+    const len = data.length; 
+    return (len > 0 && window > 0) ? 
+        (data[len-1]-data[len - Math.min(len, window)]) / data[len - 1] 
+        : 
+        0;
+};
