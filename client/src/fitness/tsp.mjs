@@ -24,7 +24,7 @@ const default_places = [
         [29, 62]
 ];
 
-class Tsp extends Fitness {
+export default class Tsp extends Fitness {
     constructor(places = default_places, dist = distance.EUCLIDEAN, weight_matrix = null) {
         super({_places: places}); 
 
@@ -102,17 +102,17 @@ class Tsp extends Fitness {
         return this._weights;
     }
 
-    get config() { // Overwrite the allele generator and crossover operator config
+    get ga_config() { // Overwrite the allele generator and crossover operator config
         // Adding a GA module configuration attributes will overwrite the defaults one
-        let c = super.config;
-        c.mutation = mutation.SWAP;
-        c.crossover = crossover.PMX;
-        return c;
+        return {
+            mutation: mutation.SWAP,
+            crossover: crossover.PMX
+        }
     }
 
     // Using arrow functions here to override parent class methods (not working other way)
 
-    _objective = x => {
+    objective = x => {
         let d = 0; // Total distance traveled
         for(let k = 0; k < x.length-1; k++)
             d += this._weights[ x[k] ][ x[k+1] ];
@@ -120,18 +120,13 @@ class Tsp extends Fitness {
         return d;
     }
 
-    _objective_nice = x => {
-        return this._objective(x).toFixed(2) + " " + this._unit;
-    }
+    objective_str = x => this.objective(x).toFixed(2) + " " + this._unit
 
-    _fitness = x => has_duplicates(x) ? 0 : 10000/this._objective(x)
+    eval = g => has_duplicates(g) ? 0 : 10000/this.objective(g)
 
-    _decode_nice = b => {
-        const d = b.join("-");
-        return d.substr(0,25)+(d.length>25?"...":""); // Crop at 25 characters
-    }
+    decode_str = g => g.join("-").substr(0,25)+(g.length>25?"...":"") // Crop at 25 characters
 
-    _rand_encoded = () => {
+    rand_encoded = () => {
         let numbers = Array.from(Array(this._places.length).keys());
         shuffle_array(numbers);
         return numbers;
@@ -157,7 +152,4 @@ class Tsp extends Fitness {
         const a = Math.pow(Math.sin((r2[0]-r1[0]) / 2),2) + Math.cos(r1[0]) * Math.cos(r2[0]) * Math.pow(Math.sin((r2[1] - r1[1]) / 2),2);
         return 12742 * Math.asin(Math.sqrt(a)); // Distance is in km
     }
-}
-
-
-export default Tsp;
+};

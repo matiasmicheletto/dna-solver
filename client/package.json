@@ -1,6 +1,6 @@
 {
   "name": "sganode-client",
-  "description": "Simple Genetic Algorithm Educational Dashboard",
+  "description": "Genetic algorithms hyperparametric optimization module",
   "version": "1.0.0",
   "private": true,
   "proxy": "http://localhost:8080",

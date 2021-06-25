@@ -1,31 +1,0 @@
-Name:                           [31mRoulette selection method[0m
-                    Id:                             _qa8ti2dbeaj1624561301734
-                    Current generation:             50
-                    Fitness evaluations (average):  530.7
-                    Round elapsed time (average):   22.75 ms. 
-                    Best fitness (average):         19.531715342620465
-                    Best fitness (all rounds):      19.9203187250996
-                    Best solution (all rounds):     4-2-9-0-6-5-3-8-1-7
-                    Best objective (all rounds):    502.00 blocks
-
-------------------------------------------------------
-Name:                           [31mRanking selection method (r=0.002)[0m
-                    Id:                             _fh1b6yuatjv1624561301736
-                    Current generation:             50
-                    Fitness evaluations (average):  536.8
-                    Round elapsed time (average):   20.35 ms. 
-                    Best fitness (average):         19.07795308086572
-                    Best fitness (all rounds):      19.9203187250996
-                    Best solution (all rounds):     6-0-5-3-8-1-7-2-4-9
-                    Best objective (all rounds):    502.00 blocks
-
-------------------------------------------------------
-Name:                           [31mTournament selection method (k=3)[0m
-                    Id:                             _l79vvyghsc81624561301736
-                    Current generation:             50
-                    Fitness evaluations (average):  493.9
-                    Round elapsed time (average):   20.85 ms. 
-                    Best fitness (average):         18.935641554654342
-                    Best fitness (all rounds):      19.9203187250996
-                    Best solution (all rounds):     3-5-6-0-9-4-2-7-1-8
-                    Best objective (all rounds):    502.00 blocks

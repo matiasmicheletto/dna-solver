@@ -58,8 +58,7 @@ class Experiment {
         return output.join("\n------------------------------------------------------\n");
     }
 
-    printGAConfigs = () => {
-        // Just a debug helper function
+    printGAConfigs = () => { // Just a debug helper function
         console.log("GA Configurations:");
         this._ga_list.forEach(g => {
             console.log(g.status);
@@ -68,7 +67,7 @@ class Experiment {
         });
     }
 
-    get_ga_list = fitness_id => this._ga_list.filter(g => g.fitness_id===fitness_id);
+    get_ga_list = fitness_id => this._ga_list.filter(g => g.fitness_id===fitness_id)
 
     add_fitness = type => {
         // Create new fitness function
@@ -129,7 +128,7 @@ class Experiment {
 
     _update_ga_colors = () => {
         // Optimizers use colors to visually differentiate them.
-        // An evenly distributed hue colors are assigned to each one.
+        // An evenly distributed HUE colors are assigned to each one.
         const len = this._ga_list.length;
         for(let g = 0; g < len; g++){
             const color = hsl2rgb(g/len, .5, .7); // Equally spaced colors
@@ -141,8 +140,8 @@ class Experiment {
         // Add an optimizer for a given fitness function
         const index = this._fitness_list.findIndex(el => el.id === fitness_id);
         if(index !== -1){
-            const ga = new GA({...this._fitness_list[index].config});
-            this._ga_list.push(ga);            
+            const ga = new GA(this._fitness_list[index]);
+            this._ga_list.push(ga);
             this._update_ga_colors(); // The list of colors is assigned
             return ga.id;            
         }

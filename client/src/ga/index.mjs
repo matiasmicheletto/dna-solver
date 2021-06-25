@@ -4,6 +4,8 @@ Genetic Algorithm Class Module
 Implements a generic and configurable GA based optimizer.
 
 Configuration object:
+    - fitness: Fitness instance
+        * type: Fitness
     - pop_size: Population size, number of chromosomes.
         * type: Non zero even Number (integer).
     - elitism: Number of elite individuals. Elite individuals are force-preserved through generations.
@@ -32,26 +34,28 @@ Configuration object:
 import { probability, random_select, generate_id, random_name } from "../tools/index.mjs";
 
 
-// Enumerators
-const selection = {
+// Operators enumerators
+export const selection = {
     ROULETTE: "roulette",
     RANK: "rank",
     TOURNAMENT: "tournament"
 };
 
-const crossover = {
+export const crossover = {
     SINGLE: "single",
     DOUBLE: "double",
     PMX: "pmx"
 };
 
-const mutation = {
+export const mutation = {
     BITFLIP: "bitflip", // Only for bitstring encoding
     SWAP: "swap", // Swap positions
-    RAND: "rand" // Uses mut_gen as random generator
+    RAND: "rand" // Uses mut_gen function as random generator
 };
 
-const default_config = { // Default parameters for simple scalar function
+
+// Default parameters (tunned for general purpose)
+const default_config = { 
     pop_size: 20, 
     elitism: 2,
     cross_prob: 0.8, 
@@ -65,22 +69,18 @@ const default_config = { // Default parameters for simple scalar function
     mutation: mutation.BITFLIP
 };
 
-class GA { // GA model class
-    constructor(config){
-        // Overwrite default with custom configuration
+export default class GA { // GA model class
+    constructor(fitness, config = {}){
+        this._fitness = fitness;
+        
+        // Overwrite default configuration parameters with those that
+        // are default for the fitness function, and then override
+        // everything with the custom parameters.
         this._config = { 
             ...default_config,
+            ...this._fitness.ga_config,
             ...config
         };
-
-        // Objective function should be passed through config object
-        if(!this._config.fitness){
-            console.warn("Fitness function is not defined!");
-            return;
-        }
-
-        // The optimizer should be always linked to a fitness function
-        this._fitness_id = this._config.fitness_id;
 
         // Create and initialize the array of individuals
         this._population = new Array(this._config.pop_size);
@@ -106,8 +106,8 @@ class GA { // GA model class
     reset() { // Restarts de algorithm
         // Generate random genotypes for each individual and evaluate its condition
         for(let k = 0; k < this._population.length; k++){
-            this._population[k] = { genotype: this._config.rand_encoded() };
-            this._fitness(k);
+            this._population[k] = { genotype: this._fitness.rand_encoded() };
+            this._eval(k);
         }
         // Sort population (selection requires ranked individuals)
         this._sort_pop();
@@ -118,8 +118,8 @@ class GA { // GA model class
         this._avg_hist = [this._fitness_sum() / this._config.pop_size]; // Historic values of population average fitness
     }
 
-    _fitness(ind) { // This fitness function evaluates the ind-th individual condition
-        this._population[ind].fitness = this._config.fitness(this._population[ind].genotype);
+    _eval(ind) { // This fitness function evaluates the ind-th individual condition
+        this._population[ind].fitness = this._fitness.eval(this._population[ind].genotype);
         this._population[ind].evaluated = true;
         this._ff_evs++;
     }
@@ -138,7 +138,7 @@ class GA { // GA model class
     }
 
     get fitness_id() {
-        return this._fitness_id;
+        return this._fitness.id;
     }
 
     get generation() {
@@ -149,27 +149,27 @@ class GA { // GA model class
         return this._population.map( p => ( // Add phenotypes and objective values
             {
                 ...p,
-                phenotype: this._config.decode(p.genotype), 
-                objective: this._config.objective(p.genotype)
+                phenotype: this._fitness.decode(p.genotype), 
+                objective: this._fitness.objective(p.genotype)
             }
         ));
-    }
-
-    get problem_info() { // Problem description
-        return this._config.doc();
     }
 
     get config() { // Get current configuration
         return this._config;
     }
 
+    get fitness() { // Fitness object (used mostlty to determine class)
+        return this._fitness;
+    }
+
     get status() { // Algorithm metrics (may be slow)
         return {
             name: this._name,
             id: this._id,
-            best: this._config.decode(this._population[0].genotype),
+            best: this._fitness.decode(this._population[0].genotype),
             best_fitness: this._population[0].fitness,
-            best_objective: this._config.objective(this._population[0].genotype),
+            best_objective: this._fitness.objective_str(this._population[0].genotype),
             best_hist: this._best_hist,
             avg_hist: this._avg_hist,
             generation: this._generation,
@@ -177,8 +177,8 @@ class GA { // GA model class
             population: this._population.map( p => ( // Add phenotypes and objective values to population 
                 {
                     ...p,
-                    phenotype: this._config.decode(p.genotype), 
-                    objective: this._config.objective(p.genotype)
+                    phenotype: this._fitness.decode(p.genotype), 
+                    objective: this._fitness.objective(p.genotype)
                 }
             ))
         }
@@ -186,6 +186,7 @@ class GA { // GA model class
 
     /// Setters
     set name(n) {
+        console.log('"'+this._name+'" is now called "'+n+'"');
         this._name = n;
     }
 
@@ -201,8 +202,8 @@ class GA { // GA model class
             this._population = this._population.concat(new_pop);
             // Evaluate added individuals
             for(let k = this._config.pop_size; k < this._population.length; k++){
-                this._population[k] = { genotype: this._config.rand_encoded() };
-                this._fitness(k);
+                this._population[k] = { genotype: this._fitness.rand_encoded() };
+                this._eval(k);
             }
             this._sort_pop(); // Sort again
         }else // Remove leftover individuals from bottom to top (worst to best)
@@ -547,7 +548,7 @@ class GA { // GA model class
         // Compute population fitness values for not evaluated individuals
         this._population.forEach( (p, ind) => {
             if(!p.evaluated) 
-                this._fitness(ind);
+                this._eval(ind);
         });
 
         // Restore elite individuals to population (already evaluated)
@@ -567,7 +568,3 @@ class GA { // GA model class
         this._generation++;
     }
 }
-
-
-export default GA;
-export {selection, crossover, mutation};

@@ -1,44 +1,38 @@
 import React from 'react';
-import { fitness_types } from '../../experiment/index.mjs';
+
 import TSPConfig from './tspconfig';
 import NQueensConfig from './nqueensconfig';
 import QuadraticConfig from './quadraticconfig';
 
-import TSP from '../../fitness/tsp.mjs';
+import Tsp from '../../fitness/tsp.mjs';
+import NQueens from '../../fitness/nqueens.mjs';
+import Quadratic from '../../fitness/quadratic.mjs';
 
 /*
     FitnessConfig Component
     ----------------------
     This is a HOC that returns the config form component
-    depending on the fitness type given.
+    depending on the fitness class.
+    This makes an abstraction between react component and
+    fitness models
 */
 
 const FitnessConfig = props => {
-    let component;
 
-    console.log(props.fitness.type);
-    console.log(props.fitness instanceof TSP);
+    if(props.fitness instanceof Tsp)
+        return <TSPConfig {...props}/>
 
-    switch(props.fitness.type){
-        case fitness_types.TSP:
-            component = <TSPConfig {...props}/>;
-            break;
-        case fitness_types.NQUEENS:
-            component = <NQueensConfig {...props}/>;
-            break;
-        case fitness_types.QUADRATIC:
-            component = <QuadraticConfig {...props}/>;
-            break;
-        default:
-            component = (
-                <div>
-                    <p>This fitness model has not configurable parameters.</p>
-                </div>
-            )
-            break;
-    }
+    if(props.fitness instanceof NQueens)
+        return <NQueensConfig {...props}/>
 
-    return component;
+    if(props.fitness instanceof Quadratic)
+        return <QuadraticConfig {...props}/>
+
+    return (
+        <div>
+            <p>This fitness model has not configurable parameters.</p>
+        </div>
+    );
 };
 
 export default FitnessConfig;

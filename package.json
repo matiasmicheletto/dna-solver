@@ -1,7 +1,7 @@
 {
   "name": "sganode",
   "version": "1.0.0",
-  "description": "Simple Genetic Algorithm Educational Dashboard",
+  "description": "Genetic algorithms hyperparametric optimization module",
   "main": "app.js",
   "scripts": {
     "start": "node app",
