@@ -113,7 +113,7 @@ const GAItem = props => {
             </Row>
             <Collapse in={showPop}>
                 <Row>
-                    <PopTable pop={ga.population}></PopTable>
+                    <PopTable ga={ga}></PopTable>
                 </Row>
             </Collapse>
             <Collapse in={showConfig}>

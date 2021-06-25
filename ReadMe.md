@@ -22,7 +22,7 @@ $ npm run build
 $ npm run start
 ```
 
-If you wish to use only the optimization module via scripting (without GUI), checkout the [examples](examples) folder and run them installing a minimal Node.js number of packages, using the following commands:  
+If you need to use the optimization module via scripting (without GUI), checkout the [examples](examples) folder and run the scripts installing just a few packages, using the following commands:  
 
 ```bash
 $ git clone https://github.com/matiasmicheletto/sganode.git
@@ -38,20 +38,21 @@ Email: [matias.micheletto@uns.edu.ar](mailto:matias.micheletto@uns.edu.ar)
 
 ## Backlog
 
-Module development (80%).  
+Module development (66%).  
 - [x] Fitness function module.  
 - [x] Optimizer module.  
 - [x] Experiment manager module.  
 - [x] Command line optimization example scripts.  
+- [ ] Export results as csv file.
 - [ ] Add flexibility to fitness modules extension.  
 
-GUI development (50%)  
+GUI development (66%)  
 - [x] Graphical experiment configuration.  
   - [x] Add and remove fitness models.  
   - [x] Add and remove optimizers.  
-- [ ] Graphical fitness model configuration.  
-  - [ ] Problem description.  
-  - [ ] Parameter configuration.  
+- [x] Graphical fitness model configuration.  
+  - [x] Problem description.  
+  - [x] Parameter configuration.  
 - [ ] Graphical optimizer configuration.  
   - [x] Static parameters configuration.  
   - [x] Name edition.  
@@ -66,7 +67,7 @@ GUI development (50%)
   - [x] Experiment results summary.  
   - [x] Solution evolution history.  
   - [x] Optimizers comparative bar plot.  
-- [ ] Solution visualization.  
+- [ ] Solution candidate visualization.  
   - [ ] Monovariate functions plot.  
   - [ ] Chess board for N-Queens.  
   - [ ] TSP destinations map.  

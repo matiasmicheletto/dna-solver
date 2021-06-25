@@ -4,6 +4,8 @@ import TSPConfig from './tspconfig';
 import NQueensConfig from './nqueensconfig';
 import QuadraticConfig from './quadraticconfig';
 
+import TSP from '../../fitness/tsp.mjs';
+
 /*
     FitnessConfig Component
     ----------------------
@@ -13,6 +15,9 @@ import QuadraticConfig from './quadraticconfig';
 
 const FitnessConfig = props => {
     let component;
+
+    console.log(props.fitness.type);
+    console.log(props.fitness instanceof TSP);
 
     switch(props.fitness.type){
         case fitness_types.TSP:

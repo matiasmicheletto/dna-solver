@@ -5,7 +5,8 @@ const LinePlot = props => {
 
     const config = {
         chart:{
-            height: "100%"
+            height: "100%",
+            zoomType: "xy"
         },
         title: {
             text: props.config.title

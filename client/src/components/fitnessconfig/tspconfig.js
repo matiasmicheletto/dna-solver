@@ -143,7 +143,7 @@ const TSPConfig = props => {
         let array = [];
         const lines = data.split('\n');
         for(let l = 0; l < lines.length; l++)
-            array.push(lines[l].split(',').map(el=>parseInt(el)));
+            array.push(lines[l].split(',').map(el=>parseFloat(el)));
         return array;
     }
 
@@ -153,10 +153,9 @@ const TSPConfig = props => {
             let reader = new FileReader();
             reader.onload = content => {                
                 let config = {};
-                if(type === "json"){
+                if(type === "json")
                     config = parseJson(content.target.result);        
-                    console.log(config);
-                }else{
+                else{
                     const data = csv2Array(content.target.result);
                     config[param] = data;
                 }
@@ -177,7 +176,7 @@ const TSPConfig = props => {
                 combinatorial optimization, important in theoretical computer science and operations research.</p>
             </div>
             <Row>
-                <Col md="9">
+                <Col md="9" className={classes.ProblemDesc}>
                     <p>If you already have a JSON formatted TSP configuration file, upload it pressing the following button:</p>
                 </Col>
                 <Col md="3">
@@ -192,7 +191,7 @@ const TSPConfig = props => {
                 </Col>
             </Row>
             <Row style={{marginTop: "15px"}}>
-                <Col md="9">
+                <Col md="9" className={classes.ProblemDesc}>
                     <p>Otherwise, you can upload csv formatted file for the TSP coordinates:</p>
                 </Col>
                 <Col md="3">
@@ -207,15 +206,15 @@ const TSPConfig = props => {
                 </Col>
             </Row>
             <Row style={{marginTop: "15px"}}>
-                <Col md="9">
+                <Col md="9" className={classes.ProblemDesc}>
                     <p>The weight matrix is obtained by selecting the appropiate distance function. In case of "EXPLICIT" distance
-                        function is selected, then a distance matrix should be uploaded through a CSV file.</p>                    
+                        function is selected, then a distance matrix should be provided uploading a CSV file.</p>                    
                 </Col>
                 <Col md="3">
                     <Form.Group>                        
                         <Form.Control 
                             as="select" 
-                            defaultValue={props.fitness.distance}
+                            value={props.fitness.distance} // defaultValue does not work in this case because of rendering order
                             onChange={v=>props.configure({distance:v.target.value})}
                         >
                         {

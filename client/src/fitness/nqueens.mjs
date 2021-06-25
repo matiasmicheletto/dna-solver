@@ -51,8 +51,11 @@ class NQueens  extends Fitness {
 
     _fitness = x => 100 / ( this._objective(x) + 1 );
 
-    _decode_nice = b => b.join("-")
-
+    _decode_nice = b => b => {
+        const d = b.join("-");
+        return d.substr(0,25)+(d.length>25?"...":""); // Crop at 25 characters
+    }
+    
     _rand_encoded = () => { // Random order of numbers from 1 to N
         let numbers = Array.from(Array(this._N).keys());
         shuffle_array(numbers);

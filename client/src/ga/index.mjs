@@ -191,6 +191,11 @@ class GA { // GA model class
 
     set pop_size(p) { 
         // Changing the population size adds or removes individuals regardless of the current state of the algorithm
+        if(p < 2){ 
+            console.log("GA POP_SIZE parameter should not be smaller than 2");
+            return;
+        }
+        
         if(p > this._config.pop_size){ // Add individuals
             let new_pop = new Array(p - this._config.pop_size);
             this._population = this._population.concat(new_pop);
@@ -218,8 +223,8 @@ class GA { // GA model class
         this._config.cross_prob = v;
     }
 
-    set mut_prob(v) {
-        this._config.mut_prob = v;
+    set mut_prob(v) {        
+        this._config.mut_prob = v;        
     }
 
     set mut_fr(v) {
@@ -552,7 +557,7 @@ class GA { // GA model class
         // Sort population from best to worst fitness
         this._sort_pop();
 
-        // Remove individuals that not survive 
+        // Remove individuals that do not survive 
         this._population.splice(this._config.pop_size); 
 
         // Record the new best and average values

@@ -126,7 +126,10 @@ class Tsp extends Fitness {
 
     _fitness = x => has_duplicates(x) ? 0 : 10000/this._objective(x)
 
-    _decode_nice = b => b.join("-")
+    _decode_nice = b => {
+        const d = b.join("-");
+        return d.substr(0,25)+(d.length>25?"...":""); // Crop at 25 characters
+    }
 
     _rand_encoded = () => {
         let numbers = Array.from(Array(this._places.length).keys());

@@ -1,34 +1,38 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
 
-const PopTable = (props) => {
+const cellStyle = {
+    whiteSpace: "nowrap", 
+    textOverflow: "ellipsis", 
+    overflow: "hidden", 
+    maxWidth:"150px"
+};
 
-    return (
-        <Table striped bordered hover responsive>
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Genotype</th>
-                    <th>Phenotype</th>
-                    <th>Fitness</th>
-                    <th>Objective</th>
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    props.pop.map( (p,ind) => 
-                        <tr key={ind}>
-                            <td>{ind+1}</td>
-                            <td>{p.genotype}</td>
-                            <td>{p.phenotype}</td>
-                            <td>{p.fitness.toFixed(2)}</td>
-                            <td>{p.objective}</td>
-                        </tr> 
-                    )
-                }
-            </tbody>
-        </Table>
-    )
-}
+const PopTable = props => (
+    <Table striped bordered hover responsive>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Genotype</th>
+                <th>Phenotype</th>
+                <th>Fitness</th>
+                <th>Objective</th>
+            </tr>
+        </thead>
+        <tbody>
+            {
+                props.ga.population.map( (p,ind) => 
+                    <tr key={ind}>
+                        <td>{ind+1}</td>
+                        <td style={cellStyle}>{p.genotype}</td>
+                        <td style={cellStyle}>{p.phenotype}</td>
+                        <td>{p.fitness.toFixed(2)}</td>
+                        <td>{p.objective}</td>
+                    </tr> 
+                )
+            }
+        </tbody>
+    </Table>
+);
 
 export default PopTable;

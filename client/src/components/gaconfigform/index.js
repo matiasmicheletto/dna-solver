@@ -57,7 +57,7 @@ const GAConfigForm = props => (
                         max={2/props.current.pop_size/(props.current.pop_size-1)}
                         step="0.001"
                         defaultValue={props.current.rank_r}
-                        onChange={v => props.onChange("rank_r", parseInt(v.target.value))}
+                        onChange={v => props.onChange("rank_r", parseFloat(v.target.value))}
                     >
                     </Form.Control>
                 </InputGroup>
@@ -102,7 +102,7 @@ const GAConfigForm = props => (
                     max="1"
                     step="0.01"
                     defaultValue={props.current.cross_prob}
-                    onChange={v => props.onChange("cross_prob", parseInt(v.target.value))}
+                    onChange={v => props.onChange("cross_prob", parseFloat(v.target.value))}
                 >
                 </Form.Control>
             </InputGroup>
@@ -131,7 +131,7 @@ const GAConfigForm = props => (
                     max="1"
                     step="0.01"
                     defaultValue={props.current.mut_prob}
-                    onChange={v => props.onChange("mut_prob", parseInt(v.target.value))}
+                    onChange={v => props.onChange("mut_prob", parseFloat(v.target.value))}
                 >
                 </Form.Control>
             </InputGroup>
@@ -144,7 +144,7 @@ const GAConfigForm = props => (
                     max="1"
                     step="0.01"
                     defaultValue={props.current.mut_fr}
-                    onChange={v => props.onChange("mut_fr", parseInt(v.target.value))}
+                    onChange={v => props.onChange("mut_fr", parseFloat(v.target.value))}
                 >
                 </Form.Control>
             </InputGroup>

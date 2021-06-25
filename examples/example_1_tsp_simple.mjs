@@ -2,6 +2,7 @@ import cliProgress from 'cli-progress';
 import Experiment, { fitness_types } from '../client/src/experiment/index.mjs';
 import { selection } from '../client/src/ga/index.mjs';
 import { distance } from '../client/src/fitness/tsp.mjs';
+import fs from 'fs';
 
 
 // In this example we are solving the Symmetric Travelling Salesperson Problem (TSP),
@@ -99,4 +100,10 @@ progressBar.stop(); // Stopping the progress bar allows us to print more data
 // In this case, we're just showing some basic and plain text ouput, so we
 // use the getPlainResults() method that returns a string with the summarized
 // results for each optimizer:
-process.stdout.write(experiment.getPlainResults());
+const results = experiment.getPlainResults();
+process.stdout.write(results);
+
+// If we need to export the results to analyze using other software, then
+// the writeFile() function can be used:
+const filename = 'example_1_results.txt';
+fs.writeFile(filename, results, () => process.stdout.write("Results saved as "+filename));

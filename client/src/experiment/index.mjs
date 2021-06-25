@@ -31,7 +31,6 @@ class Experiment {
         this._fitness_list = []; // List of fitness functions added to the analysis
         this._ga_list = []; // List of optimizers linked to the fitness functions
         this._results = {by_round:null, by_optimizer:null, ready:false}; // Results to complete
-        this._configured = {}; // This object records the configurations modified
     }
 
     get fitness_list() {
