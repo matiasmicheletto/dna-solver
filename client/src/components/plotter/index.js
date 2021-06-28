@@ -4,48 +4,58 @@ import classes from './styles.module.css';
 import { ExperimentCtx } from '../../context/ExperimentCtx';
 import LinePlot from '../plots/lineplot';
 import BarPlot from '../plots/barplot';
+import SolutionViewer from '../solutionviewer';
 
-const ResultsCard = props => (
-    <Row>
-        {
-            Object.keys(props.results.by_optimizer).map(g => (
-                <Col key={g} xl style={{marginBottom:"15px"}}>
-                    <div style={{backgroundColor: props.results.by_optimizer[g].color}} className={classes.ResultCard}>
-                        <h5>{props.results.by_optimizer[g].name}</h5>
-                        <Table striped bordered hover responsive>
-                            <tbody>
-                                <tr>
-                                    <td><b>Fitness evaluations (average):</b></td>
-                                    <td>{props.results.by_optimizer[g].avg_fitness_evals.toFixed(3)}</td>
-                                </tr>
-                                <tr>
-                                    <td><b>Round elapsed time:</b></td>
-                                    <td>{props.results.by_optimizer[g].avg_elapsed.toFixed(3)} ms.</td>
-                                </tr>
-                                <tr>
-                                    <td><b>Best fitness (average):</b></td>
-                                    <td>{props.results.by_optimizer[g].avg_best_fitness.toFixed(3)}</td>
-                                </tr>
-                                <tr>
-                                    <td><b>Best fitness (all rounds):</b></td>
-                                    <td>{props.results.by_optimizer[g].abs_best_fitness.toFixed(3)}</td>
-                                </tr>
-                                <tr>
-                                    <td><b>Best solution (all rounds):</b></td>
-                                    <td>{props.results.by_optimizer[g].abs_best_solution}</td>
-                                </tr>
-                                <tr>
-                                    <td><b>Best objective (all rounds):</b></td>
-                                    <td>{props.results.by_optimizer[g].abs_best_objective}</td>
-                                </tr>
-                            </tbody>
-                        </Table>
-                    </div>
-                </Col>
-            ))
-        }
-    </Row>
-);
+const ResultsCard = props => {
+
+    // The experiment context is needed to obtain the
+    // fitness model to display results accordingly
+    const experiment = useContext(ExperimentCtx);
+
+    return (
+        <Row>
+            {
+                Object.keys(props.results.by_optimizer).map(g => (
+                    <Col key={g} xl style={{marginBottom:"15px"}}>
+                        <div style={{backgroundColor: props.results.by_optimizer[g].color}} className={classes.ResultCard}>
+                            <h5>{props.results.by_optimizer[g].name}</h5>
+                            <Table striped bordered hover responsive>
+                                <tbody>
+                                    <tr>
+                                        <td><b>Fitness evaluations (average):</b></td>
+                                        <td>{props.results.by_optimizer[g].avg_fitness_evals.toFixed(3)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Round elapsed time:</b></td>
+                                        <td>{props.results.by_optimizer[g].avg_elapsed.toFixed(3)} ms.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Best fitness (average):</b></td>
+                                        <td>{props.results.by_optimizer[g].avg_best_fitness.toFixed(3)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Best fitness (all rounds):</b></td>
+                                        <td>{props.results.by_optimizer[g].abs_best_fitness.toFixed(3)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Best solution (all rounds):</b></td>
+                                        <td><SolutionViewer 
+                                            genotype={props.results.by_optimizer[g].abs_best_solution} 
+                                            fitness={experiment.get_fitness(g)}/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Best objective (all rounds):</b></td>
+                                        <td>{props.results.by_optimizer[g].abs_best_objective}</td>
+                                    </tr>
+                                </tbody>
+                            </Table>
+                        </div>
+                    </Col>
+                ))
+            }
+        </Row>
+    );
+}
 
 const Plotter = () => {
 

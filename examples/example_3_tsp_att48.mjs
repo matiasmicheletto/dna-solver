@@ -1,6 +1,6 @@
 import cliProgress from 'cli-progress';
 import { readFile } from 'fs/promises';
-import Experiment, { fitness_types } from '../client/src/experiment/index.mjs';
+import Experiment from '../client/src/experiment/index.mjs';
 import { selection } from '../client/src/ga/index.mjs';
 import { distance } from '../client/src/fitness/tsp.mjs';
 
@@ -25,7 +25,7 @@ const dist = distance[instance.distance]; // Distance function to calculate the 
 const experiment = new Experiment();
 
 // We create a new fitness model of the TSP problem and add it to the experiment.
-const f_id = experiment.add_fitness(fitness_types.TSP);
+const f_id = experiment.add_fitness(Experiment.fitness_types.TSP);
 
 // The problem configuration is setted up from the data we parsed before:
 experiment.set_fitness_config(f_id, {places:places, distance:dist});

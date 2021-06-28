@@ -32,14 +32,14 @@ const FitnessItem = props => {
     const [update, setUpdate] = useState(false); 
 
     const add_ga = fitness_id => {
-        experiment.reset();
+        //experiment.reset();
         experiment.add_ga(fitness_id);        
         setGAList(experiment.get_ga_list(props.fitness.id));
     };
 
     const remove_ga = ga_id => {
         experiment.remove_ga(ga_id);        
-        experiment.reset();
+        //experiment.reset();
         setGAList(experiment.get_ga_list(props.fitness.id));        
     };
 

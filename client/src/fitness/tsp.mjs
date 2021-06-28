@@ -1,6 +1,11 @@
 
 import Fitness from './index.mjs';
-import { shuffle_array, has_duplicates, coord_to_weight_matrix } from "../tools/index.mjs";
+import { 
+    shuffle_array, 
+    has_duplicates, 
+    coord_to_weight_matrix,
+    normalize_coords
+ } from "../tools/index.mjs";
 import { mutation, crossover } from '../ga/index.mjs';
 
 //////////// TRAVELLING SALESPERSON PROBLEM /////////////////
@@ -35,6 +40,9 @@ export default class Tsp extends Fitness {
             this.distance = dist;
         else // If weight matrix is provided, no need to use distance function
             this._weights = weight_matrix;
+
+        // Normalize coordinates
+        this._norm_places = normalize_coords(this._places);
     }
 
     /// SETTERS
@@ -78,6 +86,8 @@ export default class Tsp extends Fitness {
         this._places = p;
         // Weight matrix values should be updated using the new distance equation
         this._weights = coord_to_weight_matrix(this._places, this._dist_function);
+        // Update normalized coordinates
+        this._norm_places = normalize_coords(this._places);
     }
 
     set weight_matrix(w) {
@@ -96,6 +106,10 @@ export default class Tsp extends Fitness {
 
     get places() {
         return this._places;
+    }
+
+    get norm_places() {
+        return this._norm_places;
     }
 
     get weight_matrix() {
@@ -123,15 +137,14 @@ export default class Tsp extends Fitness {
     objective_str = x => this.objective(x).toFixed(2) + " " + this._unit
 
     eval = g => has_duplicates(g) ? 0 : 10000/this.objective(g)
-
-    decode_str = g => g.join("-").substr(0,25)+(g.length>25?"...":"") // Crop at 25 characters
-
+    
     rand_encoded = () => {
         let numbers = Array.from(Array(this._places.length).keys());
         shuffle_array(numbers);
         return numbers;
     }
 
+    
     ////// DISTANCE FUNCTIONS //////
 
     _euclidean_dist = (p1, p2) => Math.sqrt((p1[0]-p2[0])*(p1[0]-p2[0])+(p1[1]-p2[1])*(p1[1]-p2[1]))

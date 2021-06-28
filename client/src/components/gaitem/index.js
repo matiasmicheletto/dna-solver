@@ -8,9 +8,10 @@ import {
     Form, 
     InputGroup 
 } from 'react-bootstrap';
-import { FaTrashAlt, FaTools, FaEye, FaRegCheckCircle, FaCircle } from 'react-icons/fa';
+import { FaTrashAlt, FaTools, FaEye, FaPlay, FaPause } from 'react-icons/fa';
 import classes from './styles.module.css';
 import PopTable from '../poptable';
+import SolutionViewer from '../solutionviewer';
 import GAConfigForm from '../gaconfigform';
 
 const GAItem = props => {
@@ -33,7 +34,7 @@ const GAItem = props => {
         setNameEdit(false);
     }
 
-    const ga = props.ga.status;    
+    const status = props.ga.status;    
     const freezed = props.ga.freezed;
     const color = props.ga.color ? props.ga.color : "lightblue";
 
@@ -49,7 +50,7 @@ const GAItem = props => {
                                 className={classes.NameForm}
                                 type="text"
                                 placeholder="New name"                                
-                                defaultValue={props.ga.name}
+                                defaultValue={status.name}
                                 onChange={v => {setName(v.target.value)}}
                             >
                             </Form.Control>
@@ -61,16 +62,16 @@ const GAItem = props => {
                                 onClick={()=>setNameEdit(false)}>Cancel</Button>
                         </InputGroup>
                         :
-                        <p className={classes.GAName} onClick={()=>setNameEdit(true)}><i>{ga.name + (freezed ? " (Freezed)" : "")}</i></p>
+                        <p className={classes.GAName} onClick={()=>setNameEdit(true)}><i>{status.name + (freezed ? " (Freezed)" : "")}</i></p>
                     }
                     <Row className={classes.GAStatusDetails}>
                         <Col sm="12" md="6">
-                            <p><b>Current generation:</b> {ga.generation}</p>
-                            <p><b>Fitness evaluations:</b> {ga.fitness_evals}</p>
+                            <p><b>Current generation:</b> {status.generation}</p>
+                            <p><b>Fitness evaluations:</b> {status.fitness_evals}</p>
                         </Col>
                         <Col sm="12" md="6">
-                            <p><b>Best solution:</b> {ga.best}</p> 
-                            <p><b>Best value:</b> {ga.best_objective}</p>                             
+                            <p><b>Best solution:</b> <SolutionViewer genotype={status.best} fitness={props.ga.fitness} /></p> 
+                            <p><b>Best value:</b> {status.best_objective}</p>                             
                         </Col>
                     </Row>
                 </Col>
@@ -104,13 +105,13 @@ const GAItem = props => {
                             <Button 
                                 className={classes.MenuGABtn}
                                 variant="secondary"
-                                onClick={()=>{props.toggle_freeze(ga.id)}}
+                                onClick={()=>{props.toggle_freeze(status.id)}}
                                 title={freezed ? "Unfreeze optimizer" : "Freeze optimizer"}>
                                 {
                                     freezed ?
-                                        <FaCircle />
+                                        <FaPause />
                                     :
-                                        <FaRegCheckCircle />
+                                        <FaPlay />
                                 }
                                 
                             </Button>
@@ -119,7 +120,7 @@ const GAItem = props => {
                             <Button 
                                 className={classes.MenuGABtn}
                                 variant="danger"
-                                onClick={()=>props.remove(ga.id)}
+                                onClick={()=>props.remove(status.id)}
                                 title="Remove optimizer">
                                 <FaTrashAlt />
                             </Button>
@@ -129,7 +130,7 @@ const GAItem = props => {
             </Row>
             <Collapse in={showPop}>
                 <Row>
-                    <PopTable ga={ga}></PopTable>
+                    <PopTable ga={props.ga}></PopTable>
                 </Row>
             </Collapse>
             <Collapse in={showConfig}>

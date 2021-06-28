@@ -48,8 +48,6 @@ export default class NQueens  extends Fitness {
 
     eval = g => 100 / ( this.objective(g) + 1 )
 
-    decode_str = g => g.join("-").substr(0,25)+(g.length>25?"...":"") // Crop at 25 characters
-    
     rand_encoded = () => { // Random order of numbers from 1 to N
         let numbers = Array.from(Array(this._N).keys());
         shuffle_array(numbers);

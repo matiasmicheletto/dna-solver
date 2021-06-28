@@ -1,5 +1,5 @@
 import cliProgress from 'cli-progress';
-import Experiment, { fitness_types } from '../client/src/experiment/index.mjs';
+import Experiment from '../client/src/experiment/index.mjs';
 import { crossover, mutation } from '../client/src/ga/index.mjs';
 
 // In this second example, we are solving the N-Queens problem for the case N = 16. The NQueens 
@@ -18,7 +18,7 @@ import { crossover, mutation } from '../client/src/ga/index.mjs';
 
 // Build the experiment manager and add the NQueens fitness model
 const experiment = new Experiment();
-const f_id = experiment.add_fitness(fitness_types.NQUEENS); 
+const f_id = experiment.add_fitness(Experiment.fitness_types.NQUEENS); 
 
 // Set the N value for the problem to 16
 experiment.set_fitness_config(f_id, {N: 16});

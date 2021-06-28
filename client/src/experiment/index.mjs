@@ -33,6 +33,10 @@ export default class Experiment {
         this._results = {by_round:[], by_optimizer:{}, ready:false}; // Results to complete
     }
 
+    static get fitness_types() {
+        return fitness_types;
+    }
+
     get fitness_list() {
         return this._fitness_list;
     }
@@ -115,7 +119,7 @@ export default class Experiment {
         const index = this._fitness_list.findIndex(el => el.id === fitness_id);
         if(index !== -1){
             const ga = new Ga(this._fitness_list[index]);
-            ga.freezed = false; // Evolution control
+            ga.freezed = false; // Evolution and result compiling control
             this._ga_list.push(ga);
             this._update_ga_colors(); // The list of colors is assigned
             return ga.id;            
@@ -130,8 +134,17 @@ export default class Experiment {
     }
 
     get_ga_list(fitness_id) {
+        // List of optimizers from a fitness model
         return this._ga_list.filter(g => g.fitness_id===fitness_id);
     }
+
+    get_fitness(ga_id) {
+        // Get the fitness model of an optimizer
+        const index = this._ga_list.findIndex(el => el.id === ga_id);
+        if(index !== -1)
+            return this._ga_list[index].fitness;
+    }
+
 
     toggle_ga_freeze(id) {
         // Toggle freeze state of ga optimizer
@@ -266,8 +279,10 @@ export default class Experiment {
 
     reset() {
         // Restart all the optimizers and clear analysis results
-        for(let g = 0; g < this._ga_list.length; g++)
+        for(let g = 0; g < this._ga_list.length; g++){
+            this._ga_list[g].freezed = false; // Unfreeze all
             this._ga_list[g].reset();
+        }
         this._results.ready = false;
     }
 };

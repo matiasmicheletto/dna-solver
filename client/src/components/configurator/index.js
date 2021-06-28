@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react';
 import { Button, Row, Col } from 'react-bootstrap';
 import { FaPlus } from 'react-icons/fa';
 import FitnessSelect from '../fitnessselect';
-import { fitness_types } from '../../experiment';
 import FitnessItem from '../fitnessitem';
 import classes from './styles.module.css';
 import { ExperimentCtx } from '../../context/ExperimentCtx';
@@ -21,7 +20,7 @@ import { ExperimentCtx } from '../../context/ExperimentCtx';
 const Configurator = () => {
 
     const experiment = useContext(ExperimentCtx);
-    const [f_type, setFType] = useState(fitness_types.TSP);
+    const [f_type, setFType] = useState(experiment.constructor.fitness_types.TSP);
     const [fitness_list, setFitnessList] = useState(experiment.fitness_list);
 
     const add_fitness = () => {

@@ -93,6 +93,15 @@ export const coord_to_weight_matrix = (p, dist) => {
     return w;
 };    
 
+export const normalize_coords = coords => {
+    // Return normalized (0..1) coordinates
+    const maxX = Math.max.apply(Math, coords.map(v => v[0]));
+    const minX = Math.min.apply(Math, coords.map(v => v[0]));
+    const maxY = Math.max.apply(Math, coords.map(v => v[1]));
+    const minY = Math.min.apply(Math, coords.map(v => v[1]));
+    return coords.map( p => [ (p[0]-minX)/(maxX-minX) , (p[1]-minY)/(maxY-minY) ]);
+}
+
 // Mean or average of an array
 export const array_mean = arr => arr.reduce((r, a) => a + r, 0)/arr.length;
 

@@ -68,7 +68,7 @@ export const mutation = {
 const default_config = { 
     pop_size: 20, 
     elitism: 2,
-    cross_prob: 0.8, 
+    cross_prob: 0.5, 
     mut_prob: 0.1, 
     mut_fr: 0.6,
     mut_gen: () => Math.round(Math.random()), // Used for mutation.RAND
@@ -160,10 +160,9 @@ export default class Ga { // GA model class
     }
 
     get population() { // Population or individual list
-        return this._population.map( p => ( // Add phenotypes and objective values
+        return this._population.map( p => ( // Add objective values
             {
                 ...p,
-                phenotype: this._fitness.decode(p.genotype), 
                 objective: this._fitness.objective(p.genotype)
             }
         ));
@@ -182,7 +181,7 @@ export default class Ga { // GA model class
             name: this._name,
             id: this._id,
             // Absolute values
-            best: this._fitness.decode(this._population[0].genotype),
+            best: this._population[0].genotype,
             best_fitness: this._population[0].fitness,
             best_objective: this._fitness.objective_str(this._population[0].genotype),
             best_final_slope: this._best_final_slope,
@@ -195,13 +194,7 @@ export default class Ga { // GA model class
             best_fs_hist: this._best_fs_hist,
             avg_fs_hist: this._avg_fs_hist,
             // Current state of population
-            population: this._population.map( p => ( // Add phenotypes and objective values to population 
-                {
-                    ...p,
-                    phenotype: this._fitness.decode(p.genotype), 
-                    objective: this._fitness.objective(p.genotype)
-                }
-            ))
+            population: this.population // Use the getter method
         }
     }
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
+import SolutionViewer from '../solutionviewer';
 
 const cellStyle = {
     whiteSpace: "nowrap", 
@@ -11,7 +12,7 @@ const cellStyle = {
 const PopTable = props => (
     <Table striped bordered hover responsive>
         <thead>
-            <tr>
+            <tr style={{textAlign:"center"}}>
                 <th>#</th>
                 <th>Genotype</th>
                 <th>Phenotype</th>
@@ -22,12 +23,12 @@ const PopTable = props => (
         <tbody>
             {
                 props.ga.population.map( (p,ind) => 
-                    <tr key={ind}>
+                    <tr key={ind} style={{textAlign:"center"}}>
                         <td>{ind+1}</td>
                         <td style={cellStyle}>{p.genotype}</td>
-                        <td style={cellStyle}>{p.phenotype}</td>
+                        <td style={cellStyle}><SolutionViewer genotype={p.genotype} fitness={props.ga.fitness}/></td>
                         <td>{p.fitness.toFixed(2)}</td>
-                        <td>{p.objective}</td>
+                        <td>{p.objective.toFixed(2)}</td>
                     </tr> 
                 )
             }

@@ -28,10 +28,7 @@ class Fitness { // Fitness model class
     get ga_config() {
         return {};
     }
-
-    decode(g) { // Default decoding function
-        return g.join("-");
-    }
+    
 }
 
 export default Fitness;

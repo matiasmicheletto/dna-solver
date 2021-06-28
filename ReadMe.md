@@ -38,15 +38,15 @@ Email: [matias.micheletto@uns.edu.ar](mailto:matias.micheletto@uns.edu.ar)
 
 ## Backlog
 
-Module development (66%).  
+Module development (100%).  
 - [x] Fitness function module.  
 - [x] Optimizer module.  
 - [x] Experiment manager module.  
 - [x] Command line optimization example scripts.  
-- [ ] Export results as csv file.
-- [ ] Add flexibility to fitness modules extension.  
+- [x] Export results as csv file.  
+- [x] Add flexibility to fitness modules extension.  
 
-GUI development (66%)  
+GUI development (50%)  
 - [x] Graphical experiment configuration.  
   - [x] Add and remove fitness models.  
   - [x] Add and remove optimizers.  
@@ -57,7 +57,7 @@ GUI development (66%)
   - [x] Static parameters configuration.  
   - [x] Name edition.  
   - [ ] Paramenter control configuration.  
-- [x] Graphical experiment control. 
+- [ ] Graphical experiment control.  
   - [x] Run and reset buttons.  
   - [ ] Progress bar.  
   - [x] Iterations and rounds configuration.  
@@ -68,6 +68,6 @@ GUI development (66%)
   - [x] Solution evolution history.  
   - [x] Optimizers comparative bar plot.  
 - [ ] Solution candidate visualization.  
-  - [ ] Monovariate functions plot.  
-  - [ ] Chess board for N-Queens.  
-  - [ ] TSP destinations map.  
+  - [ ] Quadratic function plot.  
+  - [x] Chess board for N-Queens.  
+  - [x] TSP destinations map.  

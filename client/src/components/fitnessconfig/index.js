@@ -13,7 +13,7 @@ import Quadratic from '../../fitness/quadratic.mjs';
     ----------------------
     This is a HOC that returns the config form component
     depending on the fitness class.
-    This makes an abstraction between react component and
+    This makes an abstraction between react components and
     fitness models
 */
 

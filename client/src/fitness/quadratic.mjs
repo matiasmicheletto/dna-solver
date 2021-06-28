@@ -70,9 +70,6 @@ export default class Quadratic extends Fitness {
                 .split("")
                 .map(e => parseInt(e, 10))
     
-    // Beautifier function is the same as decoder
-    decode_str = g => this._decode(g)
-    
     // Generator generates numbers for x between 0 and 2^_nbit
-    rand_encoded = () => this._encode(Math.floor(Math.random() * Math.pow(2, this._nbit)))    
+    rand_encoded = () => this.encode(Math.floor(Math.random() * Math.pow(2, this._nbit)))    
 };
