@@ -23,11 +23,11 @@ const ResultsCard = props => {
                                 <tbody>
                                     <tr>
                                         <td><b>Fitness evaluations (average):</b></td>
-                                        <td>{props.results.by_optimizer[g].avg_fitness_evals.toFixed(3)}</td>
+                                        <td>{props.results.by_optimizer[g].avg_fitness_evals.toFixed(1)}</td>
                                     </tr>
                                     <tr>
                                         <td><b>Round elapsed time:</b></td>
-                                        <td>{props.results.by_optimizer[g].avg_elapsed.toFixed(3)} ms.</td>
+                                        <td>{props.results.by_optimizer[g].avg_elapsed.toFixed(1)} ms.</td>
                                     </tr>
                                     <tr>
                                         <td><b>Best fitness (average):</b></td>

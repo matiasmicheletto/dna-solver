@@ -44,7 +44,7 @@ const SolutionViewer = props => {
             {// Crop string at 25 characters}
                 props.genotype.join("-").substr(0,maxlen)+(props.genotype.length > maxlen ? "...":"") 
             }
-            <EmptyLGModal show={show} title="Solution">
+            <EmptyLGModal show={show} title="Solution" onHide={()=>{}}>
                 <ViewerSwitcher fitness={props.fitness} data={props.genotype}/>
             </EmptyLGModal>            
         </span>

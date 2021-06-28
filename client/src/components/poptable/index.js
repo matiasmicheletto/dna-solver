@@ -28,7 +28,7 @@ const PopTable = props => (
                         <td style={cellStyle}>{p.genotype}</td>
                         <td style={cellStyle}><SolutionViewer genotype={p.genotype} fitness={props.ga.fitness}/></td>
                         <td>{p.fitness.toFixed(2)}</td>
-                        <td>{p.objective.toFixed(2)}</td>
+                        <td>{p.objective}</td>
                     </tr> 
                 )
             }

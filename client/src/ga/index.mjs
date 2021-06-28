@@ -163,7 +163,7 @@ export default class Ga { // GA model class
         return this._population.map( p => ( // Add objective values
             {
                 ...p,
-                objective: this._fitness.objective(p.genotype)
+                objective: this._fitness.objective_str(p.genotype)
             }
         ));
     }
