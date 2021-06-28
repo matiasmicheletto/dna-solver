@@ -81,7 +81,7 @@ const default_config = {
     mutation: mutation.BITFLIP
 };
 
-export default class GA { // GA model class
+export default class Ga { // GA model class
     constructor(fitness, config = {}){
         this._fitness = fitness;
         

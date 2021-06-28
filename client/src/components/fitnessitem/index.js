@@ -43,6 +43,11 @@ const FitnessItem = props => {
         setGAList(experiment.get_ga_list(props.fitness.id));        
     };
 
+    const toggle_ga_freeze = ga_id => {
+        experiment.toggle_ga_freeze(ga_id);
+        setUpdate(!update);
+    }
+
     const configure_fitness = config => {
         experiment.set_fitness_config(props.fitness.id, config);
         // Switch dummy variable to trigger update
@@ -84,7 +89,13 @@ const FitnessItem = props => {
                     <ListGroup className={classes.GAList}>                        
                     {    
                         ga_list.length > 0 ?
-                            ga_list.map( ga => <GAItem key={ga.id} ga={ga} remove={remove_ga}/> )
+                            ga_list.map( ga => <GAItem 
+                                key={ga.id} 
+                                ga={ga} 
+                                remove={remove_ga} 
+                                toggle_freeze={toggle_ga_freeze}
+                                /> 
+                            )
                         :
                             <center><h4>No optimizers added yet</h4></center>
                     }

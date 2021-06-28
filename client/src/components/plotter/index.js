@@ -9,7 +9,7 @@ const ResultsCard = props => (
     <Row>
         {
             Object.keys(props.results.by_optimizer).map(g => (
-                <Col xl style={{marginBottom:"15px"}}>
+                <Col key={g} xl style={{marginBottom:"15px"}}>
                     <div style={{backgroundColor: props.results.by_optimizer[g].color}} className={classes.ResultCard}>
                         <h5>{props.results.by_optimizer[g].name}</h5>
                         <Table striped bordered hover responsive>
@@ -45,7 +45,7 @@ const ResultsCard = props => (
             ))
         }
     </Row>
-)
+);
 
 const Plotter = () => {
 
@@ -74,15 +74,15 @@ const Plotter = () => {
 
     // Evolution slopes
     let best_slope_config = { // Line plot of best fitness slope
-        title:"Best fitness slope",
-        yaxis:"Final slope",
+        title:"Best fitness derivative",
+        yaxis:"Derivative",
         xaxis:"Generation number",
         series:[]
     };
 
     let avg_slope_config = { // Line plot of pop avg slope
-        title:"Pop. fitness average slope",
-        yaxis:"Final slope",
+        title:"Pop. fitness avg. derivative",
+        yaxis:"Derivative",
         xaxis:"Generation number",
         series:[]
     };
@@ -189,7 +189,7 @@ const Plotter = () => {
             <ResultsCard results={results} />
         </div>
     );
-}
+};
 
 export default Plotter;
 

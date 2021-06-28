@@ -65,7 +65,7 @@ const Controller = props => {
                     className={classes.ControlBtn}
                     variant="success"
                     onClick={run}
-                    title="Start optimization">
+                    title="Run experiment">
                     <FaPlay />
                 </Button>
                 <Button 

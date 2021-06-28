@@ -8,7 +8,7 @@ import {
     Form, 
     InputGroup 
 } from 'react-bootstrap';
-import { FaTrashAlt, FaTools, FaEye } from 'react-icons/fa';
+import { FaTrashAlt, FaTools, FaEye, FaRegCheckCircle, FaCircle } from 'react-icons/fa';
 import classes from './styles.module.css';
 import PopTable from '../poptable';
 import GAConfigForm from '../gaconfigform';
@@ -34,12 +34,13 @@ const GAItem = props => {
     }
 
     const ga = props.ga.status;    
+    const freezed = props.ga.freezed;
     const color = props.ga.color ? props.ga.color : "lightblue";
 
     return (
-        <ListGroup.Item className={classes.Container} style={{backgroundColor:color}}>
+        <ListGroup.Item className={classes.Container} style={{backgroundColor:color, color:freezed?"lightgray":"black"}}>
             <Row>
-                <Col xs="11" md="10" xl="11" className={classes.GAStatus}>
+                <Col xs="11" md="10" lg="10" className={classes.GAStatus}>
                     {
                         nameEdit ?
                         <InputGroup as={Col} sm className={classes.NameInputGroup}>
@@ -60,7 +61,7 @@ const GAItem = props => {
                                 onClick={()=>setNameEdit(false)}>Cancel</Button>
                         </InputGroup>
                         :
-                        <p className={classes.GAName} onClick={()=>setNameEdit(true)}><i>{ga.name}</i></p>
+                        <p className={classes.GAName} onClick={()=>setNameEdit(true)}><i>{ga.name + (freezed ? " (Freezed)" : "")}</i></p>
                     }
                     <Row className={classes.GAStatusDetails}>
                         <Col sm="12" md="6">
@@ -73,9 +74,9 @@ const GAItem = props => {
                         </Col>
                     </Row>
                 </Col>
-                <Col xs="1" md="2" xl="1" align="right">
-                    <Row className="justify-content-md-center">
-                        <Col sm="12" md="4" className="p-0">
+                <Col xs="1" md="2" lg="2" align="center" className="p-0">
+                    <Row className={["m-0", "p-0"]}>
+                        <Col sm="12" md="3" className="p-0">
                             <Button 
                                 className={classes.MenuGABtn}
                                 variant="success"
@@ -87,7 +88,7 @@ const GAItem = props => {
                                 <FaEye />
                             </Button>
                         </Col>
-                        <Col sm="12" md="4" className="p-0">
+                        <Col sm="12" md="3" className="p-0">
                             <Button 
                                 className={classes.MenuGABtn}
                                 onClick={()=>{
@@ -99,7 +100,22 @@ const GAItem = props => {
                                 <FaTools />
                             </Button>
                         </Col>
-                        <Col sm="12" md="4" className="p-0">
+                        <Col sm="12" md="3" className="p-0">
+                            <Button 
+                                className={classes.MenuGABtn}
+                                variant="secondary"
+                                onClick={()=>{props.toggle_freeze(ga.id)}}
+                                title={freezed ? "Unfreeze optimizer" : "Freeze optimizer"}>
+                                {
+                                    freezed ?
+                                        <FaCircle />
+                                    :
+                                        <FaRegCheckCircle />
+                                }
+                                
+                            </Button>
+                        </Col>
+                        <Col sm="12" md="3" className="p-0">
                             <Button 
                                 className={classes.MenuGABtn}
                                 variant="danger"

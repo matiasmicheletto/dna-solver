@@ -23,14 +23,14 @@ class Fitness { // Fitness model class
         return "N/D";
     }
 
-    decode(g) { // Default decoding function
-        return g.join("-");
-    }
-
     // This function is used to override the GA default configuration
     // that is necesary in some cases.
     get ga_config() {
         return {};
+    }
+
+    decode(g) { // Default decoding function
+        return g.join("-");
     }
 }
 
