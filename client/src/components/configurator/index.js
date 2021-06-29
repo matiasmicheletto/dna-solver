@@ -20,7 +20,7 @@ import { ExperimentCtx } from '../../context/ExperimentCtx';
 const Configurator = () => {
 
     const experiment = useContext(ExperimentCtx);
-    const [f_type, setFType] = useState(experiment.constructor.fitness_types.TSP);
+    const [f_type, setFType] = useState(experiment.constructor.fitness_types.Quadratic);
     const [fitness_list, setFitnessList] = useState(experiment.fitness_list);
 
     const add_fitness = () => {
@@ -52,7 +52,7 @@ const Configurator = () => {
             </Row>
             <Row>
                 <Col xs={{span:8, offset:3}} md={{span:6, offset:5}} lg={{span:3, offset:8}} className={classes.FitnessSelectContainer}>
-                    <FitnessSelect onChange={fitnessSelection} />
+                    <FitnessSelect value={f_type} onChange={fitnessSelection} />
                 </Col>
                 <Col xs="1" align="right">
                     <Button 

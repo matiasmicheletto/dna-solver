@@ -46,7 +46,7 @@ Module development (100%).
 - [x] Export results as csv file.  
 - [x] Add flexibility to fitness modules extension.  
 
-GUI development (50%)  
+GUI development (66%)  
 - [x] Graphical experiment configuration.  
   - [x] Add and remove fitness models.  
   - [x] Add and remove optimizers.  
@@ -59,7 +59,6 @@ GUI development (50%)
   - [ ] Paramenter control configuration.  
 - [ ] Graphical experiment control.  
   - [x] Run and reset buttons.  
-  - [ ] Progress bar.  
   - [x] Iterations and rounds configuration.  
   - [ ] Termination criteria.  
   - [ ] Timeout configuration.   
@@ -67,7 +66,7 @@ GUI development (50%)
   - [x] Experiment results summary.  
   - [x] Solution evolution history.  
   - [x] Optimizers comparative bar plot.  
-- [ ] Solution candidate visualization.  
-  - [ ] Quadratic function plot.  
+- [x] Solution candidate visualization.  
+  - [x] Quadratic function plot.  
   - [x] Chess board for N-Queens.  
   - [x] TSP destinations map.  

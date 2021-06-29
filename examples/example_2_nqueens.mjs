@@ -39,13 +39,13 @@ experiment.set_ga_config(ga_ids[1], {crossover: crossover.DOUBLE, name: "Double 
 // the SWAP mutation operator, so we configure this as follows:
 experiment.set_ga_config(ga_ids[2], {crossover: crossover.PMX, mutation: mutation.SWAP, name: "PMX operator crossover"});
 // Using PMX operator with RAND or BITFLIP mutation operators, may freeze the algorithm
-// as the PMX function will never find a result with no repeated elements.
+// as the PMX function will never find a result with non repeating elements.
 
 
 ///////// Run the optimization analysis //////////
 
-// To test the optimizers performance, we are running 10 rounds of 500 generations each
-const rounds = 10;
+// To test the optimizers performance, we are running 50 rounds of 500 generations each
+const rounds = 50;
 const iters = 500;
 
 // Progress bar and info
