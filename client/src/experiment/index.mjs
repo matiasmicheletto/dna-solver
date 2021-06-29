@@ -30,7 +30,8 @@ export default class Experiment {
     constructor(){
         this._fitness_list = []; // List of fitness functions added to the analysis
         this._ga_list = []; // List of optimizers linked to the fitness functions
-        this._results = {by_round:[], by_optimizer:{}, ready:false}; // Results to complete
+         // Results to complete after optimization run:
+        this._results = {by_round:[], by_optimizer:{}, ready:false, exitmsg:""};
     }
 
     static get fitness_types() {
@@ -159,16 +160,29 @@ export default class Experiment {
             this._ga_list[g].freezed = false;
     }
 
-    optimize(rounds, iters, progressCallback = null, finishCallback = null) {
-        const len = this._ga_list.length;
-        let by_round = [];
-        for(let r = 0; r < rounds; r++){
-            let round_results = {}; // Results per optimizer (entries are the ids)
-            for(let g = 0; g < len; g++){ // For each optimizer
+    run(config) {
+        const cfg = { // Optimization configuration
+            rounds: 10,
+            iters: 100,
+            timeout: 180000,
+            progressCallback: null,
+            finishCallback: null,
+            ...config // Override default values
+        };
+        let by_round = []; // Array with results by round
+        this._results.exitmsg = "Rounds completed"; // Normal exit status for now
+        const round_start = Date.now(); // Round timing
+        for(let r = 0; r < cfg.rounds; r++){ // Begin!
+            if(Date.now() - round_start > cfg.timeout){ // Check round timeout condition
+                this._results.exitmsg = `Timed out (${cfg.rounds-r} rounds left)`;
+                break;
+            }
+            let round_results = {}; // Results per optimizer (attrs are the ga ids)
+            for(let g = 0; g < this._ga_list.length; g++){ // For each optimizer
                 if(!this._ga_list[g].freezed){ // Except those which are in the freezed list
-                    const start = Date.now();
+                    const start = Date.now(); // Complete round timing
                     this._ga_list[g].reset(); // Restart the optimizer before the round        
-                    for(let gen = 0; gen < iters; gen++) // Evolve "iter" generations
+                    for(let gen = 0; gen < cfg.iters; gen++) // Evolve "iter" generations
                         this._ga_list[g].evolve();
                     const elapsed = Date.now() - start; // Time in ms during evolution
                     round_results[this._ga_list[g].id] = {
@@ -176,7 +190,7 @@ export default class Experiment {
                         elapsed: elapsed,
                         color: this._ga_list[g].color
                     }
-                }else{
+                }else{ // In case of freezed otpimizers, copy previous results
                     if(this._results.by_round[r]) // If there were existing results for this round number
                         round_results[this._ga_list[g].id] = this._results.by_round[r][this._ga_list[g].id];
                     else // Otherwise, use current status
@@ -188,16 +202,16 @@ export default class Experiment {
                 }
             }
             // Emit progress callback
-            if(progressCallback) progressCallback(Math.round(r/rounds*100));
+            if(cfg.progressCallback) cfg.progressCallback(Math.round(r/cfg.rounds*100));
             by_round.push(round_results); // Push the results for the current round
         }
-        if(finishCallback) finishCallback();
-        this.summarize_results(by_round);
+        this._results.by_round = by_round;
+        if(cfg.finishCallback) cfg.finishCallback();
+        this.summarize_results();
     }
 
-    summarize_results(by_round) {
+    summarize_results() {
         // From round-wise results to optimizer-wise results
-        // TODO: refactor
 
         let by_optimizer = {};
         for(let g = 0; g < this._ga_list.length; g++){ // For each optimizer
@@ -211,8 +225,8 @@ export default class Experiment {
             let abs_best_fitness = 0;
             let abs_best_sol = null;
             let abs_best_obj = null;
-            for(let r = 0; r < by_round.length; r++){ // For each round
-                const round_res = by_round[r][this._ga_list[g].id]; // Round r, optimizer g.
+            for(let r = 0; r < this._results.by_round.length; r++){ // For each round
+                const round_res = this._results.by_round[r][this._ga_list[g].id]; // Round r, optimizer g.
                 // Historic values are saved in matrix shaped structures
                 best_matrix.push(round_res.best_hist);
                 avg_matrix.push(round_res.avg_hist);
@@ -249,7 +263,8 @@ export default class Experiment {
                 abs_best_objective: abs_best_obj 
             };
         }
-        this._results = {by_round:by_round, by_optimizer:by_optimizer, ready:true};
+        this._results.by_optimizer = by_optimizer;
+        this._results.ready = true;
     }
 
     getPlainResults() {

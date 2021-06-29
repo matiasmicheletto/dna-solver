@@ -56,7 +56,7 @@ const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_cla
 
 // Lets run the experiment
 progressBar.start(100, 0); 
-experiment.optimize(rounds, iters, p => progressBar.update(p));
+experiment.run({rounds:rounds, iters:iters, progressCallback:p => progressBar.update(p)});
 progressBar.stop(); 
 
 // Finally, we print the results

@@ -22,6 +22,10 @@ const ResultsCard = props => {
                             <Table striped bordered hover responsive>
                                 <tbody>
                                     <tr>
+                                        <td><b>Exit condition:</b></td>
+                                        <td>{props.results.exitmsg}</td>
+                                    </tr>
+                                    <tr>
                                         <td><b>Fitness evaluations (average):</b></td>
                                         <td>{props.results.by_optimizer[g].avg_fitness_evals.toFixed(1)}</td>
                                     </tr>
@@ -57,7 +61,7 @@ const ResultsCard = props => {
     );
 }
 
-const Plotter = () => {
+const Results = () => {
 
     const experiment = useContext(ExperimentCtx);            
     const results = experiment.results; // Only using results from the experiment manager
@@ -201,5 +205,5 @@ const Plotter = () => {
     );
 };
 
-export default Plotter;
+export default Results;
 

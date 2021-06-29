@@ -17,7 +17,7 @@ const HelpModal = props => (
         longer it will take to complete the experiment. Click on the green button to start the experiment
         or the red one to restart to the initial state. The experiment will run until it completes 
         the indicated number of rounds and iterations, or the total elapsed time exceeds the 
-        default limit of five minutes.</p>
+        timeout limit.</p>
         <p>Finally, when the experiment ends, the results are displayed on the <b>Experiment 
         results</b> section, where it can be found a set of charts showing the results grouped
         by round or by optimizer.</p>

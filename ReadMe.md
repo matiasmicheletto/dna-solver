@@ -38,35 +38,54 @@ Email: [matias.micheletto@uns.edu.ar](mailto:matias.micheletto@uns.edu.ar)
 
 ## Backlog
 
-Module development (100%).  
-- [x] Fitness function module.  
-- [x] Optimizer module.  
-- [x] Experiment manager module.  
-- [x] Command line optimization example scripts.  
-- [x] Export results as csv file.  
-- [x] Add flexibility to fitness modules extension.  
+Module development (74%).  
+- [ ] Fitness function module (75%). 
+    - [x] Parabola.  
+    - [x] N-Queens problem.  
+    - [ ] Subset sum problem.  
+    - [x] TSP Problem.  
+- [ ] Optimizer module (85%).  
+    - [x] Fitness model configuratinon.  
+    - [x] Population size and elitism configuration.  
+    - [x] Configuration of selection operators.  
+    - [x] Configuration of crossover operators.  
+    - [x] Configuration of mutation operators.  
+    - [x] Termination criteria (fixed to generations number).  
+    - [ ] Parameter control (deterministic and adaptive).  
+- [x] Experiment manager module (100%).  
+    - [x] Fitness modules lists management.  
+    - [x] Optimizers list management.  
+    - [x] Fitness and optimizers configuration.  
+    - [x] Experiment execution.  
+    - [x] Result summarization.  
+- [x] Command line optimization example scripts (100%).  
+    - [x] Example 1: Simple TSP. Experiment configuration.  
+    - [x] Example 2: NQueens. Multiple fitness experiment.  
+    - [x] Example 3: Complex TSP. Parameter tunning.  
+- [x] Export results as plain text file (100%).  
+- [ ] Generate NodeJS module (0%).  
 
-GUI development (66%)  
-- [x] Graphical experiment configuration.  
+GUI development (90%)  
+- [x] Graphical experiment configuration (100%).  
   - [x] Add and remove fitness models.  
   - [x] Add and remove optimizers.  
-- [x] Graphical fitness model configuration.  
+- [x] Graphical fitness model configuration (100%).  
   - [x] Problem description.  
   - [x] Parameter configuration.  
-- [ ] Graphical optimizer configuration.  
+- [ ] Graphical optimizer configuration (66%).  
   - [x] Static parameters configuration.  
   - [x] Name edition.  
   - [ ] Paramenter control configuration.  
-- [ ] Graphical experiment control.  
+- [ ] Graphical experiment control (75%).  
   - [x] Run and reset buttons.  
   - [x] Iterations and rounds configuration.  
   - [ ] Termination criteria.  
-  - [ ] Timeout configuration.   
-- [x] Graphical experiment output.  
+  - [x] Timeout configuration.   
+- [x] Graphical experiment output (100%).  
   - [x] Experiment results summary.  
   - [x] Solution evolution history.  
   - [x] Optimizers comparative bar plot.  
-- [x] Solution candidate visualization.  
+- [x] Solution candidate visualization (100%).  
   - [x] Quadratic function plot.  
   - [x] Chess board for N-Queens.  
   - [x] TSP destinations map.  

@@ -12,6 +12,7 @@ const Controller = props => {
 
     const [rounds, setRounds] = useState(10);
     const [iters, setIters] = useState(100);
+    const [runtimeout, setRunTimeout] = useState(180);
 
     const run = () => {
         setLoading(true);
@@ -22,7 +23,7 @@ const Controller = props => {
         // will change the state on the dashboard, and trigger
         // a render.
         setTimeout(()=>{
-            experiment.optimize(rounds, iters);
+            experiment.run({rounds:rounds, iters:iters, timeout:runtimeout*1000});
             setLoading(false);
         }, 1);
     }
@@ -57,6 +58,15 @@ const Controller = props => {
                             defaultValue={iters} 
                             onChange={v=>setIters(parseInt(v.target.value))}/>
                     </Form.Group>
+                    <Form.Group as={Col}>
+                        <Form.Label>Timeout (s)</Form.Label>
+                        <Form.Control 
+                            type="number" 
+                            min="5"
+                            max="1000"
+                            defaultValue={runtimeout} 
+                            onChange={v=>setRunTimeout(parseInt(v.target.value))}/>
+                    </Form.Group>
                 </Row>
             </Form>
 
@@ -66,7 +76,7 @@ const Controller = props => {
                     variant="success"
                     onClick={run}
                     title="Run experiment">
-                    <FaPlay />
+                    <FaPlay/>
                 </Button>
                 <Button 
                     className={classes.ControlBtn}

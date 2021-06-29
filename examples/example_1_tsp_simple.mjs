@@ -90,7 +90,11 @@ const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_cla
 // Lets run the optimization analysis, updating the progress bar after the
 // completion of every round.
 progressBar.start(100, 0); // Initialize the progress bar
-experiment.optimize(rounds, iters, p => progressBar.update(p));
+experiment.run({
+    rounds:rounds, 
+    iters:iters, 
+    progressCallback:p => progressBar.update(p)
+});
 progressBar.stop(); // Stopping the progress bar allows us to print more data
 
 // The results are returned as an object with two parts, the results by round

@@ -1,10 +1,10 @@
 import React, { useState, useContext } from 'react';
-import { Button, Row, Col } from 'react-bootstrap';
+import { Button, Form, Row, Col } from 'react-bootstrap';
 import { FaPlus } from 'react-icons/fa';
-import FitnessSelect from '../fitnessselect';
 import FitnessItem from '../fitnessitem';
 import classes from './styles.module.css';
 import { ExperimentCtx } from '../../context/ExperimentCtx';
+import { fitness_types, fitness_names } from '../../experiment';
 
 /*
     Configurator Component
@@ -20,7 +20,7 @@ import { ExperimentCtx } from '../../context/ExperimentCtx';
 const Configurator = () => {
 
     const experiment = useContext(ExperimentCtx);
-    const [f_type, setFType] = useState(experiment.constructor.fitness_types.Quadratic);
+    const [f_type, setFType] = useState(fitness_types.QUADRATIC);
     const [fitness_list, setFitnessList] = useState(experiment.fitness_list);
 
     const add_fitness = () => {
@@ -33,10 +33,6 @@ const Configurator = () => {
         experiment.reset();
         experiment.remove_fitness(id);
         setFitnessList([...experiment.fitness_list]);
-    };
-
-    const fitnessSelection = type => { // Fitness select callback
-        setFType(type);
     };
 
     return (
@@ -52,7 +48,20 @@ const Configurator = () => {
             </Row>
             <Row>
                 <Col xs={{span:8, offset:3}} md={{span:6, offset:5}} lg={{span:3, offset:8}} className={classes.FitnessSelectContainer}>
-                    <FitnessSelect value={f_type} onChange={fitnessSelection} />
+                    <Form>
+                        <Form.Group>
+                            <Form.Control 
+                                as="select" 
+                                value={f_type}
+                                onChange={v => setFType(v.target.value)}>
+                            {
+                                Object.keys(fitness_types).map((f, ind) => (
+                                    <option key={ind} value={fitness_types[f]}>{fitness_names[f]}</option>
+                                ))
+                            }
+                            </Form.Control>
+                        </Form.Group>
+                    </Form>
                 </Col>
                 <Col xs="1" align="right">
                     <Button 
