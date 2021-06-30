@@ -38,11 +38,11 @@ Email: [matias.micheletto@uns.edu.ar](mailto:matias.micheletto@uns.edu.ar)
 
 ## Backlog
 
-Module development (74%).  
+Module development (93%).  
 - [ ] Fitness function module (75%). 
     - [x] Parabola.  
-    - [x] N-Queens problem.  
     - [ ] Subset sum problem.  
+    - [x] N-Queens problem.  
     - [x] TSP Problem.  
 - [ ] Optimizer module (85%).  
     - [x] Fitness model configuratinon.  
@@ -52,10 +52,10 @@ Module development (74%).
     - [x] Configuration of mutation operators.  
     - [x] Termination criteria (fixed to generations number).  
     - [ ] Parameter control (deterministic and adaptive).  
-- [x] Experiment manager module (84%).  
+- [x] Experiment manager module (100%).  
     - [x] Fitness modules lists management.  
     - [x] Optimizers list management.  
-    - [ ] Optimizers duplication.  
+    - [x] Optimizers duplication.  
     - [x] Fitness and optimizers configuration.  
     - [x] Experiment execution.  
     - [x] Result summarization.  
@@ -66,7 +66,7 @@ Module development (74%).
 - [x] Export results as plain text file (100%).  
 - [x] Generate NodeJS module (100%).  
 
-GUI development (90%)  
+GUI development (94%)  
 - [x] Graphical experiment configuration (100%).  
   - [x] Add and remove fitness models.  
   - [x] Add and remove optimizers.  
@@ -76,11 +76,10 @@ GUI development (90%)
 - [ ] Graphical optimizer configuration (66%).  
   - [x] Static parameters configuration.  
   - [x] Name edition.  
-  - [ ] Paramenter control configuration.  
-- [ ] Graphical experiment control (75%).  
+  - [ ] Adaptive/static parameter configuration.  
+- [x] Graphical experiment control (100%).  
   - [x] Run and reset buttons.  
   - [x] Iterations and rounds configuration.  
-  - [ ] Termination criteria.  
   - [x] Timeout configuration.   
 - [x] Graphical experiment output (100%).  
   - [x] Experiment results summary.  

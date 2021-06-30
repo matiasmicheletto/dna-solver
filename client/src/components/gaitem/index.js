@@ -48,7 +48,7 @@ const GAItem = props => {
     return (
         <ListGroup.Item className={classes.Container} style={{backgroundColor:color, color:freezed?"lightgray":"black"}}>
             <Row>
-                <Col xs="11" md="10" lg="10" className={classes.GAStatus}>
+                <Col xs="10" sm="11" md="10" lg="10" className={classes.GAStatus}>
                     {
                         nameEdit ?
                         <InputGroup as={Col} sm className={classes.NameInputGroup}>
@@ -82,7 +82,7 @@ const GAItem = props => {
                         </Col>
                     </Row>
                 </Col>
-                <Col xs="1" md="2" lg="2" align="center" className="p-0">
+                <Col xs="2" sm="1" md="2" lg="2" align="center" className="p-0">
                     <Row className={["m-0", "p-0"]}>
                         <Col md="12" lg="2" className="p-0">
                             <Button 

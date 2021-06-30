@@ -47,7 +47,7 @@ const Configurator = () => {
             }
             </Row>
             <Row>
-                <Col xs={{span:8, offset:3}} md={{span:6, offset:5}} lg={{span:3, offset:8}} className={classes.FitnessSelectContainer}>
+                <Col xs={{span:6, offset:4}} md={{span:5, offset:6}} lg={{span:3, offset:8}} className={classes.FitnessSelectContainer}>
                     <Form>
                         <Form.Group>
                             <Form.Control 
