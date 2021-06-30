@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row, Col, Form, InputGroup } from 'react-bootstrap';
-import { crossover, mutation, selection } from '../../ga/index.mjs';
+import { crossover, mutation, selection } from 'optimization/ga/index.mjs';
 import classes from './styles.module.css';
 
 const GAConfigForm = props => (

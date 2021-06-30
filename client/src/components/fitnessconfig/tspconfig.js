@@ -10,7 +10,7 @@ import {
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import classes from './styles.module.css';
 import { LoadingContext } from '../../context/LoadingContext';
-import { distance } from '../../fitness/tsp';
+import { distance } from 'optimization/fitness/tsp.mjs';
 
 
 const PlacesTable = props => ( // Table for listing the coordinates

@@ -5,9 +5,9 @@ import TspSolutionViewer from './tspsolutionviewer';
 import NQueensSolutionViewer from './nqueenssolutionviewer';
 import QuadraticSolutionViewer from './quadraticsolutionviewer';
 
-import Tsp from '../../fitness/tsp.mjs';
-import NQueens from '../../fitness/nqueens.mjs';
-import Quadratic from '../../fitness/quadratic.mjs';
+import Tsp from 'optimization/fitness/tsp.mjs';
+import NQueens from 'optimization/fitness/nqueens.mjs';
+import Quadratic from 'optimization/fitness/quadratic.mjs';
 
 /*
     SolutionViewer Component

@@ -55,7 +55,7 @@ export default class Tsp extends Fitness {
         switch(d){
             default: // Default distance function is euclidean
             case distance.EXPLICIT:
-                this._dist_function = () => {};
+                this._dist_function = function(){};
                 this._unit = "";
                 break;
             case distance.EUCLIDEAN:
@@ -124,9 +124,7 @@ export default class Tsp extends Fitness {
         }
     }
 
-    // Using arrow functions here to override parent class methods (not working other way)
-
-    objective = x => {
+    objective(x) {
         let d = 0; // Total distance traveled
         for(let k = 0; k < x.length-1; k++)
             d += this._weights[ x[k] ][ x[k+1] ];
@@ -134,11 +132,15 @@ export default class Tsp extends Fitness {
         return d;
     }
 
-    objective_str = x => this.objective(x).toFixed(2) + " " + this._unit
+    objective_str(x){ 
+        return this.objective(x).toFixed(2) + " " + this._unit;
+    }
 
-    eval = g => has_duplicates(g) ? 0 : 10000/this.objective(g)
+    eval(g){ 
+        return has_duplicates(g) ? 0 : 10000/this.objective(g);
+    }
     
-    rand_encoded = () => {
+    rand_encoded() {
         let numbers = Array.from(Array(this._places.length).keys());
         shuffle_array(numbers);
         return numbers;
@@ -147,18 +149,22 @@ export default class Tsp extends Fitness {
     
     ////// DISTANCE FUNCTIONS //////
 
-    _euclidean_dist = (p1, p2) => Math.sqrt((p1[0]-p2[0])*(p1[0]-p2[0])+(p1[1]-p2[1])*(p1[1]-p2[1]))
+    _euclidean_dist(p1, p2) {
+        return Math.sqrt((p1[0]-p2[0])*(p1[0]-p2[0])+(p1[1]-p2[1])*(p1[1]-p2[1]));
+    }
 
-    _pseudoeuclidean_dist = (p1, p2) => {
+    _pseudoeuclidean_dist(p1, p2) {
         // For att problem (see tsplib documentation)
         const rij = Math.sqrt( ((p1[0] - p2[0]) * (p1[0] - p2[0]) + (p1[1] - p2[1]) * (p1[1] - p2[1])) / 10.0 );
         const tij = Math.round(rij);
         return (tij < rij) ? tij + 1 : tij;
     }
 
-    _manhattan_dist = (p1, p2) => Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1])
+    _manhattan_dist(p1, p2) {
+        return Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1]);
+    }
 
-    _haversine = (p1, p2) => { // Haversine formula. Points should be in format [lat,long]
+    _haversine(p1, p2) { // Haversine formula. Points should be in format [lat,long]
         // haversine([45, 67.5], [43, 65])) should return 299.6 (km)
         const r1 = [p1[0]/180*Math.PI, p1[1]/180*Math.PI];
         const r2 = [p2[0]/180*Math.PI, p2[1]/180*Math.PI];

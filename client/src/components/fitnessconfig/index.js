@@ -4,9 +4,9 @@ import TSPConfig from './tspconfig';
 import NQueensConfig from './nqueensconfig';
 import QuadraticConfig from './quadraticconfig';
 
-import Tsp from '../../fitness/tsp.mjs';
-import NQueens from '../../fitness/nqueens.mjs';
-import Quadratic from '../../fitness/quadratic.mjs';
+import Tsp from 'optimization/fitness/tsp.mjs';
+import NQueens from 'optimization/fitness/nqueens.mjs';
+import Quadratic from 'optimization/fitness/quadratic.mjs';
 
 /*
     FitnessConfig Component
@@ -20,7 +20,7 @@ import Quadratic from '../../fitness/quadratic.mjs';
 const FitnessConfig = props => {
 
     if(props.fitness instanceof Tsp)
-        return <TSPConfig {...props}/>
+        return <TSPConfig {...props} distance={Tsp.distance}/>
 
     if(props.fitness instanceof NQueens)
         return <NQueensConfig {...props}/>

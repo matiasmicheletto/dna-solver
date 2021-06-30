@@ -1,8 +1,8 @@
 import cliProgress from 'cli-progress';
 import { readFile } from 'fs/promises';
-import Experiment from '../client/src/experiment/index.mjs';
-import { selection } from '../client/src/ga/index.mjs';
-import { distance } from '../client/src/fitness/tsp.mjs';
+import Experiment from 'optimization/experiment/index.mjs';
+import { selection } from 'optimization/ga/index.mjs';
+import { distance } from 'optimization/fitness/tsp.mjs';
 
 
 // In this example we are solving the Symmetric Travelling Salesperson Problem (TSP),

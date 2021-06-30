@@ -19,9 +19,10 @@ export default class NQueens  extends Fitness {
     }
 
     get ga_config() { // Overwrite the random allele generator function        
+        const N = this._N; // Cannot use this._N inside the function
         return {
             mutation: mutation.RAND, // Rand operator uses mut_gen function
-            mut_gen: () => Math.floor(Math.random()*this._N)
+            mut_gen: function(){return Math.floor(Math.random()*N)}
         };
     }
 
@@ -30,9 +31,9 @@ export default class NQueens  extends Fitness {
     }
 
     // Max possible conflicts in a NxN chess board
-    _get_max_conflict = n => n*(n + 1) / 2
+    _get_max_conflict(n){ n*(n + 1) / 2 }
 
-    objective = columns => { // Counts the number of queens in conflict        
+    objective(columns) { // Counts the number of queens in conflict        
         let cntr = 0; // Conflict counter
         for(let col1=0; col1 < this._N-1; col1++){
             for(let col2=col1+1; col2 < this._N; col2++){                
@@ -44,11 +45,15 @@ export default class NQueens  extends Fitness {
         return cntr;
     }
 
-    objective_str = x => this.objective(x) + " conflicts"
+    objective_str(x) {
+        return this.objective(x) + " conflicts";
+    }
 
-    eval = g => 100 / ( this.objective(g) + 1 )
+    eval(g){
+        return 100 / ( this.objective(g) + 1 );
+    }
 
-    rand_encoded = () => { // Random order of numbers from 1 to N
+    rand_encoded() { // Random order of numbers from 1 to N
         let numbers = Array.from(Array(this._N).keys());
         shuffle_array(numbers);
         return numbers;

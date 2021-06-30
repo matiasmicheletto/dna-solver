@@ -1,6 +1,6 @@
 import cliProgress from 'cli-progress';
-import Experiment from '../client/src/experiment/index.mjs';
-import { crossover, mutation } from '../client/src/ga/index.mjs';
+import Experiment from 'optimization/experiment/index.mjs';
+import { crossover, mutation } from 'optimization/ga/index.mjs';
 
 // In this second example, we are solving the N-Queens problem for the case N = 16. The NQueens 
 // fitness model only takes a simple argument, which is N, the size of the squared chess board.

@@ -1,7 +1,7 @@
 import cliProgress from 'cli-progress';
-import Experiment from '../client/src/experiment/index.mjs';
-import { selection } from '../client/src/ga/index.mjs';
-import { distance } from '../client/src/fitness/tsp.mjs';
+import Experiment from 'optimization/experiment/index.mjs';
+import { selection } from 'optimization/ga/index.mjs';
+import { distance } from 'optimization/fitness/tsp.mjs';
 import fs from 'fs';
 
 

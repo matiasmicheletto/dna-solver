@@ -1,5 +1,5 @@
 import React, {createContext} from 'react';
-import Experiment from '../experiment/index.mjs';
+import Experiment from 'optimization/experiment/index.mjs';
 
 export const ExperimentCtx = createContext();
 

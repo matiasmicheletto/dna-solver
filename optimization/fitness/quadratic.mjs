@@ -52,24 +52,34 @@ export default class Quadratic extends Fitness {
         return this._z1;
     }
     
-    objective = x => {
+    objective(x) {
         return this._a - this._b*(x - this._c)*(x - this._c);
     }
 
-    objective_str = x => this.eval(x).toFixed(2)
+    objective_str(x) {
+        return this.eval(x).toFixed(2);
+    }
 
-    eval = g => this.objective(this.decode(g))
+    eval(g) {
+        return this.objective(this.decode(g));
+    } 
     
     // Decoder function will convert the binary array to decimal
-    decode = g => parseInt(g.join("").slice(-this._nbit), 2)
+    decode(g) {
+        return parseInt(g.join("").slice(-this._nbit), 2);
+    }
     
     // Encoder function converts the decimal value of x to bitstring
-    encode = x => x.toString(2)
-                .padStart(this._nbit,"0")
-                .slice(-this._nbit)
-                .split("")
-                .map(e => parseInt(e, 10))
+    encode(x) {
+        return x.toString(2)
+            .padStart(this._nbit,"0")
+            .slice(-this._nbit)
+            .split("")
+            .map(function(e){ return parseInt(e, 10)});
+    }
     
     // Generator generates numbers for x between 0 and 2^_nbit
-    rand_encoded = () => this.encode(Math.floor(Math.random() * Math.pow(2, this._nbit)))    
+    rand_encoded() {
+        return this.encode(Math.floor(Math.random() * Math.pow(2, this._nbit)));
+    }
 };

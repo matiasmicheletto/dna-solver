@@ -4,7 +4,7 @@ import { FaPlus } from 'react-icons/fa';
 import FitnessItem from '../fitnessitem';
 import classes from './styles.module.css';
 import { ExperimentCtx } from '../../context/ExperimentCtx';
-import { fitness_types, fitness_names } from '../../experiment';
+import { fitness_types, fitness_names } from 'optimization/experiment';
 
 /*
     Configurator Component
