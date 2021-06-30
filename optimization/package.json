@@ -1,0 +1,19 @@
+{
+  "name": "optimization",
+  "version": "1.0.0",
+  "engines" : { 
+    "node" : ">=14.0.0" 
+  },
+  "description": "Genetic algorithm hyperparametric optimization module",
+  "keywords": [
+    "GA",
+    "Dashboard",
+    "Interactive",
+    "Learning"
+  ],
+  "bugs": {
+    "url": "https://github.com/matiasmicheletto/sganode/issues"
+  },
+  "author": "Matias Micheletto",
+  "license": "GPL-3.0-or-later"
+}
