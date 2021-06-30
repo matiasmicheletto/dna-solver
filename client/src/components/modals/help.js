@@ -120,11 +120,7 @@ const HelpModal = props => (
             </li>
             <li>
                 <b>Mutation probability:</b> indicates the probability of a single gen or allele to be randomly altered.
-            </li>
-            <li>
-                <b>Mutation proportion:</b> determines the proportion of the entire population that is affected by mutation
-                on every generation.
-            </li>
+            </li>            
         </ul>
     </EmptyLGModal>
 );

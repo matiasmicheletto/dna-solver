@@ -105,6 +105,9 @@ export const normalize_coords = coords => {
 // Mean or average of an array
 export const array_mean = arr => arr.reduce((r, a) => a + r, 0)/arr.length;
 
+// Array variance s2
+export const array_s2 = (arr,m) => arr.reduce((r, a) => (a - m)*(a - m) + r, 0)/arr.length;
+
 // Mean or average of an array of objects with a numeric attribute
 export const obj_array_mean = (arr, attr) => arr.reduce((r, a) => a[attr] + r, 0)/arr.length;
 
@@ -121,9 +124,10 @@ export const matrix_columnwise_mean = matrix => {
 };
 
 export const final_slope = (data, window) => { 
+    // Moving average slope of las data.
     const len = data.length; 
     return (len > 0 && window > 0) ? 
-        (data[len-1]-data[len - Math.min(len, window)]) / data[len - 1] 
+        (data[len-1] - data[len - Math.min(len, window)]) / data[len - 1] 
         : 
         0;
 };

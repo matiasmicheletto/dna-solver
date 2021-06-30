@@ -130,8 +130,22 @@ export default class Experiment {
     remove_ga(id) {
         // Delete an optimizer from list
         const index = this._ga_list.findIndex(el => el.id === id);
-        if(index !== -1)        
+        if(index !== -1){
             this._ga_list.splice(index,1);
+            this._update_ga_colors(); // The list of colors should be updated
+        }
+    }
+
+    duplicate_ga(id) {
+        // Copy an optimizer configuration and create a new one
+        const index = this._ga_list.findIndex(el => el.id === id);
+        if(index !== -1){
+            const ga = new Ga(this._ga_list[index].fitness, this._ga_list[index].config);
+            ga.freezed = false; // Evolution and result compiling control
+            this._ga_list.push(ga);
+            this._update_ga_colors();
+            return ga.id;
+        }
     }
 
     get_ga_list(fitness_id) {
@@ -215,13 +229,15 @@ export default class Experiment {
 
         let by_optimizer = {};
         for(let g = 0; g < this._ga_list.length; g++){ // For each optimizer
+            // Historic values are pushed to matrixes
             let best_matrix = [];
-            let avg_matrix = [];
-            let best_fs_matrix = [];
-            let avg_fs_matrix = [];
+            let avg_matrix = [];            
+            let s2_matrix = [];
+            // Average values acrross rounds
             let avg_best_fitness = [];
             let avg_fitness_evals = [];
             let avg_elapsed = [];
+            // Absolute maximums acrross rounds
             let abs_best_fitness = 0;
             let abs_best_sol = null;
             let abs_best_obj = null;
@@ -229,9 +245,8 @@ export default class Experiment {
                 const round_res = this._results.by_round[r][this._ga_list[g].id]; // Round r, optimizer g.
                 // Historic values are saved in matrix shaped structures
                 best_matrix.push(round_res.best_hist);
-                avg_matrix.push(round_res.avg_hist);
-                best_fs_matrix.push(round_res.best_fs_hist);
-                avg_fs_matrix.push(round_res.avg_fs_hist);
+                avg_matrix.push(round_res.avg_hist);                
+                s2_matrix.push(round_res.s2_hist);
                 // Scalar values are saved in arrays
                 avg_best_fitness.push(round_res.best_fitness);
                 avg_fitness_evals.push(round_res.fitness_evals);
@@ -251,8 +266,8 @@ export default class Experiment {
                 // Arrays for plotting optimization performance
                 best_hist: matrix_columnwise_mean(best_matrix),
                 avg_hist: matrix_columnwise_mean(avg_matrix),
-                best_fs_hist: matrix_columnwise_mean(best_fs_matrix),
-                avg_fs_hist: matrix_columnwise_mean(avg_fs_matrix),
+                s2_hist: matrix_columnwise_mean(s2_matrix),
+                
                 // Averaged values across rounds
                 avg_best_fitness: array_mean(avg_best_fitness),
                 avg_fitness_evals: array_mean(avg_fitness_evals),

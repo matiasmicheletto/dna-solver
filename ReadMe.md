@@ -52,9 +52,10 @@ Module development (74%).
     - [x] Configuration of mutation operators.  
     - [x] Termination criteria (fixed to generations number).  
     - [ ] Parameter control (deterministic and adaptive).  
-- [x] Experiment manager module (100%).  
+- [x] Experiment manager module (84%).  
     - [x] Fitness modules lists management.  
     - [x] Optimizers list management.  
+    - [ ] Optimizers duplication.  
     - [x] Fitness and optimizers configuration.  
     - [x] Experiment execution.  
     - [x] Result summarization.  
@@ -63,7 +64,7 @@ Module development (74%).
     - [x] Example 2: NQueens. Multiple fitness experiment.  
     - [x] Example 3: Complex TSP. Parameter tunning.  
 - [x] Export results as plain text file (100%).  
-- [ ] Generate NodeJS module (0%).  
+- [x] Generate NodeJS module (100%).  
 
 GUI development (90%)  
 - [x] Graphical experiment configuration (100%).  

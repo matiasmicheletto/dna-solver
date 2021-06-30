@@ -134,20 +134,7 @@ const GAConfigForm = props => (
                     onChange={v => props.onChange("mut_prob", parseFloat(v.target.value))}
                 >
                 </Form.Control>
-            </InputGroup>
-            <InputGroup as={Col} sm>
-                <InputGroup.Text className={classes.InputLabel}>Mutation proportion</InputGroup.Text>
-                <Form.Control className={classes.Input}
-                    type="number"
-                    placeholder="Mutation prop."
-                    min="0"
-                    max="1"
-                    step="0.01"
-                    defaultValue={props.current.mut_fr}
-                    onChange={v => props.onChange("mut_fr", parseFloat(v.target.value))}
-                >
-                </Form.Control>
-            </InputGroup>
+            </InputGroup>            
         </Row>
     </Form>
 )

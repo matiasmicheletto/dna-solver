@@ -40,8 +40,13 @@ const FitnessItem = props => {
     const remove_ga = ga_id => {
         experiment.remove_ga(ga_id);        
         //experiment.reset();
-        setGAList(experiment.get_ga_list(props.fitness.id));        
+        setGAList(experiment.get_ga_list(props.fitness.id));
     };
+
+    const copy_ga = ga_id => {
+        experiment.duplicate_ga(ga_id);
+        setGAList(experiment.get_ga_list(props.fitness.id));
+    }
 
     const toggle_ga_freeze = ga_id => {
         experiment.toggle_ga_freeze(ga_id);
@@ -93,6 +98,7 @@ const FitnessItem = props => {
                                 key={ga.id} 
                                 ga={ga} 
                                 remove={remove_ga} 
+                                copy={copy_ga}
                                 toggle_freeze={toggle_ga_freeze}
                                 /> 
                             )

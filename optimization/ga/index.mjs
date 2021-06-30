@@ -14,8 +14,6 @@ Configuration object:
         * type: Float number between 0 and 1.
     - mut_prob: Mutation probability (probability of an allele to change).
         * type: Float number between 0 and 1. Usually 1/(bitstring length).
-    - mut_fr: Mutation fraction (proportion of individuals to be exposed to mutation).
-        * type: Number.
     - mut_gen: Allele generator for mutation.
         * type: Function.
         * input: None.
@@ -26,8 +24,6 @@ Configuration object:
         * type: Integer number, usually between 2 and 5.
     - best_fsw_factor: Window size for getting the best final slope value proportional to generation number.
         * type: Float number.
-    - avg_fsw_factor: Window size for getting the average final slope value proportional to generation number.
-        * type: Float number.
     - selection: Selection operator.
         * type: ROULETTE, RANK or TOURNAMENT.
     - crossover: Crossover operator.
@@ -37,10 +33,9 @@ Configuration object:
 */
 import { 
     probability, 
-    random_select, 
     generate_id, 
     random_name, 
-    final_slope 
+    final_slope
 } from "../tools/index.mjs";
 
 
@@ -70,12 +65,10 @@ const default_config = {
     elitism: 2,
     cross_prob: 0.5, 
     mut_prob: 0.1, 
-    mut_fr: 0.6,
     mut_gen: () => Math.round(Math.random()), // Used for mutation.RAND
     rank_r: 0.002,
     tourn_k: 3,
     best_fsw_factor: 0.2,
-    avg_fsw_factor: 0.5,
     selection: selection.ROULETTE,
     crossover: crossover.SINGLE,
     mutation: mutation.BITFLIP
@@ -97,9 +90,6 @@ export default class Ga { // GA model class
         // Create and initialize the array of individuals
         this._population = new Array(this._config.pop_size);
         this.reset(); // Init and sort the array
-
-        // Number of individuals to be exposed to mutation
-        this._mut_range = Math.floor(this._population.length * this._config.mut_fr);
 
         // Probability parameter for rank based selection operator
         this._rank_q = this._config.rank_r*(this._config.pop_size-1)/2 + 1/this._config.pop_size;
@@ -128,8 +118,7 @@ export default class Ga { // GA model class
         this._ff_evs = 0; // Fitness function evaluations counter
         this._best_hist = []; // Historic values of best fitness
         this._avg_hist = []; // Historic values of population average fitness
-        this._best_fs_hist = [];
-        this._avg_fs_hist = [];
+        this._s2_hist = []; // Historic values of population variance fitness
     }
 
     _eval(ind) { // This fitness function evaluates the ind-th individual condition
@@ -185,14 +174,12 @@ export default class Ga { // GA model class
             best_fitness: this._population[0].fitness,
             best_objective: this._fitness.objective_str(this._population[0].genotype),
             best_final_slope: this._best_final_slope,
-            avg_final_slope: this._avg_final_slope,
             generation: this._generation,
             fitness_evals: this._ff_evs,
             // Historic values
             best_hist: this._best_hist,
             avg_hist: this._avg_hist,
-            best_fs_hist: this._best_fs_hist,
-            avg_fs_hist: this._avg_fs_hist,
+            s2_hist: this._s2_hist,         
             // Current state of population
             population: this.population // Use the getter method
         }
@@ -225,9 +212,7 @@ export default class Ga { // GA model class
 
         this._config.pop_size = p;
         // Update the q parameter as it depends on the population size
-        this._rank_q = this._config.rank_r*(this._config.pop_size-1)/2 + 1/this._config.pop_size;
-        // The same for the mutation range
-        this._mut_range = Math.floor(this._population.length * this._config.mut_fr);
+        this._rank_q = this._config.rank_r*(this._config.pop_size-1)/2 + 1/this._config.pop_size;        
     }
 
     set elitism(e) {
@@ -240,10 +225,6 @@ export default class Ga { // GA model class
 
     set mut_prob(v) {        
         this._config.mut_prob = v;        
-    }
-
-    set mut_fr(v) {
-        this._config.mut_fr = v;
     }
 
     set rank_r(v) {
@@ -260,13 +241,13 @@ export default class Ga { // GA model class
         switch(s){
             default: // Default is roulette
             case selection.ROULETTE:
-                this._cr_selection = this._roulette_selection;
+                this._selection = this._roulette_selection;
                 break;
             case selection.RANK:
-                this._cr_selection = this._rank_selection;
+                this._selection = this._rank_selection;
                 break;
             case selection.TOURNAMENT:
-                this._cr_selection = this._tournament_selection;
+                this._selection = this._tournament_selection;
                 break;
         }
         this._config.selection = s;
@@ -305,34 +286,6 @@ export default class Ga { // GA model class
         }
         this._config.mutation = m;
     }
-
-    //////////// HELPERS ///////////
-    _fitness_sum() { 
-        // Sum of fitness values
-        return this._population.reduce((r, a) => a.fitness + r, 0);
-    }
-
-    _sort_pop() {
-        // Sort population from best to worst fitness
-        this._population.sort((a,b) => (b.fitness - a.fitness) );
-    }
-
-    _update_stats() {
-        // Record the new best and average values
-        this._best_hist.push(this._population[0].fitness);
-        this._avg_hist.push( this._fitness_sum() / this._config.pop_size );
-        
-        // Obtain the convergence metrics
-        const best_fsw = Math.ceil(this._config.best_fsw_factor*this._generation);
-        const avg_fsw = Math.ceil(this._config.avg_fsw_factor*this._generation);
-        this._best_final_slope = final_slope(this._best_hist, best_fsw);
-        this._avg_final_slope = final_slope(this._avg_hist, avg_fsw);
-
-        // Record the convergence metrics
-        this._best_fs_hist.push(this._best_final_slope); 
-        this._avg_fs_hist.push(this._avg_final_slope);
-    }
-
 
     //////////// GA METHODS ////////////
 
@@ -546,14 +499,31 @@ export default class Ga { // GA model class
         }
     }
 
-    _mut_selection() {
-        // Returns selected chromosomes for mutation (in case of mutation proportion < 1)
-        return this._config.mut_fr < 1 ? // Get indexes of the selected individual to mutate
-            random_select(this._mut_range, this._population.length) // Array with random set of indexes
-            : 
-            Array.from(Array(this._population.length).keys()); // Return all elements
+    //////////// HELPERS ///////////
+    _fitness_sum() { 
+        // Sum of fitness values
+        return this._population.reduce((r, a) => a.fitness + r, 0);
     }
 
+    _sort_pop() {
+        // Sort population from best to worst fitness
+        this._population.sort((a,b) => (b.fitness - a.fitness) );
+    }
+
+    _update_stats() {
+        // Population metrics
+        this._fitness_avg = this._fitness_sum() / this._population.length;
+        this._fitness_s2 = this._population.reduce((r, a) => (a.fitness - this._fitness_avg)*(a.fitness - this._fitness_avg) + r, 0) / this._population.length;
+
+        // Convergence metric (best historic slope)
+        const window = Math.ceil(this._config.best_fsw_factor*this._generation);        
+        this._best_final_slope = final_slope(this._best_hist, window);
+        
+        // Record the metrics in arrays
+        this._best_hist.push(this._population[0].fitness);
+        this._avg_hist.push(this._fitness_avg);
+        this._s2_hist.push(this._fitness_s2); 
+    }
 
     /// Iteration
 
@@ -563,17 +533,16 @@ export default class Ga { // GA model class
         const elite = this._config.elitism > 0 ? [...this._population.slice(0, this._config.elitism)] : null;
 
         // Select parents list for crossover
-        const cr_selected = this._cr_selection(); 
+        const selected = this._selection(); 
 
-        // Apply crossover to selected individuals
-        for(let k = 0; k < cr_selected.length-1; k += 2)
-            if(probability(this._config.cross_prob))
-                this._crossover(cr_selected[k], cr_selected[k+1]); 
-
-        // Apply mutation
-        const mut_selected = this._mut_selection();
-        for(let j in mut_selected)
-            this._mutate(mut_selected[j]);
+        // Apply crossover to selected individuals, and if crossover is performed, 
+        // apply mutation to offspring
+        for(let k = 0; k < selected.length-1; k += 2)
+            if(probability(this._config.cross_prob)){
+                this._crossover(selected[k], selected[k+1]); 
+                this._mutate(selected[k]); 
+                this._mutate(selected[k+1]);
+            }
 
         // Compute population fitness values for not evaluated individuals
         this._population.forEach( (p, ind) => {

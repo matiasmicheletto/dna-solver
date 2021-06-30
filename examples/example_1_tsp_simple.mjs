@@ -61,9 +61,8 @@ experiment.set_ga_config(ga_ids[0], {selection: selection.ROULETTE});
 experiment.set_ga_config(ga_ids[1], {selection: selection.RANK});
 experiment.set_ga_config(ga_ids[2], {selection: selection.TOURNAMENT});
 // Other parameters can be configured the same way, for example crossover and mutation
-// probability (cross_prob and mut_prob), mutation proportion (mut_fr) and even
-// rank r value (rank_r) or tournament k value (tourn_k), which are specific for
-// each selection methods.
+// probability (cross_prob and mut_prob) and even rank r value (rank_r) or tournament k 
+// value (tourn_k), which are specific for each selection methods.
 
 // In order to identify which result corresponds to each optimizer, we can
 // modify their default names according to the configuration we selected 

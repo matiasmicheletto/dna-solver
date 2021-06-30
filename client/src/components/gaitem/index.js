@@ -8,7 +8,14 @@ import {
     Form, 
     InputGroup 
 } from 'react-bootstrap';
-import { FaTrashAlt, FaTools, FaEye, FaPlay, FaPause } from 'react-icons/fa';
+import { 
+    FaTrashAlt, 
+    FaTools, 
+    FaCopy, 
+    FaEye, 
+    FaPlay, 
+    FaPause 
+} from 'react-icons/fa';
 import classes from './styles.module.css';
 import PopTable from '../poptable';
 import SolutionViewer from '../solutionviewer';
@@ -77,7 +84,7 @@ const GAItem = props => {
                 </Col>
                 <Col xs="1" md="2" lg="2" align="center" className="p-0">
                     <Row className={["m-0", "p-0"]}>
-                        <Col sm="12" md="3" className="p-0">
+                        <Col md="12" lg="2" className="p-0">
                             <Button 
                                 className={classes.MenuGABtn}
                                 variant="success"
@@ -89,7 +96,7 @@ const GAItem = props => {
                                 <FaEye />
                             </Button>
                         </Col>
-                        <Col sm="12" md="3" className="p-0">
+                        <Col md="12" lg="2" className="p-0">
                             <Button 
                                 className={classes.MenuGABtn}
                                 onClick={()=>{
@@ -101,7 +108,7 @@ const GAItem = props => {
                                 <FaTools />
                             </Button>
                         </Col>
-                        <Col sm="12" md="3" className="p-0">
+                        <Col md="12" lg="2" className="p-0">
                             <Button 
                                 className={classes.MenuGABtn}
                                 variant="secondary"
@@ -116,7 +123,16 @@ const GAItem = props => {
                                 
                             </Button>
                         </Col>
-                        <Col sm="12" md="3" className="p-0">
+                        <Col md="12" lg="2" className="p-0">
+                            <Button 
+                                className={classes.MenuGABtn}
+                                variant="dark"
+                                onClick={()=>{props.copy(status.id)}}
+                                title="Copy optimizer configuration">
+                                <FaCopy />
+                            </Button>
+                        </Col>
+                        <Col md="12" lg="2" className="p-0">
                             <Button 
                                 className={classes.MenuGABtn}
                                 variant="danger"

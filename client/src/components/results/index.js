@@ -79,24 +79,9 @@ const Results = () => {
         series:[]
     };
 
-    let avg_hist_config = { // Line plot of avg fitness evolution
-        title:"Population fitness average",
-        yaxis:"Fitness (average accross rounds)",
-        xaxis:"Generation number",
-        series:[]
-    };
-
-    // Evolution slopes
-    let best_slope_config = { // Line plot of best fitness slope
-        title:"Best fitness derivative",
-        yaxis:"Derivative",
-        xaxis:"Generation number",
-        series:[]
-    };
-
-    let avg_slope_config = { // Line plot of pop avg slope
-        title:"Pop. fitness avg. derivative",
-        yaxis:"Derivative",
+    let s2_hist_config = { // Line plot of avg fitness evolution
+        title:"Population fitness variance",
+        yaxis:"Variance (average accross rounds)",
         xaxis:"Generation number",
         series:[]
     };
@@ -124,24 +109,10 @@ const Results = () => {
                 color: results.by_optimizer[g].color
             }
         });
-        avg_hist_config.series = Object.keys(results.by_optimizer).map(g => {
+        s2_hist_config.series = Object.keys(results.by_optimizer).map(g => {
             return {
                 name: results.by_optimizer[g].name,
-                data: results.by_optimizer[g].avg_hist,
-                color: results.by_optimizer[g].color
-            }
-        });
-        best_slope_config.series = Object.keys(results.by_optimizer).map(g => {
-            return {
-                name: results.by_optimizer[g].name,
-                data: results.by_optimizer[g].best_fs_hist,
-                color: results.by_optimizer[g].color
-            }
-        });
-        avg_slope_config.series = Object.keys(results.by_optimizer).map(g => {
-            return {
-                name: results.by_optimizer[g].name,
-                data: results.by_optimizer[g].avg_fs_hist,
+                data: results.by_optimizer[g].s2_hist,
                 color: results.by_optimizer[g].color
             }
         });
@@ -181,15 +152,7 @@ const Results = () => {
                     <LinePlot id="best_hist" config={best_hist_config}/>                    
                 </Col>
                 <Col sm="12" md="6">
-                    <LinePlot id="best_slope" config={best_slope_config}/>                    
-                </Col>
-            </Row>
-            <Row>
-            <Col sm="12" md="6">
-                    <LinePlot id="avg_hist" config={avg_hist_config}/>                    
-                </Col>
-                <Col sm="12" md="6">
-                    <LinePlot id="avg_slope" config={avg_slope_config}/>                    
+                    <LinePlot id="avg_hist" config={s2_hist_config}/>                    
                 </Col>
             </Row>
             <Row>
