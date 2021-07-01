@@ -327,14 +327,14 @@ export default class Ga { // GA model class
     }
 
     _tournament_selection() {
-        // Performs pop_size fitness comparations beetween k selected individuals
+        // Performs pop_size fitness comparations beetween k random selected individuals
         let selected = [];
         for(let i = 0; i < this._population.length; i++){
             let tournament = [];
             for(let k = 0; k < this._config.tourn_k; k++)
-                tournament.push(Math.floor(Math.random()*this._population.length));
-            tournament.sort((a,b)=>(b - a)); // Lower index has better fitness
-            selected.push(tournament[0]);
+                // Add random individual index to tournament
+                tournament.push(Math.floor(Math.random()*this._population.length));            
+            selected.push(Math.min(...tournament)); // Min index is the tournament winner
         }
         return selected;
     }
