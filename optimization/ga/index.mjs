@@ -106,6 +106,7 @@ export default class Ga { // GA model class
     }
 
     reset() { // Restarts de algorithm
+        this._ff_evs = 0; // Fitness function evaluations counter
         // Generate random genotypes for each individual and evaluate its condition
         for(let k = 0; k < this._population.length; k++){
             this._population[k] = { genotype: this._fitness.rand_encoded() };
@@ -115,7 +116,6 @@ export default class Ga { // GA model class
         this._sort_pop();
         // Restart counters
         this._generation = 0; // Generation counter
-        this._ff_evs = 0; // Fitness function evaluations counter
         this._best_hist = []; // Historic values of best fitness
         this._avg_hist = []; // Historic values of population average fitness
         this._s2_hist = []; // Historic values of population variance fitness
@@ -441,62 +441,40 @@ export default class Ga { // GA model class
     /// Mutation
 
     _bitflip_mutation(ind) { 
-        // Applies bitflip mutation to individual "ind". This method is stochastic so no changes may be applied
-        let changes = false;
-        let newg = [...this._population[ind].genotype]; // Copy of the original genotype
-        for(let k = 0; k < newg.length; k++) // For every allele
+        // Applies bitflip mutation to individual "ind". This method is stochastic so no changes may be applied        
+        for(let k = 0; k < this._population[ind].genotype.length; k++) // For every allele
             if( probability(this._config.mut_prob) ){ 
-                newg[k] = newg[k] ? 0 : 1; // Bitflip
-                changes = true;
+                this._population[ind].genotype[k] = this._population[ind].genotype[k]===1? 0 : 1; // Bitflip
+                this._population[ind].evaluated = false; // Mark as not evaluated
             }
-        if(changes){ // Mark individual as not evaluated
-            this._population[ind] = {
-                genotype: newg,
-                fitness: 0,
-                evaluated: false
-            }
-        }
     }
 
     _swap_mutation(ind) {
         // Applies allele position swap to individual "ind". This method is stochastic so no changes may be applied
-        let changes = false;
-        let newg = [...this._population[ind].genotype]; // Copy of the original genotype
-        for(let k = 0; k < newg.length; k++) // For every allele
+        const genlen = this._population[ind].genotype.length;
+        for(let k = 0; k < genlen; k++) // For every allele
             if( probability(this._config.mut_prob) ){ 
                 let p = k;
-                while(p === k)
-                    p = Math.floor(Math.random() * newg.length); // The other position
-                // Swap positions 
-                [newg[k], newg[p]] = [newg[p], newg[k]];
-                changes = true;
+                while(p === k) p = Math.floor(Math.random() * genlen); // The other position
+                // Inline position swap [] = []
+                [
+                    this._population[ind].genotype[k], 
+                    this._population[ind].genotype[p]
+                ] = [
+                    this._population[ind].genotype[p], 
+                    this._population[ind].genotype[k]
+                ];
+                this._population[ind].genotype.evaluated = false;
             }
-        if(changes){ // Mark individual as not evaluated
-            this._population[ind] = {
-                genotype: newg,
-                fitness: 0,
-                evaluated: false
-            }
-        }
     }
 
     _rand_allele_mutation(ind) {
         // Selects a random value for a random selected allele. This method is stochastic so no changes may be applied
-        let changes = false;
-        let newg = [...this._population[ind].genotype]; // Copy of the original genotype
-        for(let k = 0; k < newg.length; k++) // For every allele
+        for(let k = 0; k < this._population[ind].genotype.length; k++) // For every allele
             if( probability(this._config.mut_prob) ){ 
-                newg[k] = this._config.mut_gen(); 
-                changes = true;
+                this._population[ind].genotype[k] = this._config.mut_gen(); // Change for a random value
+                this._population[ind].genotype.evaluated = false; // Mark as not evaluated
             }
-
-        if(changes){ // Mark individual as not evaluated
-            this._population[ind] = {
-                genotype: newg,
-                fitness: 0,
-                evaluated: false
-            }
-        }
     }
 
     //////////// HELPERS ///////////

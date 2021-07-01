@@ -41,7 +41,7 @@ Email: [matias.micheletto@uns.edu.ar](mailto:matias.micheletto@uns.edu.ar)
 Module development (93%).  
 - [ ] Fitness function module (75%). 
     - [x] Parabola.  
-    - [ ] Subset sum problem.  
+    - [x] Subset sum problem.  
     - [x] N-Queens problem.  
     - [x] TSP Problem.  
 - [ ] Optimizer module (85%).  
