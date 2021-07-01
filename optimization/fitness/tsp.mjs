@@ -1,4 +1,3 @@
-
 import Fitness from './index.mjs';
 import { 
     shuffle_array, 
@@ -12,9 +11,9 @@ import { mutation, crossover } from '../ga/index.mjs';
 
 export const distance = { // Distance functions enumerator
     EXPLICIT: "explicit", // Weight matrix is already provided
-    EUCLIDEAN: "euclidean",
-    PSEUDOEUCLIDEAN: "pseudoeuclidean", // From att type (tsplib)
-    MANHATTAN: "manhattan",
+    EUCLIDEAN: "euclidean", // Used in most cases
+    PSEUDOEUCLIDEAN: "pseudoeuclidean", // Uded in att type (tsplib)
+    MANHATTAN: "manhattan", // For cities
     HAVERSINE: "haversine" // For geospatial data
 }
 

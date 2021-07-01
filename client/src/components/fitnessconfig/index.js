@@ -1,12 +1,15 @@
 import React from 'react';
 
-import TSPConfig from './tspconfig';
-import NQueensConfig from './nqueensconfig';
 import QuadraticConfig from './quadraticconfig';
+import SubsetSumConfig from './subsetsumconfig';
+import NQueensConfig from './nqueensconfig';
+import TSPConfig from './tspconfig';
 
-import Tsp from 'optimization/fitness/tsp.mjs';
-import NQueens from 'optimization/fitness/nqueens.mjs';
 import Quadratic from 'optimization/fitness/quadratic.mjs';
+import SubsetSum from 'optimization/fitness/subsetsum.mjs';
+import NQueens from 'optimization/fitness/nqueens.mjs';
+import Tsp from 'optimization/fitness/tsp.mjs';
+
 
 /*
     FitnessConfig Component
@@ -19,14 +22,17 @@ import Quadratic from 'optimization/fitness/quadratic.mjs';
 
 const FitnessConfig = props => {
 
-    if(props.fitness instanceof Tsp)
-        return <TSPConfig {...props} distance={Tsp.distance}/>
+    if(props.fitness instanceof Quadratic)
+        return <QuadraticConfig {...props} />
+
+    if(props.fitness instanceof SubsetSum)
+        return <SubsetSumConfig {...props} />
 
     if(props.fitness instanceof NQueens)
-        return <NQueensConfig {...props}/>
+        return <NQueensConfig {...props} />
 
-    if(props.fitness instanceof Quadratic)
-        return <QuadraticConfig {...props}/>
+    if(props.fitness instanceof Tsp)
+        return <TSPConfig {...props} distance={Tsp.distance} />
 
     return (
         <div>

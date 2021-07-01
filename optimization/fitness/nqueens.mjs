@@ -7,19 +7,15 @@ import { mutation } from '../ga/index.mjs';
 export default class NQueens  extends Fitness {
     
     constructor(N = 8) {
-        super({_N: N});        
+        super({_N: N, _name:"N Queens (N="+N+")"});
     }
 
     set N(val) {
         this._N = val;
     }
 
-    get name() { // 
-        return "N Queens (N="+this._N+")";
-    }
-
     get ga_config() { // Overwrite the random allele generator function        
-        const N = this._N; // Cannot use this._N inside the function
+        const N = this._N; // For using this._N inside the mut_gen function
         return {
             mutation: mutation.RAND, // Rand operator uses mut_gen function
             mut_gen: function(){return Math.floor(Math.random()*N)}
@@ -30,8 +26,11 @@ export default class NQueens  extends Fitness {
         return this._N;
     }
 
-    // Max possible conflicts in a NxN chess board
-    _get_max_conflict(n){ n*(n + 1) / 2 }
+    _get_max_conflict(n) { 
+        // Max possible conflicts in a NxN chess board
+        // This value can be used as fitness multiplier
+        return n*(n + 1) / 2 
+    }
 
     objective(columns) { // Counts the number of queens in conflict        
         let cntr = 0; // Conflict counter
@@ -49,7 +48,15 @@ export default class NQueens  extends Fitness {
         return this.objective(x) + " conflicts";
     }
 
-    eval(g){
+    eval(g) { 
+        /* This fitness model uses the following table:
+        conflicts - fitness
+            0        100
+            1         50
+            2         33
+            3         25
+            ...
+        */
         return 100 / ( this.objective(g) + 1 );
     }
 

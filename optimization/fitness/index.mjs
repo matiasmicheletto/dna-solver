@@ -10,17 +10,18 @@ import { generate_id } from '../tools/index.mjs';
 
 class Fitness { // Fitness model class
     constructor(params) {
+        this._id = generate_id(); // Fitness unique identifier
+        this._name = "Undefined name"; // Fitness model title (not defined yet)
         for(let p in params)
             this[p] = params[p];
-        this._id = generate_id();
     }
 
-    get id() { // Fitness unique identifier
+    get id() { 
         return this._id;
     }
 
-    get name() { // A readable name for this fitness function model
-        return "N/D";
+    get name() { 
+        return this._name;
     }
 
     // This function is used to override the GA default configuration
@@ -28,7 +29,6 @@ class Fitness { // Fitness model class
     get ga_config() {
         return {};
     }
-    
 }
 
 export default Fitness;

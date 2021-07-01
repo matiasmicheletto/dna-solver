@@ -8,18 +8,14 @@ import classes from './styles.module.css';
     This component renders the problem description and the 
     form required to configure all of the N-Queens fitness 
     model parameters, which is just "N", the chessboard 
-    size or queens number.
-    For now this component configure almos everything and
-    handles its own state with the fitness parameters
-    but everything will be moved to the experiment manager
-    and the fitnessitem component will handle the rendering
+    size or queens number.    
 */
 
 const NQueensConfig = props => (
     <Form className={classes.Container}>
         <div className={classes.ProblemDesc}>
             <h5>Problem description</h5>
-            <p>The {props.fitness.N}-queens puzzle is the problem of placing {props.fitness.N} chess queens on an {props.fitness.N}x{props.fitness.N} chessboard 
+            <p>The <a href="https://en.wikipedia.org/wiki/Eight_queens_puzzle" target="_blank" rel="noopener noreferrer">{props.fitness.N}-queens puzzle</a> is the problem of placing {props.fitness.N} chess queens on an {props.fitness.N}x{props.fitness.N} chessboard 
             so that no two queens threaten each other; thus, a solution requires that no 
             two queens share the same row, column, or diagonal.</p>
             <p>Candidate solutions are encoded using arrays of {props.fitness.N} elements where each element 

@@ -24,12 +24,17 @@ const HelpModal = props => (
         <h5>Fitness functions models</h5>
         <p>Fitness functions models should be defined by coding the entire module. A fitness parent class
         is provided in order to ease the compatibility with the experiment and optimizers class.</p>
-        <p>The modules should be configurable by the user. Three models are provided to create experiments:</p>
+        <p>The modules should be configurable by the user. Four models are provided to create experiments:</p>
         <ul>
             <li>
                 <b>Parabolic Optimization</b>: a simple parabolic function that encode its optimization variable
                 as binary strings. In this case, the bitstring length and the maximum fitness value are the only 
                 configurable parameters.
+            </li>
+            <li>
+                <b>Subset Sum Problem</b>: consist on finding a subset of a given set of integer numbers which sum 
+                equals to a target sum T. A random set is provided by default, but larger sets can be uploaded in
+                csv format.
             </li>
             <li>
                 <b>N-Queen Problem</b>: The problem consist on finding a way of placing N queens on a NxN chess

@@ -1,3 +1,6 @@
+///////////// GENERIC TOOLS ///////////////
+
+
 import { adjs, nouns } from './strings.mjs';
 
 // Change a single char of a string (btw strings are immutable in js)
@@ -102,14 +105,23 @@ export const normalize_coords = coords => {
     return coords.map( p => [ (p[0]-minX)/(maxX-minX) , (p[1]-minY)/(maxY-minY) ]);
 }
 
-// Mean or average of an array
-export const array_mean = arr => arr.reduce((r, a) => a + r, 0)/arr.length;
+// Sum of array elements
+export const array_sum = arr => arr.reduce((r, a) => a + r, 0);
 
-// Array variance s2
-export const array_s2 = (arr,m) => arr.reduce((r, a) => (a - m)*(a - m) + r, 0)/arr.length;
+// Mean or average of an array
+export const array_mean = arr => array_sum(arr)/arr.length;
+
+// Array variance s2 (m is the array average or mean value)
+export const array_s2 = (arr, m) => arr.reduce((r, a) => (a - m)*(a - m) + r, 0)/arr.length;
+
+// Sum of an array of objects with a numeric attribute
+export const obj_array_sum = (arr, attr) => arr.reduce((r, a) => a[attr] + r, 0);
 
 // Mean or average of an array of objects with a numeric attribute
-export const obj_array_mean = (arr, attr) => arr.reduce((r, a) => a[attr] + r, 0)/arr.length;
+export const obj_array_mean = (arr, attr) => obj_array_sum(arr, attr)/arr.length;
+
+// Sort array of objects based on attribute numeric value
+export const obj_array_desc_sort = (arr, attr) => arr.sort((a,b) => (b[attr] - a[attr]) );
 
 export const matrix_columnwise_mean = matrix => {
     // Calculate the average accross a single columns of a matrix

@@ -31,8 +31,8 @@ const TspSolutionViewer = props => {
             ctx.lineTo(posx, posy);
         }
         // Return to origin
-        const xo = (places[0][0]*.9 + .05)*cw;
-        const yo = (places[0][1]*.9 + .05)*ch;
+        const xo = (places[props.genotype[0]][0]*.9 + .05)*cw;
+        const yo = (places[props.genotype[0]][1]*.9 + .05)*ch;
         ctx.lineTo(xo, yo);
         ctx.stroke();
     });

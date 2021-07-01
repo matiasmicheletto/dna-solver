@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import EmptyLGModal from '../modals/templates';
 
-import TspSolutionViewer from './tspsolutionviewer';
-import NQueensSolutionViewer from './nqueenssolutionviewer';
 import QuadraticSolutionViewer from './quadraticsolutionviewer';
+import NQueensSolutionViewer from './nqueenssolutionviewer';
+import TspSolutionViewer from './tspsolutionviewer';
 
-import Tsp from 'optimization/fitness/tsp.mjs';
-import NQueens from 'optimization/fitness/nqueens.mjs';
 import Quadratic from 'optimization/fitness/quadratic.mjs';
+import SubsetSum from 'optimization/fitness/subsetsum.mjs';
+import NQueens from 'optimization/fitness/nqueens.mjs';
+import Tsp from 'optimization/fitness/tsp.mjs';
+
 
 /*
     SolutionViewer Component
@@ -46,25 +48,27 @@ const SolutionViewer = props => {
     // By default, phenotype is a dash-separated elements of the genotype
     let phenotype = props.genotype.join("-").substr(0,maxlen)+(props.genotype.length > maxlen ? "...":"");
 
-    // Default viewer for fitness models without defined GUI
-    let Viewer = props => (
-        <span>{phenotype}</span>
-    );
+    // Default viewer for fitness models without a defined visualizer
+    let Viewer = props => <span>{props.phenotype}</span>
 
     // The following logic determines which component use to display the
     // graphical representation of the phenotype
     
-    if(props.fitness instanceof Tsp)
-        Viewer = withinModal(TspSolutionViewer);
-
-    if(props.fitness instanceof NQueens)
-        Viewer = withinModal(NQueensSolutionViewer);
-
     if(props.fitness instanceof Quadratic){
         // In this case, the phenotype is the conversion BCD to Decimal
         phenotype = props.fitness.decode(props.genotype).toFixed(2);
         Viewer = withinModal(QuadraticSolutionViewer);
     }
+
+    if(props.fitness instanceof SubsetSum)
+        // For the subset sum problem, just display the selected numbers
+        phenotype = props.fitness.decode(props.genotype);
+    
+    if(props.fitness instanceof NQueens)
+        Viewer = withinModal(NQueensSolutionViewer);
+
+    if(props.fitness instanceof Tsp)
+        Viewer = withinModal(TspSolutionViewer);
 
     return <Viewer {...props} phenotype={phenotype} />;
 };

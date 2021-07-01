@@ -6,23 +6,30 @@ Multiple fitness functions can be created and for each, a GA based optimizer can
 */
 
 import Ga from '../ga/index.mjs';
+import { hsl2rgb, array_mean, matrix_columnwise_mean } from '../tools/index.mjs';
+// In case of having a large number of fitness models, then
+// the "add_fitness" method should be refactored in order to 
+// receive the fitness constructor as argument instead of
+// the enumerators.
 import Tsp from '../fitness/tsp.mjs';
 import NQueens from '../fitness/nqueens.mjs';
 import Quadratic from '../fitness/quadratic.mjs';
-import { hsl2rgb, array_mean, matrix_columnwise_mean } from '../tools/index.mjs';
+import SubsetSum from '../fitness/subsetsum.mjs';
 
 
 // Enumerators
 export const fitness_types = {
-    TSP: "tsp",
+    QUADRATIC: "quadratic",
+    SUBSET: "subset",
     NQUEENS: "nqueens",
-    QUADRATIC: "quadratic"
+    TSP: "tsp"
 }
 
 export const fitness_names = {
-    TSP: "Travelling Salesperson",
+    QUADRATIC: "Parabola",
+    SUBSET: "Subset sum",
     NQUEENS: "N-Queens",
-    QUADRATIC: "Parabola"
+    TSP: "Travelling Salesperson"
 }
 
 export default class Experiment {
@@ -51,17 +58,22 @@ export default class Experiment {
     }
 
     add_fitness(type) {// Create new fitness function
+        // If the number of models is large, then just
+        // pass the constructor instead of the type
         let f;        
         switch(type) {
             default:
-            case fitness_types.TSP:
-                f = new Tsp();
+            case fitness_types.QUADRATIC:
+                f = new Quadratic();
+                break;
+            case fitness_types.SUBSET:
+                f = new SubsetSum();
                 break;
             case fitness_types.NQUEENS:
                 f = new NQueens();                
                 break;
-            case fitness_types.QUADRATIC:
-                f = new Quadratic();
+            case fitness_types.TSP:
+                f = new Tsp();
                 break;
         }        
         f.type = type; // Add the type format
