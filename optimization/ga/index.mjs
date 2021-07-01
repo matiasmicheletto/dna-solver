@@ -294,11 +294,11 @@ export default class Ga { // GA model class
     _roulette_selection() { 
         // Uses probability of selection proportional to fitness
         let selected = [];
-        const sf = this._fitness_sum(); 
+        const fs = this._fitness_sum(); 
         for(let i = 0; i < this._population.length; i++){
-            const r = Math.random()*sf; // Random number from 0 to sum
+            const r = Math.random()*fs; // Random number from 0 to fitness sum
             let s = 0; // Partial adder
-            for(let k in this._population){ // Population should be sorted from best to worst
+            for(let k in this._population){ // Population is already sorted from best to worst
                 s += this._population[k].fitness;
                 if(s >= r){ // If random value reached
                     selected.push(k); // Add individual
@@ -315,7 +315,7 @@ export default class Ga { // GA model class
         for(let i = 0; i < this._population.length; i++){
             const r = Math.random(); 
             let s = 0; // Partial adder
-            for(let k = 0; k < this._population.length; k++){ // Population should be sorted from best to worst
+            for(let k = 0; k < this._population.length; k++){ // Population is already sorted from best to worst
                 s += this._rank_q - k * this._config.rank_r;
                 if(s >= r){ // If random value reached
                     selected.push(k); // Add individual
@@ -330,11 +330,12 @@ export default class Ga { // GA model class
         // Performs pop_size fitness comparations beetween k random selected individuals
         let selected = [];
         for(let i = 0; i < this._population.length; i++){
-            let tournament = [];
-            for(let k = 0; k < this._config.tourn_k; k++)
-                // Add random individual index to tournament
-                tournament.push(Math.floor(Math.random()*this._population.length));            
-            selected.push(Math.min(...tournament)); // Min index is the tournament winner
+            let winner = this._population.length-1;
+            for(let k = 0; k < this._config.tourn_k; k++){ // Run tournament
+                const candidate = Math.floor(Math.random()*this._population.length); // Random candidate
+                if(candidate < winner) winner = candidate; // Lower index wins
+            }
+            selected.push(winner);
         }
         return selected;
     }
@@ -345,8 +346,10 @@ export default class Ga { // GA model class
     _single_point_crossover(k1, k2) { 
         // Performs crossover between parents k1 and k2 and returns their children
         const p = Math.floor(Math.random() * (this._population[k1].genotype.length - 2) + 1); // Crossover point
+        // Perform genotype crossover
         const g1 = [...this._population[k1].genotype.slice(0, p), ...this._population[k2].genotype.slice(p)];
         const g2 = [...this._population[k2].genotype.slice(0, p), ...this._population[k1].genotype.slice(p)];
+        // Update population
         this._population[k1] = {
             genotype: g1,
             fitness: 0,
@@ -361,26 +364,19 @@ export default class Ga { // GA model class
 
     _double_point_crossover(k1, k2) {
         // Performs crossover between parents k1 and k2 and returns their children
-        const r1 = Math.floor(Math.random() * (this._population[k1].genotype.length - 2) + 1); // Crossover point 1
-        const r2 = Math.floor(Math.random() * (this._population[k1].genotype.length - 2) + 1); // Crossover point 2
-
+        let p1 = Math.floor(Math.random() * (this._population[k1].genotype.length - 2) + 1); // Crossover point 1
+        let p2 = Math.floor(Math.random() * (this._population[k1].genotype.length - 2) + 1); // Crossover point 2
         // Sort crossover points such that p1 < p2
-        let p1 = r1; let p2 = r2;
-        if( p1 > p2 ){
-            p1 = r2;
-            p2 = r1;
-        }
-
-        // Perform genotype copy
+        if( p1 > p2 ) [p1, p2] = [p2, p1];
+        // Perform genotype crossover
         const g1 = [...this._population[k1].genotype.slice(0, p1), ...this._population[k2].genotype.slice(p1, p2), ...this._population[k1].genotype.slice(p2)];
         const g2 = [...this._population[k2].genotype.slice(0, p1), ...this._population[k1].genotype.slice(p1, p2), ...this._population[k2].genotype.slice(p2)];
-
+        // Update population
         this._population[k1] = {
             genotype: g1,
             fitness: 0,
             evaluated: false
         }
-
         this._population[k2] = {
             genotype: g2,
             fitness: 0,
@@ -389,7 +385,7 @@ export default class Ga { // GA model class
     }
 
     _pmx_crossover(k1, k2) {
-        // Partially mapped crossover
+        // Partially mapped crossover (PMX)
         // https://gist.github.com/celaus/d5a55e723ce233f2b83af36a4cf456b4
         const s = this.population[k1].genotype;
         const t = this.population[k2].genotype;
@@ -424,12 +420,12 @@ export default class Ga { // GA model class
                 g2[i] = _map2[g2[i]];
         }
 
+        // Update population
         this._population[k1] = {
             genotype: g1,
             fitness: 0,
             evaluated: false
         }
-
         this._population[k2] = {
             genotype: g2,
             fitness: 0,
@@ -455,8 +451,9 @@ export default class Ga { // GA model class
         for(let k = 0; k < genlen; k++) // For every allele
             if( probability(this._config.mut_prob) ){ 
                 let p = k;
-                while(p === k) p = Math.floor(Math.random() * genlen); // The other position
-                // Inline position swap [] = []
+                // Select another random position
+                while(p === k) p = Math.floor(Math.random() * genlen); 
+                // Inline values swap ([a,b] = [b,a])
                 [
                     this._population[ind].genotype[k], 
                     this._population[ind].genotype[p]
@@ -464,6 +461,7 @@ export default class Ga { // GA model class
                     this._population[ind].genotype[p], 
                     this._population[ind].genotype[k]
                 ];
+                // Mark individual as not evaluated
                 this._population[ind].genotype.evaluated = false;
             }
     }
