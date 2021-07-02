@@ -8,10 +8,11 @@ const NQueensSolutionViewer = props => {
     // To re-render component when queen icon is loaded
     const [loaded, setLoaded] = useState(false); 
 
-    useEffect(() => {       
+    useEffect(() => {
         const canvas = canvasRef.current;
-        canvas.width = 500;
-        canvas.height = canvasRef.current.clientWidth; // Make square        
+        canvas.width  = canvas.offsetWidth;
+        canvas.height  = canvas.width;
+        //canvas.height = canvasRef.current.clientWidth; // Make square        
         const ctx = canvas.getContext("2d");
         // Chess square size is the modal width divided by the chess size
         const squareSize = canvasRef.current.clientWidth/props.fitness.N; 
@@ -31,7 +32,7 @@ const NQueensSolutionViewer = props => {
 
     return (
         <center>
-          <canvas ref={canvasRef}/>
+          <canvas ref={canvasRef} style={{width:"70%", maxWidth:"500px"}}/>
           <img 
             alt="Queen" 
             ref={queenRef} 

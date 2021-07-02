@@ -6,7 +6,8 @@ const TspSolutionViewer = props => {
     useEffect(() => {        
         let canvas = canvasRef.current;
         // Make square
-        canvas.width = canvas.height = 500;
+        canvas.width  = canvas.offsetWidth;
+        canvas.height  = canvas.width;
         const cw = canvasRef.current.clientWidth;
         const ch = canvasRef.current.clientWidth; 
         const ctx = canvas.getContext("2d");
@@ -39,7 +40,7 @@ const TspSolutionViewer = props => {
 
     return (
         <center>
-            <canvas ref={canvasRef} />
+            <canvas ref={canvasRef} style={{width:"70%", maxWidth:"500px"}} />
         </center>
     )
 };
