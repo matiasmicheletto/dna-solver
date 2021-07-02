@@ -49,36 +49,49 @@ const GAItem = props => {
         <ListGroup.Item className={classes.Container} style={{backgroundColor:color, color:freezed?"lightgray":"black"}}>
             <Row>
                 <Col xs="10" sm="11" md="10" lg="10" className={classes.GAStatus}>
-                    {
-                        nameEdit ?
-                        <InputGroup as={Col} sm className={classes.NameInputGroup}>
-                            <InputGroup.Text className={classes.NameInputLabel}>New name</InputGroup.Text>
-                            <Form.Control
-                                className={classes.NameForm}
-                                type="text"
-                                placeholder="New name"                                
-                                defaultValue={status.name}
-                                onChange={v => {setName(v.target.value)}}
-                            >
-                            </Form.Control>
-                            <Button                                 
-                                className={classes.NameButtonOk}
-                                onClick={updateName}>Update</Button>
-                            <Button                                 
-                                className={classes.NameButtonCancel}
-                                onClick={()=>setNameEdit(false)}>Cancel</Button>
-                        </InputGroup>
-                        :
-                        <p className={classes.GAName} onClick={()=>setNameEdit(true)}><i>{status.name + (freezed ? " (Freezed)" : "")}</i></p>
-                    }
+                    <Row>
+                        {
+                            nameEdit ?
+                            <div>
+                                <InputGroup as={Col} sm className={classes.NameInputGroup}>
+                                    <InputGroup.Text className={[classes.NameInputLabel, "d-none", "d-md-block"]}>New name</InputGroup.Text>
+                                    <Form.Control
+                                        className={classes.NameForm}
+                                        type="text"
+                                        placeholder="New name"                                
+                                        defaultValue={status.name}
+                                        onChange={v => {setName(v.target.value)}}
+                                    >
+                                    </Form.Control>
+                                    <Button                                 
+                                        className={classes.NameButtonOk}
+                                        onClick={updateName}>
+                                            Update
+                                    </Button>
+                                    <Button                                 
+                                        className={classes.NameButtonCancel}
+                                        onClick={()=>setNameEdit(false)}>
+                                            Cancel
+                                    </Button>
+                                </InputGroup>
+                            </div>
+                            :
+                            <p className={classes.GAName} onClick={()=>setNameEdit(true)}><i>{status.name + (freezed ? " (Freezed)" : "")}</i></p>
+                        }
+                    </Row>
                     <Row className={classes.GAStatusDetails}>
-                        <Col sm="12" md="6">
+                        <Col sm="12" md="auto">
                             <p><b>Current generation:</b> {status.generation}</p>
                             <p><b>Fitness evaluations:</b> {status.fitness_evals}</p>
                         </Col>
-                        <Col sm="12" md="6">
+                        <Col sm="12" md="auto">
+                        <p><b>Best fitness:</b> {status.best_fitness.toFixed(1)} ({status.best_objective})</p>
                             <p><b>Best solution:</b> <SolutionViewer genotype={status.best} fitness={props.ga.fitness} /></p> 
-                            <p><b>Best value:</b> {status.best_objective}</p>                             
+                            
+                        </Col>
+                        <Col sm="12" md="auto">
+                            <p><b>Fitness average:</b> {status.pop_fitness_avg.toFixed(2)}</p> 
+                            <p><b>Population variance:</b> {status.pop_fitness_s2.toFixed(2)}</p>                             
                         </Col>
                     </Row>
                 </Col>

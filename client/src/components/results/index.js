@@ -34,6 +34,10 @@ const ResultsCard = props => {
                                         <td>{props.results.by_optimizer[g].avg_elapsed.toFixed(1)} ms.</td>
                                     </tr>
                                     <tr>
+                                        <td><b>Population final variance:</b></td>
+                                        <td>{props.results.by_optimizer[g].abs_best_s2.toFixed(1)}</td>
+                                    </tr>
+                                    <tr>
                                         <td><b>Best fitness (average):</b></td>
                                         <td>{props.results.by_optimizer[g].avg_best_fitness.toFixed(3)}</td>
                                     </tr>

@@ -42,11 +42,10 @@ const withinModal = ViewerComponent => {
 
 const SolutionViewer = props => {
 
-    // Default string length (cropped for large genotypes)
-    const maxlen = props.maxlen ? props.maxlen : 25; 
-
-    // By default, phenotype is a dash-separated elements of the genotype
-    let phenotype = props.genotype.join("-").substr(0,maxlen)+(props.genotype.length > maxlen ? "...":"");
+    // By default, phenotype is a dash-separated elements of the genotype array
+    const genotype_str = props.genotype.join("-"); // Convert to string
+    const maxlen = props.maxlen ? props.maxlen : 25; // Max string length
+    let phenotype = genotype_str.substr(0,maxlen)+(genotype_str.length > maxlen ? "...":"");
 
     // Default viewer for fitness models without a defined visualizer
     let Viewer = props => <span>{props.phenotype}</span>

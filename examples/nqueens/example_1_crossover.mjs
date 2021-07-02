@@ -2,7 +2,7 @@ import cliProgress from 'cli-progress';
 import Experiment from 'optimization/experiment/index.mjs';
 import { crossover, mutation } from 'optimization/ga/index.mjs';
 
-// In this second example, we are solving the N-Queens problem for the case N = 16. The NQueens 
+// In this example, we are solving the N-Queens problem for the case N = 16. The NQueens 
 // fitness model only takes a simple argument, which is N, the size of the squared chess board.
 // In this analysis, we are testing the crossover operator to see how it affects the behaviour
 // of the evolutionary process.
@@ -16,19 +16,14 @@ import { crossover, mutation } from 'optimization/ga/index.mjs';
 
 ///////// Solution //////////
 
-// Build the experiment manager and add the NQueens fitness model
+// Build the experiment manager and add the NQueens fitness model for N=16
 const experiment = new Experiment();
-const f_id = experiment.add_fitness(Experiment.fitness_types.NQUEENS); 
-
-// Set the N value for the problem to 16
-experiment.set_fitness_config(f_id, {N: 16});
+const f_id = experiment.add_fitness(Experiment.fitness_types.NQUEENS, [16]); 
 
 // Now we initialize the optimizaers with some default configuration
 const ga_ids = [];
-for(let i = 0; i < 3; i++){
-    ga_ids.push(experiment.add_ga(f_id));
-    experiment.set_ga_config(ga_ids[i], {elitism: 3, pop_size: 30});
-}
+for(let i = 0; i < 3; i++)
+    ga_ids.push(experiment.add_ga(f_id, {elitism: 3, pop_size: 30}));
 
 // Then, we configure the different crossover operators for each one, and modifying
 // their names at the same time:

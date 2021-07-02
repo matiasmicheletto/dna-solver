@@ -177,7 +177,8 @@ const TSPConfig = props => {
             </div>
             <Row>
                 <Col md="9" className={classes.ProblemDesc}>
-                    <p>If you already have a JSON formatted TSP configuration file, upload it pressing the following button:</p>
+                    <p>A JSON configuration file can be uploaded with the problem parameters: <br/>
+                    [Some examples can be found on this <a href="examples/tsp/json">link</a>]</p>
                 </Col>
                 <Col md="3">
                     <Form.Group>                        
@@ -186,13 +187,14 @@ const TSPConfig = props => {
                             ref={configInputEl} 
                             style={{display:"none"}} 
                             onChange={v => fileUploaded(v.target.files[0], "json", "")}/>
-                        <Button onClick={()=>configInputEl.current?.click()}>Select configuration file...</Button>
+                        <Button onClick={()=>configInputEl.current?.click()}>Upload configuration file...</Button>
                     </Form.Group>
                 </Col>
             </Row>
             <Row style={{marginTop: "15px"}}>
                 <Col md="9" className={classes.ProblemDesc}>
-                    <p>Otherwise, you can upload csv formatted file for the TSP coordinates:</p>
+                    <p>Otherwise, csv formatted file with the problem places coordinates can be uploaded: <br/> 
+                    [One line per coordinate, each coordinate separated by comma]</p>
                 </Col>
                 <Col md="3">
                     <Form.Group>                        
@@ -201,7 +203,7 @@ const TSPConfig = props => {
                             ref={placesInputEl} 
                             style={{display:"none"}} 
                             onChange={v => fileUploaded(v.target.files[0], "csv", "places")}/>
-                        <Button onClick={()=>placesInputEl.current?.click()}>Select places CSV file...</Button>
+                        <Button onClick={()=>placesInputEl.current?.click()}>Upload places CSV file...</Button>
                     </Form.Group>
                 </Col>
             </Row>
@@ -230,7 +232,7 @@ const TSPConfig = props => {
                             ref={weightsInputEl} 
                             style={{display:"none"}} 
                             onChange={v => fileUploaded(v.target.files[0], "csv", "weight_matrix")}/>
-                        <Button onClick={()=>weightsInputEl.current?.click()}>Select distances CSV file...</Button>
+                        <Button onClick={()=>weightsInputEl.current?.click()}>Upload distances CSV file...</Button>
                     </Form.Group>}
                 </Col>
             </Row>

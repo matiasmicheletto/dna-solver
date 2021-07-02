@@ -24,17 +24,16 @@ const dist = distance[instance.distance]; // Distance function to calculate the 
 // Build the experiment manager to manage the optimization process and the result compiling
 const experiment = new Experiment();
 
-// We create a new fitness model of the TSP problem and add it to the experiment.
-const f_id = experiment.add_fitness(Experiment.fitness_types.TSP);
+// We create a new fitness model of the TSP problem with the desired config and add it to the experiment.
+const f_id = experiment.add_fitness(Experiment.fitness_types.TSP, [places, dist]);
 
-// The problem configuration is setted up from the data we parsed before:
-experiment.set_fitness_config(f_id, {places:places, distance:dist});
 
 // This time we're testing the crossover and mutation probability parameters, so we add
 // two optimizers with 30 individuals and rank selection method:
-const ga_ids = [experiment.add_ga(f_id), experiment.add_ga(f_id)];
-for(let i in ga_ids)
-    experiment.set_ga_config(ga_ids[i], {selection:selection.RANK, pop_size:30});
+const ga_ids = [
+    experiment.add_ga(f_id, {selection:selection.RANK, pop_size:30}), 
+    experiment.add_ga(f_id, {selection:selection.RANK, pop_size:30})
+];
 
 // Then we configure the desired probability parameters and change the optimizers names:
 experiment.set_ga_config(ga_ids[0], {mut_prob:0.001, cross_prob:0.8, name: "Cross. prob.= 0.8, mut. prob.= 0.001"});

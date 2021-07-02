@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const serveIndex = require('serve-index');
 
 class Server {
   constructor() {
@@ -13,18 +14,16 @@ class Server {
   middlewares() {
     this.app.use(cors());
     this.app.use(express.json());
-
-    // Pick up React index.html file
-    this.app.use(
-      express.static(path.join(__dirname, "../client/build"))
-    );
+    // Serve app build folder
+    this.app.use(express.static(path.join(__dirname, "../client/build")));
+    // Serve examples files and directories
+    this.app.use('/examples', serveIndex(path.join(__dirname, "../examples")));
+    this.app.use('/examples', express.static(path.join(__dirname, "../examples")));
   }
 
   routes() {    
-    this.app.get("*", (req, res) => {
-      res.sendFile(
-        path.join(__dirname, "../client/build/index.html")
-      );
+    this.app.get("/", (req, res) => {
+      res.sendFile(path.join(__dirname, "../client/build/index.html"));
     });
   }
 

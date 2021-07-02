@@ -6,10 +6,8 @@ const TspSolutionViewer = props => {
     useEffect(() => {        
         let canvas = canvasRef.current;
         // Make square
-        canvas.width  = canvas.offsetWidth;
-        canvas.height  = canvas.width;
-        const cw = canvasRef.current.clientWidth;
-        const ch = canvasRef.current.clientWidth; 
+        const cw = canvas.width  = canvas.offsetWidth;
+        const ch = canvas.height  = canvas.width;
         const ctx = canvas.getContext("2d");
         const places = props.fitness.norm_places;
         

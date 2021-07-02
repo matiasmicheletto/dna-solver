@@ -54,14 +54,14 @@ const SubsetSumConfig = props => {
                 <p>Current numeric set is: </p>
                 <p>{props.fitness.set.join(", ")}</p>
                 <p>In order to use a different numeric set, a single line <b>.csv</b> file can be provided. Numbers should be comma separated
-                integers.</p>
+                integers (or download an example from this <a href="examples/ssp">link</a>).</p>
                 <Form.Group>                        
                     <input                             
                         type="file"                             
                         ref={fileInputEl} 
                         style={{display:"none"}} 
                         onChange={v => fileUploaded(v.target.files[0])}/>
-                    <Button onClick={()=>fileInputEl.current?.click()}>Select numeric set file...</Button>
+                    <Button onClick={()=>fileInputEl.current?.click()}>Upload numeric set file...</Button>
                 </Form.Group>
             </div>
         </Form>

@@ -5,10 +5,8 @@ const QuadraticSolutionViewer = props => {
 
     useEffect(() => {
         let canvas  = canvasRef.current;
-        canvas.width  = canvas.offsetWidth;
-        canvas.height  = canvas.width;
-        const cw = canvasRef.current.clientWidth;
-        const ch = canvasRef.current.clientWidth; 
+        const cw = canvas.width  = canvas.offsetWidth;
+        const ch = canvas.height  = canvas.width;
         const ctx = canvas.getContext("2d");
         
         // Fitness function scaled to canvas size

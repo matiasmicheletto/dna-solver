@@ -3,8 +3,8 @@ import EmptyLGModal from './templates';
 
 const HelpModal = props => (
     <EmptyLGModal {...props} title="How to use this application">
-        <h5>General view</h5>
-        <p>The dashboard is divided in three sections: configuration, control and results.</p>
+        <h5>Overview</h5>
+        <p>This application consists in a single dashboard divided in three sections: configuration, control and results.</p>
         <p>In the <b>Experiment configuration</b> section, the status of the selected fitness functions
         models is shown together with the corresponding optimizers for each one. Here you can add 
         fitness functions, optimizers and configure every desired parameter depending on the purpose 
@@ -43,12 +43,12 @@ const HelpModal = props => (
                 where each element corresponds to  each column and its value indicates the row occupied by the 
                 queen of that column. The value of N is the only configurable parameter.
             </li>
-            <li><b>Travelling Salesperson Problem</b>: The <a href="https://en.wikipedia.org/wiki/Travelling_salesman_problem">
-                Travelling Salesperson Problem (TSP)</a> asks the following question: "Given a list of cities and 
-                the distances between each pair of cities, what is the shortest possible route that visits each city 
-                exactly once and returns to the origin city?" It is an NP-hard problem in combinatorial optimization, 
-                important in theoretical computer science and operations research.
-                <br></br>
+            <li><b>Travelling Salesperson Problem</b>: The <a href="https://en.wikipedia.org/wiki/Travelling_salesman_problem" 
+            target="_blank" rel="noopener noreferrer"> Travelling Salesperson Problem (TSP)</a> asks the following question: 
+                "Given a list of cities and the distances between each pair of cities, what is the shortest possible route 
+                that visits each city exactly once and returns to the origin city?" It is an NP-hard problem in combinatorial 
+                optimization, important in theoretical computer science and operations research.
+                <br />
                 Four different functions are provided to calculate distance between cities or destinations: Euclidean,
                 Pseudoeuclidean, Manhattan and Haversine. It is also available the option of loading the distance matrix
                 directly, in order to solve the asymmetric version of the problem.
@@ -75,9 +75,9 @@ const HelpModal = props => (
                     </li>
                     <li>
                         <b>Ranking:</b> each individual <i>i</i> is selected with probability P<sub>i</sub>=q-i*r, where:
-                        <br></br>
+                        <br />
                         q=r(<i>pop_size</i>-1)/2+1/<i>pop_size</i>
-                        <br></br>
+                        <br />
                         and r is a tunning parameter that should guarantee that 0 &le; P<sub>i</sub> &le; P<sub>i</sub>.
                     </li>
                     <li>
@@ -127,6 +127,11 @@ const HelpModal = props => (
                 <b>Mutation probability:</b> indicates the probability of a single gen or allele to be randomly altered.
             </li>            
         </ul>
+        <h5>Optimization Module</h5>
+        <p>The core module is written in javascript, which makes it portable and compatible with different platforms. A set of 
+            examples is provided which are available in the <a href="https://github.com/matiasmicheletto/sganode/tree/main/examples"
+            target="_blank" rel="noopener noreferrer"> project repository</a> and also can be found in this <a href="examples">link</a>.
+        </p>
     </EmptyLGModal>
 );
 

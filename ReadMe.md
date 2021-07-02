@@ -6,7 +6,7 @@
     <img src="https://img.shields.io/website?down_color=red&down_message=offline&style=plastic&up_color=green&up_message=online&url=https%3A%2F%2Fsganode.herokuapp.com">
 </p>
 
-A [Node.js module](optimization) and a [React.js GUI](client) that allows to create and test evolutionary algorithms experiments with focus on hyperparametric optimization for specific optimization problems.
+A [Node.js module](optimization) and a [React.js GUI](client) that allows to create and test evolutionary algorithms experiments with focus on hyperparametric optimization for solving the most common problems present in the combinatorial optimization literature.
 
 This project was developed under the context of the final work for the posgraduate course *"Advanced Techniques for Evolutionary Computation"*  by [Dr. Ignacio Ponzoni](https://cs.uns.edu.ar/~ip/) at [DCIC](https://cs.uns.edu.ar/~devcs/) (UNS).  
 

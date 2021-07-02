@@ -20,14 +20,14 @@ import SubsetSum from '../fitness/subsetsum.mjs';
 // Enumerators
 export const fitness_types = {
     QUADRATIC: "quadratic",
-    SUBSET: "subset",
+    SUBSETSUM: "subset",
     NQUEENS: "nqueens",
     TSP: "tsp"
 }
 
 export const fitness_names = {
     QUADRATIC: "Parabola",
-    SUBSET: "Subset sum",
+    SUBSETSUM: "Subset sum",
     NQUEENS: "N-Queens",
     TSP: "Travelling Salesperson"
 }
@@ -57,23 +57,23 @@ export default class Experiment {
         return this._results;
     }
 
-    add_fitness(type) {// Create new fitness function
+    add_fitness(type, params = []) {// Create new fitness function
         // If the number of models is large, then just
         // pass the constructor instead of the type
         let f;        
         switch(type) {
             default:
             case fitness_types.QUADRATIC:
-                f = new Quadratic();
+                f = new Quadratic(...params);
                 break;
-            case fitness_types.SUBSET:
-                f = new SubsetSum();
+            case fitness_types.SUBSETSUM:
+                f = new SubsetSum(...params);
                 break;
             case fitness_types.NQUEENS:
-                f = new NQueens();                
+                f = new NQueens(...params);
                 break;
             case fitness_types.TSP:
-                f = new Tsp();
+                f = new Tsp(...params);
                 break;
         }        
         f.type = type; // Add the type format
@@ -109,29 +109,18 @@ export default class Experiment {
         }
     }
 
-    set_ga_config(id, config) {
-        // Configure an optimizer model parameter
-        const index = this._ga_list.findIndex(el => el.id === id);
+    get_fitness(ga_id) {
+        // Get the fitness model of an optimizer
+        const index = this._ga_list.findIndex(el => el.id === ga_id);
         if(index !== -1)
-            for(let param in config)
-                this._ga_list[index][param] = config[param];
+            return this._ga_list[index].fitness;
     }
 
-    _update_ga_colors() {
-        // Optimizers use colors to visually differentiate them.
-        // An evenly distributed HUE colors are assigned to each one.
-        const len = this._ga_list.length;
-        for(let g = 0; g < len; g++){
-            const color = hsl2rgb(g/len, .5, .7); // Equally spaced colors
-            this._ga_list[g].color = `rgb(${color[0]},${color[1]},${color[2]})`;
-        }
-    }
-
-    add_ga(fitness_id) {
+    add_ga(fitness_id, config = {}) {
         // Add an optimizer for a given fitness function
         const index = this._fitness_list.findIndex(el => el.id === fitness_id);
         if(index !== -1){
-            const ga = new Ga(this._fitness_list[index]);
+            const ga = new Ga(this._fitness_list[index], config);
             ga.freezed = false; // Evolution and result compiling control
             this._ga_list.push(ga);
             this._update_ga_colors(); // The list of colors is assigned
@@ -160,17 +149,29 @@ export default class Experiment {
         }
     }
 
+    set_ga_config(id, config) {
+        // Configure an optimizer model parameter
+        const index = this._ga_list.findIndex(el => el.id === id);
+        if(index !== -1)
+            for(let param in config)
+                this._ga_list[index][param] = config[param];
+    }
+
+    _update_ga_colors() {
+        // Optimizers use colors to visually differentiate them.
+        // An evenly distributed HUE colors are assigned to each one.
+        const len = this._ga_list.length;
+        for(let g = 0; g < len; g++){
+            const color = hsl2rgb(g/len, .5, .7); // Equally spaced colors
+            this._ga_list[g].color = `rgb(${color[0]},${color[1]},${color[2]})`;
+        }
+    }
+
     get_ga_list(fitness_id) {
         // List of optimizers from a fitness model
         return this._ga_list.filter(g => g.fitness_id===fitness_id);
     }
 
-    get_fitness(ga_id) {
-        // Get the fitness model of an optimizer
-        const index = this._ga_list.findIndex(el => el.id === ga_id);
-        if(index !== -1)
-            return this._ga_list[index].fitness;
-    }
 
 
     toggle_ga_freeze(id) {
@@ -251,6 +252,7 @@ export default class Experiment {
             let avg_elapsed = [];
             // Absolute maximums acrross rounds
             let abs_best_fitness = 0;
+            let abs_best_s2 = 0;
             let abs_best_sol = null;
             let abs_best_obj = null;
             for(let r = 0; r < this._results.by_round.length; r++){ // For each round
@@ -266,6 +268,7 @@ export default class Experiment {
                 // Best values are updated on best found
                 if(round_res.best_fitness > abs_best_fitness) {
                     abs_best_fitness = round_res.best_fitness;
+                    abs_best_s2 = round_res.pop_fitness_s2;
                     abs_best_sol = round_res.best;
                     abs_best_obj = round_res.best_objective;
                 }
@@ -286,6 +289,7 @@ export default class Experiment {
                 avg_elapsed: array_mean(avg_elapsed),                
                 // Better solutions across all rounds
                 abs_best_fitness: abs_best_fitness,
+                abs_best_s2: abs_best_s2,
                 abs_best_solution: abs_best_sol, 
                 abs_best_objective: abs_best_obj 
             };

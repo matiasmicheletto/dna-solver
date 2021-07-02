@@ -114,6 +114,8 @@ export default class Ga { // GA model class
         }
         // Sort population (selection requires ranked individuals)
         this._sort_pop();
+        // Update population statistics
+        this._update_pop_stats();
         // Restart counters
         this._generation = 0; // Generation counter
         this._best_hist = []; // Historic values of best fitness
@@ -174,6 +176,8 @@ export default class Ga { // GA model class
             best_fitness: this._population[0].fitness,
             best_objective: this._fitness.objective_str(this._population[0].genotype),
             best_final_slope: this._best_final_slope,
+            pop_fitness_s2: this._fitness_s2,
+            pop_fitness_avg: this._fitness_avg,
             generation: this._generation,
             fitness_evals: this._ff_evs,
             // Historic values
@@ -294,9 +298,8 @@ export default class Ga { // GA model class
     _roulette_selection() { 
         // Uses probability of selection proportional to fitness
         let selected = [];
-        const fs = this._fitness_sum(); 
         for(let i = 0; i < this._population.length; i++){
-            const r = Math.random()*fs; // Random number from 0 to fitness sum
+            const r = Math.random()*this._fitness_sum; // Random number from 0 to fitness sum
             let s = 0; // Partial adder
             for(let k in this._population){ // Population is already sorted from best to worst
                 s += this._population[k].fitness;
@@ -476,9 +479,11 @@ export default class Ga { // GA model class
     }
 
     //////////// HELPERS ///////////
-    _fitness_sum() { 
-        // Sum of fitness values
-        return this._population.reduce((r, a) => a.fitness + r, 0);
+
+    _update_pop_stats() {
+        this._fitness_sum = this._population.reduce((r, a) => a.fitness + r, 0);
+        this._fitness_avg = this._fitness_sum / this._population.length;
+        this._fitness_s2 = this._population.reduce((r, a) => (a.fitness - this._fitness_avg)*(a.fitness - this._fitness_avg) + r, 0) / this._population.length;
     }
 
     _sort_pop() {
@@ -488,8 +493,7 @@ export default class Ga { // GA model class
 
     _update_stats() {
         // Population metrics
-        this._fitness_avg = this._fitness_sum() / this._population.length;
-        this._fitness_s2 = this._population.reduce((r, a) => (a.fitness - this._fitness_avg)*(a.fitness - this._fitness_avg) + r, 0) / this._population.length;
+        this._update_pop_stats();
 
         // Convergence metric (best historic slope)
         const window = Math.ceil(this._config.best_fsw_factor*this._generation);        

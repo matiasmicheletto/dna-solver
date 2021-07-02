@@ -7,7 +7,7 @@ import { array_sum } from "../tools/index.mjs";
 let default_set = [];
 for(let k = 0; k < 20; k++)
     default_set.push(Math.round(Math.random()*200)-100);
-default_set.sort();
+default_set.sort((a,b) => a-b);
 
 export default class SubsetSum extends Fitness {
     constructor(set = default_set, T = 0) {
@@ -49,14 +49,18 @@ export default class SubsetSum extends Fitness {
     eval(g) {
         /* This fitness model uses the following table:
         sum - fitness
-         0        100
-         1         50
-         2         33
-         3         25
-         ...
+            0        100
+            1         50
+            2         33
+            3         25
+            ...
         */
-        const obj = this.objective(g);
-        return 100 / ( Math.abs(obj[0] - this._T) + 1 ) - obj[1];
+        if(!g.every(item => item === 0)){ // If empty array is proposed
+            const obj = this.objective(g);
+            return 100 / ( Math.abs(obj[0] - this._T) + 1 ) - obj[1];
+        }else{ // Return lowes possible value for fitness
+            return 0;
+        }
     }
 
     rand_encoded() {
