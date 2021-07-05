@@ -29,7 +29,7 @@ export default class Quadratic extends Fitness {
     }
 
     get name() {
-        return "Parabola optimization";
+        return "Quadratic function";
     }
 
     get nbit() {

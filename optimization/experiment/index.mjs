@@ -11,10 +11,12 @@ import { hsl2rgb, array_mean, matrix_columnwise_mean } from '../tools/index.mjs'
 // the "add_fitness" method should be refactored in order to 
 // receive the fitness constructor as argument instead of
 // the enumerators.
-import Tsp from '../fitness/tsp.mjs';
-import NQueens from '../fitness/nqueens.mjs';
 import Quadratic from '../fitness/quadratic.mjs';
 import SubsetSum from '../fitness/subsetsum.mjs';
+import NQueens from '../fitness/nqueens.mjs';
+import Knapsack from '../fitness/knapsack.mjs';
+import Tsp from '../fitness/tsp.mjs';
+
 
 
 // Enumerators
@@ -22,13 +24,15 @@ export const fitness_types = {
     QUADRATIC: "quadratic",
     SUBSETSUM: "subset",
     NQUEENS: "nqueens",
+    KNAPSACK: "knapsack",
     TSP: "tsp"
 }
 
 export const fitness_names = {
-    QUADRATIC: "Parabola",
+    QUADRATIC: "Quadratic",
     SUBSETSUM: "Subset sum",
     NQUEENS: "N-Queens",
+    KNAPSACK: "Knapsack",
     TSP: "Travelling Salesperson"
 }
 
@@ -71,6 +75,9 @@ export default class Experiment {
                 break;
             case fitness_types.NQUEENS:
                 f = new NQueens(...params);
+                break;
+            case fitness_types.KNAPSACK:
+                f = new Knapsack(...params);
                 break;
             case fitness_types.TSP:
                 f = new Tsp(...params);

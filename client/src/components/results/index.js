@@ -34,25 +34,25 @@ const ResultsCard = props => {
                                         <td>{props.results.by_optimizer[g].avg_elapsed.toFixed(1)} ms.</td>
                                     </tr>
                                     <tr>
-                                        <td><b>Population final variance:</b></td>
-                                        <td>{props.results.by_optimizer[g].abs_best_s2.toFixed(1)}</td>
-                                    </tr>
-                                    <tr>
                                         <td><b>Best fitness (average):</b></td>
                                         <td>{props.results.by_optimizer[g].avg_best_fitness.toFixed(3)}</td>
                                     </tr>
                                     <tr>
-                                        <td><b>Best fitness (all rounds):</b></td>
+                                        <td><b>Fitness (best round):</b></td>
                                         <td>{props.results.by_optimizer[g].abs_best_fitness.toFixed(3)}</td>
                                     </tr>
                                     <tr>
-                                        <td><b>Best solution (all rounds):</b></td>
+                                        <td><b>Pop. variance (best round):</b></td>
+                                        <td>{props.results.by_optimizer[g].abs_best_s2.toFixed(1)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Solution (best round):</b></td>
                                         <td><SolutionViewer 
                                             genotype={props.results.by_optimizer[g].abs_best_solution} 
                                             fitness={experiment.get_fitness(g)}/></td>
                                     </tr>
                                     <tr>
-                                        <td><b>Best objective (all rounds):</b></td>
+                                        <td><b>Objective (best round):</b></td>
                                         <td>{props.results.by_optimizer[g].abs_best_objective}</td>
                                     </tr>
                                 </tbody>

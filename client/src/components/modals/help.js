@@ -23,28 +23,39 @@ const HelpModal = props => (
         by round or by optimizer.</p>
         <h5>Fitness functions models</h5>
         <p>Fitness functions models should be defined by coding the entire module. A fitness parent class
-        is provided in order to ease the compatibility with the experiment and optimizers class.</p>
-        <p>The modules should be configurable by the user. Four models are provided to create experiments:</p>
+        is provided in order to ease the compatibility with the experiment and optimizers class. If possible, 
+        the modules should be configurable by the user. </p>
+        <p>Five models are provided to create experiments:</p>
         <ul>
             <li>
-                <b>Parabolic Optimization</b>: a simple parabolic function that encode its optimization variable
+                <a href="https://en.wikipedia.org/wiki/Quadratic_function" target="_blank" rel="noopener noreferrer">
+                <b>Quadratic Function</b></a>: the function of a parabola that encode its optimization variable
                 as binary strings. In this case, the bitstring length and the maximum fitness value are the only 
                 configurable parameters.
             </li>
             <li>
-                <b>Subset Sum Problem</b>: consist on finding a subset of a given set of integer numbers which sum 
+                <a href="https://en.wikipedia.org/wiki/Subset_sum_problem" target="_blank" rel="noopener noreferrer">
+                <b>Subset Sum Problem</b></a>: consist on finding a subset of a given set of integer numbers which sum 
                 equals to a target sum T. A random set is provided by default, but larger sets can be uploaded in
                 csv format.
             </li>
             <li>
-                <b>N-Queen Problem</b>: The problem consist on finding a way of placing N queens on a NxN chess
+                <a href="https://en.wikipedia.org/wiki/Eight_queens_puzzle" target="_blank" rel="noopener noreferrer">
+                <b>N-Queen Puzzle</b></a>: The problem consist on finding a way of placing N queens on a NxN chess
                 board so that no two queens threaten each other; thus, a solution requires that no two queens share 
                 the same row, column, or diagonal. Candidate solutions are encoded using arrays of N elements
                 where each element corresponds to  each column and its value indicates the row occupied by the 
                 queen of that column. The value of N is the only configurable parameter.
             </li>
-            <li><b>Travelling Salesperson Problem</b>: The <a href="https://en.wikipedia.org/wiki/Travelling_salesman_problem" 
-            target="_blank" rel="noopener noreferrer"> Travelling Salesperson Problem (TSP)</a> asks the following question: 
+            <li>
+                <a href="https://en.wikipedia.org/wiki/Knapsack_problem" target="_blank" rel="noopener noreferrer">
+                <b>Knapsack problem</b></a>: Given a set of items, each with a weight and a value, determine the 
+                number of each item to include in a collection so that the total weight is less than or equal to a 
+                given limit and the total value is as large as possible. It derives its name from the problem faced 
+                by someone who is constrained by a fixed-size knapsack and must fill it with the most valuable items.
+            </li>
+            <li><a href="https://en.wikipedia.org/wiki/Travelling_salesman_problem" target="_blank" rel="noopener noreferrer">
+                <b>Travelling Salesperson Problem (TSP)</b></a>: This problem asks the following question: 
                 "Given a list of cities and the distances between each pair of cities, what is the shortest possible route 
                 that visits each city exactly once and returns to the origin city?" It is an NP-hard problem in combinatorial 
                 optimization, important in theoretical computer science and operations research.

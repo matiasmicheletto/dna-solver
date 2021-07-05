@@ -17,7 +17,7 @@ const PlacesTable = props => ( // Table for listing the coordinates
     <Table striped bordered hover responsive>
         <thead>
             <tr>
-                <th>Spot</th>
+                <th>Place</th>
                 <th>X</th>
                 <th>Y</th>
             </tr>
@@ -84,8 +84,8 @@ const Collapsible = props => {
             </Row>
             <Collapse in={open}>
                 <Row>
-                    {props.places && <PlacesTable places={props.places} />}
-                    {props.weights && <WeightMatrixTable weights={props.weights} />}
+                    {props.places && <PlacesTable {...props} />}
+                    {props.weights && <WeightMatrixTable {...props} />}
                 </Row>
             </Collapse>
         </div>

@@ -108,6 +108,9 @@ export const normalize_coords = coords => {
 // Sum of array elements
 export const array_sum = arr => arr.reduce((r, a) => a + r, 0);
 
+// Weighted sum of array elements
+export const array_weighted_sum = (values, weights) => array_sum(values.map((v, idx) => v*weights[idx]));
+
 // Mean or average of an array
 export const array_mean = arr => array_sum(arr)/arr.length;
 

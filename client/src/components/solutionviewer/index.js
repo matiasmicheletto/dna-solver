@@ -8,6 +8,7 @@ import TspSolutionViewer from './tspsolutionviewer';
 import Quadratic from 'optimization/fitness/quadratic.mjs';
 import SubsetSum from 'optimization/fitness/subsetsum.mjs';
 import NQueens from 'optimization/fitness/nqueens.mjs';
+import Knapsack from 'optimization/fitness/knapsack.mjs';
 import Tsp from 'optimization/fitness/tsp.mjs';
 
 
@@ -59,7 +60,7 @@ const SolutionViewer = props => {
         Viewer = withinModal(QuadraticSolutionViewer);
     }
 
-    if(props.fitness instanceof SubsetSum)
+    if(props.fitness instanceof SubsetSum || props.fitness instanceof Knapsack)
         // For the subset sum problem, just display the selected numbers
         phenotype = props.fitness.decode(props.genotype);
     

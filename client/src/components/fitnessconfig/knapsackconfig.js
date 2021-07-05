@@ -1,0 +1,141 @@
+import React, { useContext, useRef, useState } from 'react';
+import { 
+    Row, 
+    Col, 
+    Form, 
+    Table, 
+    Collapse,
+    Button,
+    InputGroup 
+} from 'react-bootstrap';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import classes from './styles.module.css';
+import { LoadingContext } from '../../context/LoadingContext';
+
+/*
+    KnapsackConfig Component
+    -----------------------
+    This component renders the problem description and the 
+    form required to configure all of the knapsack fitness 
+    model parameters, which is the set of value-weight pairs 
+    for each item and should be imported from a correctly 
+    formatted csv file.
+*/
+
+const ItemsTable = props => ( // Table for listing the knapsack items
+    <Table striped bordered hover responsive>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Value</th>
+                <th>Weight</th>
+            </tr>
+        </thead>
+        <tbody>
+            {
+                props.items.map( (p,ind) => 
+                    <tr key={ind}>
+                        <td>{ind+1}</td>
+                        <td>{p[0].toFixed(2)}</td>
+                        <td>{p[1].toFixed(2)}</td>
+                    </tr> 
+                )
+            }
+        </tbody>
+    </Table>
+);
+
+const Collapsible = props => {
+    const [open, setOpen] = useState(false);
+    return (
+        <div>
+            <Row>
+                <Col>
+                    <Button 
+                        variant="flat"
+                        onClick={()=>setOpen(!open)}>
+                        {
+                            open ?                         
+                            <div>
+                                Hide item list
+                                <FaChevronUp />
+                            </div>    
+                            :
+                            <div>
+                                Show item list
+                                <FaChevronDown />
+                            </div>
+                        }
+                    </Button>
+                </Col>
+            </Row>
+            <Collapse in={open}>
+                <Row>
+                    {props.items && <ItemsTable {...props} />}
+                </Row>
+            </Collapse>
+        </div>
+    );
+};
+
+const KnapsackConfig = props => {    
+    // Preloader is used when loading .csv data
+    const {loading, setLoading} = useContext(LoadingContext);
+
+    // To customize the file input, we use refs to trigger the click event from other buttons
+    const fileInputEl = useRef(null);
+
+    const fileUploaded = (file) => {                
+        if(file){
+            setLoading(true);
+            let reader = new FileReader();
+            reader.onload = content => {                
+                const data = content.target.result.split(',').map(el=>parseInt(el));
+                props.configure({items: data});   
+                setLoading(false);
+            };
+            reader.readAsText(file);
+        }
+    };
+
+    return (
+        <Form className={classes.Container}>
+            <div className={classes.ProblemDesc}>
+                <h5>Problem description</h5>
+                <p>The <a href="https://en.wikipedia.org/wiki/Knapsack_problem" target="_blank" rel="noopener noreferrer">
+                Knapsack problem</a> consists on a set of items, each with a value and a weight, where a selected 
+                subset of items should be determined so that the total weight is less than or equal to a 
+                given limit and the total value is as large as possible. It derives its name from the problem faced 
+                by someone who is constrained by a fixed-size knapsack and must fill it with the most valuable items.</p>
+                <p>Select the weight limit:</p>
+                <InputGroup>
+                    <InputGroup.Text>Weight limit</InputGroup.Text>
+                    <Form.Control
+                        type="number"
+                        min="1"
+                        placeholder="Weight limit"
+                        defaultValue={props.fitness.W}
+                        onChange={v => props.configure({W: parseInt(v.target.value)})}
+                    >
+                    </Form.Control>
+                </InputGroup>
+                <br/>              
+                <Row style={{marginBottom:"5px"}} >
+                    <Collapsible items={props.fitness.items} />
+                </Row>
+                <p>In order to use a different set of items, a <b>.csv</b> file can be provided. First column of the file corresponds to
+                the values and second column to the weights of each item (an example can be found in this <a href="examples/knapsack">link</a>).</p>
+                <Form.Group>                        
+                    <input                             
+                        type="file"                             
+                        ref={fileInputEl} 
+                        style={{display:"none"}} 
+                        onChange={v => fileUploaded(v.target.files[0])}/>
+                    <Button onClick={()=>fileInputEl.current?.click()}>Upload items set file...</Button>
+                </Form.Group>                
+            </div>
+        </Form>
+    );
+};
+
+export default KnapsackConfig;

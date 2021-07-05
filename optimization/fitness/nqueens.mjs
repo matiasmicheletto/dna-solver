@@ -4,7 +4,7 @@ import { mutation } from '../ga/index.mjs';
 
 ////////// N-QUEENS PROBLEM /////////////
 
-export default class NQueens  extends Fitness {
+export default class NQueens extends Fitness {
     
     constructor(N = 8) {
         super({_N: N, _name:"N Queens (N="+N+")"});
