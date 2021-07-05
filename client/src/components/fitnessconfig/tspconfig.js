@@ -11,6 +11,7 @@ import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import classes from './styles.module.css';
 import { LoadingContext } from '../../context/LoadingContext';
 import { distance } from 'optimization/fitness/tsp.mjs';
+import { csv2Array } from 'optimization/tools/index.mjs';
 
 
 const PlacesTable = props => ( // Table for listing the coordinates
@@ -137,14 +138,6 @@ const TSPConfig = props => {
             if(name) config.name = name;
         }
         return config;
-    }
-
-    const csv2Array = data => {
-        let array = [];
-        const lines = data.split('\n');
-        for(let l = 0; l < lines.length; l++)
-            array.push(lines[l].split(',').map(el=>parseFloat(el)));
-        return array;
     }
 
     const fileUploaded = (file, type, param) => {                

@@ -41,28 +41,29 @@ const withinModal = ViewerComponent => {
     };
 };
 
+// Function to crop strings
+const str_crop = (str, maxlen) => str.substr(0,maxlen) + (str.length > maxlen ? "...":"");
+
 const SolutionViewer = props => {
 
-    // By default, phenotype is a dash-separated elements of the genotype array
-    const genotype_str = props.genotype.join("-"); // Convert to string
-    const maxlen = props.maxlen ? props.maxlen : 25; // Max string length
-    let phenotype = genotype_str.substr(0,maxlen)+(genotype_str.length > maxlen ? "...":"");
+    // By default, phenotype is a dash-separated elements of the genotype array    
+    let phenotype = props.genotype.join("-"); // Convert to string
 
     // Default viewer for fitness models without a defined visualizer
-    let Viewer = props => <span>{props.phenotype}</span>
+    let Viewer = props => <span title={props.phenotype}>{str_crop(props.phenotype, props.maxlen ? props.maxlen : 25)}</span>
 
     // The following logic determines which component use to display the
     // graphical representation of the phenotype
+    
+    if(props.fitness instanceof SubsetSum || props.fitness instanceof Knapsack)
+        // For the subset sum and knapsack problem, just display the selected numbers
+        phenotype = props.fitness.decode(props.genotype);
     
     if(props.fitness instanceof Quadratic){
         // In this case, the phenotype is the conversion BCD to Decimal
         phenotype = props.fitness.decode(props.genotype).toFixed(2);
         Viewer = withinModal(QuadraticSolutionViewer);
     }
-
-    if(props.fitness instanceof SubsetSum || props.fitness instanceof Knapsack)
-        // For the subset sum problem, just display the selected numbers
-        phenotype = props.fitness.decode(props.genotype);
     
     if(props.fitness instanceof NQueens)
         Viewer = withinModal(NQueensSolutionViewer);

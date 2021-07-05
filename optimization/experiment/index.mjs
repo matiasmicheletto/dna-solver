@@ -179,8 +179,6 @@ export default class Experiment {
         return this._ga_list.filter(g => g.fitness_id===fitness_id);
     }
 
-
-
     toggle_ga_freeze(id) {
         // Toggle freeze state of ga optimizer
         const index = this._ga_list.findIndex(el => el.id === id);
@@ -246,8 +244,11 @@ export default class Experiment {
 
     summarize_results() {
         // From round-wise results to optimizer-wise results
-
         let by_optimizer = {};
+
+        // Helper to get round results
+        const get_round_res = (round, ga) => this._results.by_round[round][this._ga_list[ga].id];
+
         for(let g = 0; g < this._ga_list.length; g++){ // For each optimizer
             // Historic values are pushed to matrixes
             let best_matrix = [];
@@ -260,10 +261,10 @@ export default class Experiment {
             // Absolute maximums acrross rounds
             let abs_best_fitness = 0;
             let abs_best_s2 = 0;
-            let abs_best_sol = null;
-            let abs_best_obj = null;
+            let abs_best_sol = get_round_res(0, g).best;
+            let abs_best_obj = get_round_res(0, g).best_objective;
             for(let r = 0; r < this._results.by_round.length; r++){ // For each round
-                const round_res = this._results.by_round[r][this._ga_list[g].id]; // Round r, optimizer g.
+                const round_res = get_round_res(r, g); 
                 // Historic values are saved in matrix shaped structures
                 best_matrix.push(round_res.best_hist);
                 avg_matrix.push(round_res.avg_hist);                

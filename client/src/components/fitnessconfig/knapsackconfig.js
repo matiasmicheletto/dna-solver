@@ -11,6 +11,7 @@ import {
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import classes from './styles.module.css';
 import { LoadingContext } from '../../context/LoadingContext';
+import { csv2Array } from 'optimization/tools/index.mjs';
 
 /*
     KnapsackConfig Component
@@ -89,8 +90,8 @@ const KnapsackConfig = props => {
         if(file){
             setLoading(true);
             let reader = new FileReader();
-            reader.onload = content => {                
-                const data = content.target.result.split(',').map(el=>parseInt(el));
+            reader.onload = content => {                                
+                const data = csv2Array(content.target.result);
                 props.configure({items: data});   
                 setLoading(false);
             };

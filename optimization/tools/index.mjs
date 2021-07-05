@@ -105,6 +105,15 @@ export const normalize_coords = coords => {
     return coords.map( p => [ (p[0]-minX)/(maxX-minX) , (p[1]-minY)/(maxY-minY) ]);
 }
 
+export const csv2Array = data => {
+    // Get matrix format from csv string data
+    let array = [];
+    const lines = data.split('\n');
+    for(let l = 0; l < lines.length; l++)
+        array.push(lines[l].split(',').map(el=>parseFloat(el)));
+    return array;
+}
+
 // Sum of array elements
 export const array_sum = arr => arr.reduce((r, a) => a + r, 0);
 

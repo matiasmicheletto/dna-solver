@@ -47,18 +47,11 @@ export default class SubsetSum extends Fitness {
     }
 
     eval(g) {
-        /* This fitness model uses the following table:
-        sum - fitness
-            0        100
-            1         50
-            2         33
-            3         25
-            ...
-        */
-        if(!g.every(item => item === 0)){ // If empty array is proposed
+        // Fitness function returns values between 0 and 100
+        if(!g.every(item => item === 0)){ // If proposed array is not empty
             const obj = this.objective(g);
-            return 100 / ( Math.abs(obj[0] - this._T) + 1 ) - obj[1];
-        }else{ // Return lowes possible value for fitness
+            return Math.abs(100 / (Math.abs(obj[0] - this._T) + 1 ) - obj[1] / g.length);
+        }else{ // Return lowest possible value for fitness
             return 0;
         }
     }
