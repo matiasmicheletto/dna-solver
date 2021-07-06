@@ -1,5 +1,5 @@
 {
-  "name": "sganode",
+  "name": "dna-solver",
   "version": "1.0.0",
   "description": "Genetic algorithms hyperparametric optimization module",
   "main": "app.js",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/matiasmicheletto/sganode.git"
+    "url": "git+https://github.com/matiasmicheletto/dna-solver.git"
   },
   "keywords": [
     "GA",
@@ -23,9 +23,9 @@
   "author": "Matias Micheletto",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/matiasmicheletto/sganode/issues"
+    "url": "https://github.com/matiasmicheletto/dna-solver/issues"
   },
-  "homepage": "https://github.com/matiasmicheletto/sganode#readme",
+  "homepage": "https://github.com/matiasmicheletto/dna-solver#readme",
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",

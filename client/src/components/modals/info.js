@@ -12,7 +12,7 @@ const InfoModal = props => (
         <a href="https://cs.uns.edu.ar/~devcs/" target="_blank" rel="noopener noreferrer"> DCIC (UNS)</a>.</p>
         <br />
         <p><b>Author:</b> <a href="http://matiasmicheletto.github.io" target="_blank" rel="noopener noreferrer">Dr. Matías Micheletto</a></p>
-        <p><b>Source code:</b> <a href="https://github.com/matiasmicheletto/sganode" target="_blank" rel="noopener noreferrer">https://github.com/matiasmicheletto/sganode</a></p>
+        <p><b>Source code:</b> <a href="https://github.com/matiasmicheletto/dna-solver" target="_blank" rel="noopener noreferrer">https://github.com/matiasmicheletto/dna-solver</a></p>
         <p><b>License: </b> GPL-3.0</p>
         <br />
         <div style={{fontSize:10}}>

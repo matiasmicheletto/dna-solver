@@ -1,5 +1,5 @@
 {
-  "name": "sganode-client",
+  "name": "dna-solver-client",
   "description": "Genetic algorithms hyperparametric optimization module",
   "version": "1.0.0",
   "private": true,
