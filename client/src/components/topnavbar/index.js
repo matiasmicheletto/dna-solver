@@ -27,7 +27,7 @@ const TopNavbar = () => {
           <Nav.Link title="About">
             <FaInfoCircle size={25} onClick={()=>showInfo(true)} />
           </Nav.Link>
-          <Nav.Link title="Source code" href="https://github.com/matiasmicheletto/sganode" target="_blank" rel="noopener noreferrer">
+          <Nav.Link title="Source code" href="https://github.com/matiasmicheletto/dna-solver" target="_blank" rel="noopener noreferrer">
             <FaGithub size={25} />
           </Nav.Link>
         </Nav>

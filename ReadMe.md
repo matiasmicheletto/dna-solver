@@ -1,9 +1,9 @@
-# SGA-Node
+# DNA-Solver
 
 <p align="">
-    <img src="https://img.shields.io/github/license/matiasmicheletto/sganode">
-    <img src="https://img.shields.io/github/package-json/v/matiasmicheletto/sganode">
-    <img src="https://img.shields.io/website?down_color=red&down_message=offline&style=plastic&up_color=green&up_message=online&url=https%3A%2F%2Fsganode.herokuapp.com">
+    <img src="https://img.shields.io/github/license/matiasmicheletto/dna-solver">
+    <img src="https://img.shields.io/github/package-json/v/matiasmicheletto/dna-solver">
+    <img src="https://img.shields.io/website?down_color=red&down_message=offline&style=plastic&up_color=green&up_message=online&url=https%3A%2F%2Fdna-solver.herokuapp.com">
 </p>
 
 A [Node.js module](optimization) and a [React.js GUI](client) that allows to create and test evolutionary algorithms experiments with focus on hyperparametric optimization for solving the most common problems present in the combinatorial optimization literature.
@@ -12,11 +12,11 @@ This project was developed under the context of the final work for the posgradua
 
 ---
 
-Try the latest version [here](http://sganode.herokuapp.com/) or use this application locally running the following commands ([Node.js](https://nodejs.org/es/) already installed is required):  
+Try the latest version [here](http://dna-solver.herokuapp.com/) or use this application locally running the following commands ([Node.js](https://nodejs.org/es/) already installed is required):  
 
 ```bash
-$ git clone https://github.com/matiasmicheletto/sganode.git
-$ cd sganode
+$ git clone https://github.com/matiasmicheletto/dna-solver.git
+$ cd dna-solver
 $ npm install
 $ npm run build
 $ npm run start
@@ -25,8 +25,8 @@ $ npm run start
 If you need to use just the optimization module via scripting (without GUI), checkout the [examples](examples) folder and run the scripts installing a few packages, using the following commands:  
 
 ```bash
-$ git clone https://github.com/matiasmicheletto/sganode.git
-$ cd sganode
+$ git clone https://github.com/matiasmicheletto/dna-solver.git
+$ cd dna-solver
 $ npm install cli-progress ./optimization
 $ node examples/example_1_tsp_simple.mjs
 ```

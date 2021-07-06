@@ -140,7 +140,7 @@ const HelpModal = props => (
         </ul>
         <h5>Optimization Module</h5>
         <p>The core module is written in javascript, which makes it portable and compatible with different platforms. A set of 
-            examples is provided which are available in the <a href="https://github.com/matiasmicheletto/sganode/tree/main/examples"
+            examples is provided which are available in the <a href="https://github.com/matiasmicheletto/dna-solver/tree/main/examples"
             target="_blank" rel="noopener noreferrer"> project repository</a> and also can be found in this <a href="examples">link</a>.
         </p>
     </EmptyLGModal>

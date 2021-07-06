@@ -106,7 +106,7 @@ export default class Ga { // GA model class
     }
 
     reset() { // Restarts de algorithm
-        this._ff_evs = 0; // Fitness function evaluations counter
+        this._eval_counter = 0; // Fitness function evaluations counter
         // Generate random genotypes for each individual and evaluate its condition
         for(let k = 0; k < this._population.length; k++){
             this._population[k] = { genotype: this._fitness.rand_encoded() };
@@ -116,17 +116,20 @@ export default class Ga { // GA model class
         this._sort_pop();
         // Update population statistics
         this._update_pop_stats();
-        // Restart counters
-        this._generation = 0; // Generation counter
+        
+        // Restart history arrays
         this._best_hist = []; // Historic values of best fitness
         this._avg_hist = []; // Historic values of population average fitness
         this._s2_hist = []; // Historic values of population variance fitness
+        
+        // Restart counters
+        this._generation = 0; // Generation counter        
     }
 
     _eval(ind) { // This fitness function evaluates the ind-th individual condition
         this._population[ind].fitness = this._fitness.eval(this._population[ind].genotype);
         this._population[ind].evaluated = true;
-        this._ff_evs++;
+        this._eval_counter++;
     }
 
 
@@ -179,7 +182,7 @@ export default class Ga { // GA model class
             pop_fitness_s2: this._fitness_s2,
             pop_fitness_avg: this._fitness_avg,
             generation: this._generation,
-            fitness_evals: this._ff_evs,
+            fitness_evals: this._eval_counter,
             // Historic values
             best_hist: this._best_hist,
             avg_hist: this._avg_hist,
@@ -515,6 +518,8 @@ export default class Ga { // GA model class
         // Select parents list for crossover
         const selected = this._selection(); 
 
+        console.log(selected);
+
         // Apply crossover to selected individuals, and if crossover is performed, 
         // apply mutation to offspring
         for(let k = 0; k < selected.length-1; k += 2)
@@ -525,7 +530,7 @@ export default class Ga { // GA model class
             }
 
         // Compute population fitness values for not evaluated individuals
-        this._population.forEach( (p, ind) => {
+        this._population.forEach( (p, ind) => {            
             if(!p.evaluated) 
                 this._eval(ind);
         });
