@@ -8,7 +8,7 @@ in order to use multiple fitness models with the same optimization algorithm.
 
 import { generate_id } from '../tools/index.mjs';
 
-class Fitness { // Fitness model class
+export default class Fitness { // Fitness model class
     constructor(params) {
         this._id = generate_id(); // Fitness unique identifier
         this._name = "Undefined name"; // Fitness model title (not defined yet)
@@ -30,5 +30,3 @@ class Fitness { // Fitness model class
         return {};
     }
 }
-
-export default Fitness;

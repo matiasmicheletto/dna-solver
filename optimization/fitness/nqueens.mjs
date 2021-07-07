@@ -7,14 +7,14 @@ import { mutation } from '../ga/index.mjs';
 export default class NQueens extends Fitness {
     
     constructor(N = 8) {
-        super({_N: N, _name:"N Queens (N="+N+")"});
+        super({_N: N, _name:N+"-Queens Puzzle"});
     }
 
     set N(val) {
         this._N = val;
     }
 
-    get ga_config() { // Overwrite the random allele generator function        
+    get ga_config() { // Overwrite the random gen generator function        
         const N = this._N; // For using this._N inside the mut_gen function
         return {
             mutation: mutation.RAND, // Rand operator uses mut_gen function

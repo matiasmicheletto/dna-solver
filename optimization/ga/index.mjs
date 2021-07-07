@@ -12,9 +12,9 @@ Configuration object:
         * type: Number (integer).
     - cross_prob: Crossover probability (probability that a pair of selected individuals to be crossovered).
         * type: Float number between 0 and 1.
-    - mut_prob: Mutation probability (probability of an allele to change).
+    - mut_prob: Mutation probability (probability of an gen to change).
         * type: Float number between 0 and 1. Usually 1/(bitstring length).
-    - mut_gen: Allele generator for mutation.
+    - mut_gen: gen generator for mutation.
         * type: Function.
         * input: None.
         * ouput: Number.
@@ -100,7 +100,8 @@ export default class Ga { // GA model class
         this.crossover = this._config.crossover;
 
         this._id = generate_id(); // Object unique identifier
-        this._name = random_name(); // Readable identifier (may be repeated)
+        // Readable identifier (may be repeated)
+        this._name = this._config.name ? this._config.name : random_name();
 
         console.log(`New optimizer "${this._name}" initialized (ID: ${this._id}).`);
     }
@@ -288,7 +289,7 @@ export default class Ga { // GA model class
                 this._mutate = this._swap_mutation;
                 break;
             case mutation.RAND:
-                this._mutate = this._rand_allele_mutation;
+                this._mutate = this._rand_gen_mutation;
                 break
         }
         this._config.mutation = m;
@@ -444,7 +445,7 @@ export default class Ga { // GA model class
 
     _bitflip_mutation(ind) { 
         // Applies bitflip mutation to individual "ind". This method is stochastic so no changes may be applied        
-        for(let k = 0; k < this._population[ind].genotype.length; k++) // For every allele
+        for(let k = 0; k < this._population[ind].genotype.length; k++) // For every gen
             if( probability(this._config.mut_prob) ){ 
                 this._population[ind].genotype[k] = this._population[ind].genotype[k]===1? 0 : 1; // Bitflip
                 this._population[ind].evaluated = false; // Mark as not evaluated
@@ -452,9 +453,9 @@ export default class Ga { // GA model class
     }
 
     _swap_mutation(ind) {
-        // Applies allele position swap to individual "ind". This method is stochastic so no changes may be applied
+        // Applies gen position swap to individual "ind". This method is stochastic so no changes may be applied
         const genlen = this._population[ind].genotype.length;
-        for(let k = 0; k < genlen; k++) // For every allele
+        for(let k = 0; k < genlen; k++) // For every gen
             if( probability(this._config.mut_prob) ){ 
                 let p = k;
                 // Select another random position
@@ -472,9 +473,9 @@ export default class Ga { // GA model class
             }
     }
 
-    _rand_allele_mutation(ind) {
-        // Selects a random value for a random selected allele. This method is stochastic so no changes may be applied
-        for(let k = 0; k < this._population[ind].genotype.length; k++) // For every allele
+    _rand_gen_mutation(ind) {
+        // Selects a random value for a random selected gen. This method is stochastic so no changes may be applied
+        for(let k = 0; k < this._population[ind].genotype.length; k++) // For every gen
             if( probability(this._config.mut_prob) ){ 
                 this._population[ind].genotype[k] = this._config.mut_gen(); // Change for a random value
                 this._population[ind].genotype.evaluated = false; // Mark as not evaluated
@@ -517,8 +518,6 @@ export default class Ga { // GA model class
 
         // Select parents list for crossover
         const selected = this._selection(); 
-
-        console.log(selected);
 
         // Apply crossover to selected individuals, and if crossover is performed, 
         // apply mutation to offspring

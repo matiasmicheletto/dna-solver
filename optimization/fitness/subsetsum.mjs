@@ -58,9 +58,6 @@ export default class SubsetSum extends Fitness {
 
     rand_encoded() {
         // Random binary array
-        let random_selected = [];
-        for(let k = 0; k < this._set.length; k++)
-            random_selected.push(Math.round(Math.random()));
-        return random_selected;
+        return new Array(this._set.length).fill(0).map(() => Math.round(Math.random()));
     }
 }

@@ -115,7 +115,7 @@ export default class Tsp extends Fitness {
         return this._weights;
     }
 
-    get ga_config() { // Overwrite the allele generator and crossover operator config
+    get ga_config() { // Overwrite the gen generator and crossover operator config
         // Adding a GA module configuration attributes will overwrite the defaults one
         return {
             mutation: mutation.SWAP,

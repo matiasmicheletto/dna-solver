@@ -21,24 +21,53 @@ const default_items = [
 // Weight limit
 const default_w = 67;
 
+// Unfeasible solutions treatment enumerators
+export const feasib_treat = {
+    FILTER: "filter",
+    PENALTY: "penalty"
+};
+
 export default class Knapsack extends Fitness {
-    constructor(items = default_items, W = default_w) {
+    constructor(items = default_items, W = default_w, ft = feasib_treat.PENALTY) {
         super({_items: items, _W: W, _name:"Knapsack problem"});
+        this.feasibility = ft; // Use the setter to select the eval method
         this.init();
     }
 
-    init() { // Separate items in different arrays
+    init() { 
+        // Separate items in different arrays
         this._values =  this._items.map(v=>v[0]);
         this._weights = this._items.map(v=>v[1]);
+        // Obtain the cost factor for unfeasible solutions
+        // (in case of penalty mode selected)
+        const max_weight = array_sum(this._weights);
+        this._df = max_weight - this._W;
     }
 
     set W(w) {
-        if(w) this._W = w;
+        if(w) {
+            this._W = w;
+            const max_weight = array_sum(this._weights);
+            this._df = max_weight - this._W;
+        }
     }
 
     set items(items) {
         this._items = items;
         this.init();
+    }
+
+    set feasibility(f){
+        switch(f){
+            default:
+            case feasib_treat.FILTER:
+                this.eval = this._eval_filter;
+                break;
+            case feasib_treat.PENALTY:
+                this.eval = this._eval_penalty;
+                break;
+        }
+        this._feasibility = f;
     }
 
     get W() {
@@ -47,6 +76,10 @@ export default class Knapsack extends Fitness {
 
     get items() {
         return this._items;
+    }
+
+    get feasibility() {
+        return this._feasibility;
     }
 
     objective(selected) {
@@ -66,7 +99,8 @@ export default class Knapsack extends Fitness {
         return Array.from(Array(this._items.length).keys()).filter((v, ind) => g[ind]===1).join(", ");
     }
 
-    eval(g) {
+    _eval_filter(g) {
+        // Unfeasible solutions returs 0
         const obj = this.objective(g);
         if(obj[1] <= this._W) // Is solution is feasible
             return obj[0]; // Return value
@@ -74,11 +108,15 @@ export default class Knapsack extends Fitness {
             return 0; // Else fitness is 0
     }
 
+    _eval_penalty(g) {
+        // Value multiplied by factor proportional to difference between
+        // weight and weight limit
+        const obj = this.objective(g);
+        return obj[0]*(1- (obj[1] - this._W)/this._df);
+    }
+
     rand_encoded() {
         // Random binary array
-        let random_selected = [];
-        for(let k = 0; k < this._items.length; k++)
-            random_selected.push(Math.round(Math.random()));
-        return random_selected;
+        return new Array(this._items.length).fill(0).map(() => Math.round(Math.random()));
     }
 }

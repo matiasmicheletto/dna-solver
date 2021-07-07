@@ -119,23 +119,23 @@ const HelpModal = props => (
                 combined to obtain an offspring pair of children.
             </li>
             <li>
-                <b>Mutation operator:</b> defines the algorithm that alteres one or more genes or alleles from an individual.
+                <b>Mutation operator:</b> defines the algorithm that alteres one or more genes from an individual.
                 There are three available operators:
                 <ul>
                     <li>
-                        <b>Bitflip</b>: for binary encoded functions, the selected allele value is switched, that is, if
+                        <b>Bitflip</b>: for binary encoded functions, the selected gen value is switched, that is, if
                         its original value was 1, then it is converted to a 0, and viceversa.
                     </li>
                     <li>
-                        <b>Rand</b>: the selected allele for mutation is modified by a random value.
+                        <b>Rand</b>: the selected gen for mutation is modified by a random value.
                     </li>
                     <li>
-                        <b>Swap</b>: in this case, two alleles are selected and their positions are swapped.
+                        <b>Swap</b>: in this case, two genes are selected and their positions are swapped.
                     </li>
                 </ul>
             </li>
             <li>
-                <b>Mutation probability:</b> indicates the probability of a single gen or allele to be randomly altered.
+                <b>Mutation probability:</b> indicates the probability of a single gen to be randomly altered.
             </li>            
         </ul>
         <h5>Optimization Module</h5>
