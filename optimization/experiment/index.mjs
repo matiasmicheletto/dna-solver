@@ -310,25 +310,17 @@ export default class Experiment {
         // Generate a readable string output for the results
         const output = Object.keys(this._results.by_optimizer).map( id => {            
             const ga_res = this._results.by_optimizer[id];
+            const decode = this._get_decode_fc(id);
             return `\rName:                           \x1b[31m${ga_res.name}\x1b[0m
                     \rId:                             ${id}
                     \rFitness evaluations (average):  ${ga_res.avg_fitness_evals}
                     \rRound elapsed time (average):   ${ga_res.avg_elapsed} ms. 
                     \rBest fitness (average):         ${ga_res.avg_best_fitness}
                     \rBest fitness (all rounds):      ${ga_res.abs_best_fitness}
-                    \rBest solution (all rounds):     ${ga_res.abs_best_solution}
+                    \rBest solution (all rounds):     ${decode(ga_res.abs_best_solution)}
                     \rBest objective (all rounds):    ${ga_res.abs_best_objective}\n`;
         });
         return output.join("\n------------------------------------------------------\n");
-    }
-
-    printGAConfigs() { // Just a debug helper function
-        console.log("GA Configurations:");
-        this._ga_list.forEach(g => {
-            console.log(g.status);
-            console.log(g.config);
-            console.log("----------");
-        });
     }
 
     reset() {
@@ -338,5 +330,27 @@ export default class Experiment {
             this._ga_list[g].reset();
         }
         this._results.ready = false;
+    }
+
+    _get_decode_fc(ga_id) {
+        // A helper function to search the
+        // genotype decoder function of the optimizer fitness
+        // and retrieving readable solutions
+        const index = this._ga_list.findIndex(el => el.id === ga_id);
+        let decode = g => g; // By default, a bypass function
+        if(index !== -1){
+            if(this._ga_list[index].fitness.decode)
+            decode = g => this._ga_list[index].fitness.decode(g)
+        }
+        return decode;
+    }
+
+    printGAConfigs() { // Just a debug helper function
+        console.log("GA Configurations:");
+        this._ga_list.forEach(g => {
+            console.log(g.status);
+            console.log(g.config);
+            console.log("----------");
+        });
     }
 };

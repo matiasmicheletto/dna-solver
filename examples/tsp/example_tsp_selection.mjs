@@ -109,4 +109,4 @@ process.stdout.write(results);
 // If we need to export the results to analyze using other software, then
 // the writeFile() function can be used:
 const filename = 'example_1_results.txt';
-fs.writeFile(filename, results, () => process.stdout.write("Results saved as "+filename));
+fs.writeFile(filename, results, () => process.stdout.write("Results saved as "+filename+"\n"));

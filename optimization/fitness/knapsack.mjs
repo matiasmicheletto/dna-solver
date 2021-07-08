@@ -21,16 +21,16 @@ const default_items = [
 // Weight limit
 const default_w = 67;
 
-// Unfeasible solutions treatment enumerators
-export const feasib_treat = {
-    FILTER: "filter",
-    PENALTY: "penalty"
+// Penalty functions
+export const penalty = {
+    STEP: "step",
+    SIGMOID: "sigmoid"
 };
 
 export default class Knapsack extends Fitness {
-    constructor(items = default_items, W = default_w, ft = feasib_treat.PENALTY) {
+    constructor(items = default_items, W = default_w, p = penalty.SIGMOID) {
         super({_items: items, _W: W, _name:"Knapsack problem"});
-        this.feasibility = ft; // Use the setter to select the eval method
+        this.penalty = p; // Use the setter to select the eval method
         this.init();
     }
 
@@ -38,10 +38,6 @@ export default class Knapsack extends Fitness {
         // Separate items in different arrays
         this._values =  this._items.map(v=>v[0]);
         this._weights = this._items.map(v=>v[1]);
-        // Obtain the cost factor for unfeasible solutions
-        // (in case of penalty mode selected)
-        const max_weight = array_sum(this._weights);
-        this._df = max_weight - this._W;
     }
 
     set W(w) {
@@ -57,17 +53,17 @@ export default class Knapsack extends Fitness {
         this.init();
     }
 
-    set feasibility(f){
+    set penalty(f){
         switch(f){
             default:
-            case feasib_treat.FILTER:
-                this.eval = this._eval_filter;
+            case penalty.STEP:
+                this.eval = this._eval_step;
                 break;
-            case feasib_treat.PENALTY:
-                this.eval = this._eval_penalty;
+            case penalty.SIGMOID:
+                this.eval = this._eval_sigmoid;
                 break;
         }
-        this._feasibility = f;
+        this._penalty = f;
     }
 
     get W() {
@@ -78,8 +74,8 @@ export default class Knapsack extends Fitness {
         return this._items;
     }
 
-    get feasibility() {
-        return this._feasibility;
+    get penalty() {
+        return this._penalty;
     }
 
     objective(selected) {
@@ -92,15 +88,15 @@ export default class Knapsack extends Fitness {
 
     objective_str(x) {
         const obj = this.objective(x);
-        return "V = "+obj[0]+", W = "+obj[1];
+        return "V = " + obj[0] + ", W = " + obj[1];
     }
 
-    decode(g) {
+    decode(g) { // Returns the selected elements
         return Array.from(Array(this._items.length).keys()).filter((v, ind) => g[ind]===1).join(", ");
     }
 
-    _eval_filter(g) {
-        // Unfeasible solutions returs 0
+    _eval_step(g) {
+        // Feasible -> V; Unfeasible -> 0
         const obj = this.objective(g);
         if(obj[1] <= this._W) // Is solution is feasible
             return obj[0]; // Return value
@@ -108,11 +104,10 @@ export default class Knapsack extends Fitness {
             return 0; // Else fitness is 0
     }
 
-    _eval_penalty(g) {
-        // Value multiplied by factor proportional to difference between
-        // weight and weight limit
+    _eval_sigmoid(g) {
+        // Value multiplied by sigmoid function
         const obj = this.objective(g);
-        return obj[0]*(1- (obj[1] - this._W)/this._df);
+        return obj[0]*(1 - 1 / (1 + Math.exp((this._W - obj[1]) / 10)));
     }
 
     rand_encoded() {
