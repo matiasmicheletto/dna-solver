@@ -11,6 +11,7 @@ import {
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import classes from './styles.module.css';
 import { LoadingContext } from '../../context/LoadingContext';
+import { penalty } from 'optimization/fitness/knapsack.mjs';
 import { csv2Array } from 'optimization/tools/index.mjs';
 
 /*
@@ -108,20 +109,63 @@ const KnapsackConfig = props => {
                 subset of items should be determined so that the total weight is less than or equal to a 
                 given limit and the total value is as large as possible. It derives its name from the problem faced 
                 by someone who is constrained by a fixed-size knapsack and must fill it with the most valuable items.</p>
-                <p>Select the weight limit:</p>
-                <InputGroup>
-                    <InputGroup.Text>Weight limit</InputGroup.Text>
-                    <Form.Control
-                        type="number"
-                        min="1"
-                        placeholder="Weight limit"
-                        defaultValue={props.fitness.W}
-                        onChange={v => props.configure({W: parseInt(v.target.value)})}
-                    >
-                    </Form.Control>
-                </InputGroup>
-                <br/>              
-                <Row style={{marginBottom:"5px"}} >
+                <p>Two different penalty functions are provided for this model depending on the desired treatment for 
+                unfeasible solutions. STEP penalty function is recommended for lowest constrained problems, as it 
+                filters the unfeasible solutions returning a 0 value. SIGMOID functions show better performance when
+                solving highly constrained problems, as it mutiplies the fitness values by a sigmoid function centered
+                on the weight limit. The sigmoid slope factor allows to control the sensivity of the filter, the higher
+                is the selected value, the lower will be the slope of the sigmoid on the weight limit value.</p>
+                <Row>
+                    <Col sm="12" md="6" lg="4" style={{marginBottom:"10px"}}>
+                        <InputGroup>
+                            <InputGroup.Text>Weight limit</InputGroup.Text>
+                            <Form.Control
+                                type="number"
+                                min="1"
+                                placeholder="Weight limit"
+                                defaultValue={props.fitness.W}
+                                onChange={v => props.configure({W: parseInt(v.target.value)})}
+                            >
+                            </Form.Control>
+                        </InputGroup>
+                    </Col>
+                    <Col sm="12" md="6" lg="4">
+                        <InputGroup>
+                            <Form.Label style={{marginRight:"20px"}}>Penalty function</Form.Label>
+                            <Form>
+                                <Form.Check 
+                                    name="penalty_radio" 
+                                    label="Step" 
+                                    type="radio" 
+                                    checked={props.fitness.penalty===penalty.STEP} 
+                                    onChange={v=>{if(v.target.checked) props.configure({penalty:penalty.STEP})}} />
+                                <Form.Check 
+                                    name="penalty_radio" 
+                                    label="Sigmoid" 
+                                    type="radio" 
+                                    checked={false}
+                                    checked={props.fitness.penalty===penalty.SIGMOID}  
+                                    onChange={v=>{if(v.target.checked) props.configure({penalty:penalty.SIGMOID})}} />
+                            </Form>
+                        </InputGroup>
+                    </Col>
+                    {
+                        props.fitness.penalty===penalty.SIGMOID && <Col sm="12" md="6" lg="4">
+                            <InputGroup>
+                                <InputGroup.Text>Sigmoid Slope</InputGroup.Text>
+                                <Form.Control
+                                    type="number"
+                                    min="1"
+                                    placeholder="Sigmoid slope"
+                                    defaultValue={props.fitness.sigmoid_slope}
+                                    onChange={v => props.configure({sigmoid_slope: parseInt(v.target.value)})}
+                                >
+                                </Form.Control>
+                            </InputGroup>
+                        </Col>
+                    }
+                </Row>                             
+                <Row style={{marginBottom:"5px", marginTop:"10px"}} >
                     <Collapsible items={props.fitness.items} />
                 </Row>
                 <p>In order to use a different set of items, a <b>.csv</b> file can be provided. First column of the file corresponds to

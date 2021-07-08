@@ -28,9 +28,10 @@ export const penalty = {
 };
 
 export default class Knapsack extends Fitness {
-    constructor(items = default_items, W = default_w, p = penalty.SIGMOID) {
+    constructor(items = default_items, W = default_w, p = penalty.STEP, ss = 10) {
         super({_items: items, _W: W, _name:"Knapsack problem"});
         this.penalty = p; // Use the setter to select the eval method
+        this._ss = ss; // This parameter is used to control sigmoid slope
         this.init();
     }
 
@@ -41,11 +42,7 @@ export default class Knapsack extends Fitness {
     }
 
     set W(w) {
-        if(w) {
-            this._W = w;
-            const max_weight = array_sum(this._weights);
-            this._df = max_weight - this._W;
-        }
+        if(w) this._W = w;            
     }
 
     set items(items) {
@@ -66,6 +63,10 @@ export default class Knapsack extends Fitness {
         this._penalty = f;
     }
 
+    set sigmoid_slope(ss){
+        this._ss = ss;
+    }
+
     get W() {
         return this._W;
     }
@@ -76,6 +77,10 @@ export default class Knapsack extends Fitness {
 
     get penalty() {
         return this._penalty;
+    }
+
+    get sigmoid_slope() {
+        return this._ss;
     }
 
     objective(selected) {
@@ -105,9 +110,9 @@ export default class Knapsack extends Fitness {
     }
 
     _eval_sigmoid(g) {
-        // Value multiplied by sigmoid function
+        // Value multiplied by sigmoid function        
         const obj = this.objective(g);
-        return obj[0]*(1 - 1 / (1 + Math.exp((this._W - obj[1]) / 10)));
+        return obj[0]*(1 - 1 / (1 + Math.exp((this._W - obj[1]) / this._ss)));
     }
 
     rand_encoded() {
