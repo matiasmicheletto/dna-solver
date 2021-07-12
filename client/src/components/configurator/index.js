@@ -35,13 +35,18 @@ const Configurator = () => {
         setFitnessList([...experiment.fitness_list]);
     };
 
+    const copy_fitness = id => {
+        experiment.duplicate_fitness(id);
+        setFitnessList([...experiment.fitness_list]);
+    }
+
     return (
         <div className={classes.Container}>
             <h4>Experiment configuration</h4>
             <Row style={{margin:"0px"}}>
             {
                 fitness_list.length > 0 ?
-                    fitness_list.map( f => <FitnessItem key={f.id} fitness={f} remove={remove_fitness}/> )
+                    fitness_list.map( f => <FitnessItem key={f.id} fitness={f} remove={remove_fitness} copy={copy_fitness}/> )
                 :
                     <center style={{margin:"50px 0px 50px 0px"}}><h4>No objective functions added yet</h4></center>
             }
@@ -67,7 +72,7 @@ const Configurator = () => {
                     <Button 
                         variant="success"
                         className={[classes.BtnRnd, classes.AddFitnessBtn]} 
-                        onClick={add_fitness_type}
+                        onClick={add_fitness}
                         title="Add Fitness Function">
                         <FaPlus />
                     </Button>                    

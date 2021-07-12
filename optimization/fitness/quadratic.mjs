@@ -51,6 +51,13 @@ export default class Quadratic extends Fitness {
     get z1() {
         return this._z1;
     }
+
+    get config() {
+        return {
+            nbit: this._nbit,
+            a: this._a
+        };
+    }
     
     objective(x) {
         return this._a - this._b*(x - this._c)*(x - this._c);

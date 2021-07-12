@@ -83,6 +83,14 @@ export default class Knapsack extends Fitness {
         return this._ss;
     }
 
+    get config() {
+        return {
+            items: this._items,
+            W: this._W,
+            penalty: this._penalty
+        };
+    }
+
     objective(selected) {
         // Objective function returns values and weights as a 2D vector
         const fltr = (v, ind) => selected[ind]===1; // Filter for selected items

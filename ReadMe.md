@@ -29,7 +29,7 @@ If you need to use just the optimization module via scripting (without GUI), che
 $ git clone https://github.com/matiasmicheletto/dna-solver.git
 $ cd dna-solver
 $ npm install cli-progress ./optimization
-$ node examples/example_1_tsp_simple.mjs
+$ node examples/tsp/example_tsp_selection.mjs
 ```
 
 ## Getting started
@@ -58,9 +58,9 @@ export default class MyNewFitness extends Fitness {
         return x * this._param1 + this._param2;
     }
 
-    decode(x) {
-      // Suppose we're using BCD to decimal conversion.
-      return parseInt(g.join("").slice(-this._nbit), 2);
+    decode(g) {
+      // Suppose we're using 16 bit BCD to decimal conversion.
+      return parseInt(g.join("").slice(-16), 2);
     }
   
     objective_str(g) {
@@ -77,8 +77,8 @@ export default class MyNewFitness extends Fitness {
 
     rand_encoded() { 
         // As we're using binary strings, then the random solution generator will
-        // return a random binary array:
-        return new Array(this._items.length).fill(0).map(() => Math.round(Math.random()));
+        // return a random binary array with 16 bit length length:
+        return new Array(16).fill(0).map(() => Math.round(Math.random()));
     }
 
     get ga_config() {
@@ -90,7 +90,8 @@ export default class MyNewFitness extends Fitness {
             mut_prob: 0.01,
             cross_prob: 0.1,
             selection: selection.TOURNAMENT, // Remember to import "selection" from "ga"
-            tourn_k: 4
+            mutation: mutation.BITFLIP, // Remember to import "mutation" from "ga"
+            tourn_k: 4 // As we're using tournament, we set the tournament size to 4
         };
     }
 }

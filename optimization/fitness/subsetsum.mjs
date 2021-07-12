@@ -30,6 +30,13 @@ export default class SubsetSum extends Fitness {
         return this._set;
     }
 
+    get config() {
+        return {
+            set: this._set,
+            T: this._T
+        };
+    }
+
     objective(selected) { // Returns the sum of the selected elements
         // Selected elements
         const subset = this._set.filter((v, ind) => selected[ind]===1);

@@ -26,6 +26,12 @@ export default class Fitness { // Fitness model class
         return this._name;
     }
 
+    get config() {
+        // Here you should return the parameters of the model to be
+        // able to duplicate the instance 
+        return {};
+    }
+
     objective_str(x) {
         // This function shows the result of evaluating the objective function
         // as a human-readable string.

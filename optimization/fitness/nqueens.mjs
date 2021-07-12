@@ -27,6 +27,12 @@ export default class NQueens extends Fitness {
         return this._N;
     }
 
+    get config() {
+        return {
+            N: this._N
+        };
+    }
+
     _get_max_conflict(n) { 
         // Max possible conflicts in a NxN chess board
         // This value can be used as fitness multiplier

@@ -7,7 +7,7 @@ import {
     Col,
     Collapse 
 } from 'react-bootstrap';
-import { FaDna, FaTrashAlt, FaCog } from 'react-icons/fa';
+import { FaDna, FaTrashAlt, FaCog, FaCopy } from 'react-icons/fa';
 import { ExperimentCtx } from '../../context/ExperimentCtx';
 import FitnessConfig from '../fitnessconfig';
 import GAItem from '../gaitem';
@@ -77,7 +77,13 @@ const FitnessItem = props => {
                         </Button>
                         <Button 
                             variant="flat"
-                            onClick={()=>{props.remove(props.fitness.id)}}
+                            onClick={()=>props.copy(props.fitness.id)}
+                            title="Copy Fitness">
+                            <FaCopy />
+                        </Button>
+                        <Button 
+                            variant="flat"
+                            onClick={()=>props.remove(props.fitness.id)}
                             title="Remove Fitness">
                             <FaTrashAlt />
                         </Button>

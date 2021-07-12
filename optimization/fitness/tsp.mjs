@@ -115,6 +115,14 @@ export default class Tsp extends Fitness {
         return this._weights;
     }
 
+    get config() {
+        return {
+            places: this._places,
+            distance: this._distance,
+            weight_matrix: this._weights
+        };
+    }
+
     get ga_config() { // Overwrite the gen generator and crossover operator config
         // Adding a GA module configuration attributes will overwrite the defaults one
         return {
