@@ -18,7 +18,7 @@ import { crossover, mutation } from 'optimization/ga/index.mjs';
 
 // Build the experiment manager and add the NQueens fitness model for N=16
 const experiment = new Experiment();
-const f_id = experiment.add_fitness(Experiment.fitness_types.NQUEENS, [16]); 
+const f_id = experiment.add_fitness_type(Experiment.fitness_types.NQUEENS, [16]); 
 
 // Now we initialize the optimizaers with some default configuration
 const ga_ids = [];

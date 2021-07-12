@@ -1,5 +1,6 @@
 import cliProgress from 'cli-progress';
 import Experiment from 'optimization/experiment/index.mjs';
+import SubsetSum from 'optimization/fitness/subsetsum.mjs';
 import { selection } from 'optimization/ga/index.mjs';
 
 // In this example, we are evaluating the impact of the population number in
@@ -14,7 +15,7 @@ const set = [-96, -91, -87, -84, -82, -75, -71, -27, 12, 30, 46, 53, 73, 79, 80,
 
 // Build the experiment manager and add the Subset sum fitness model with the given set
 const experiment = new Experiment();
-const f_id = experiment.add_fitness(Experiment.fitness_types.SUBSETSUM, [set, 0]); 
+const f_id = experiment.add_fitness(SubsetSum, [set, 0]); 
 
 // Now we initialize five optimizers with an increasing number of population.
 // We are using the tournament selection operator with k = 3 (default).

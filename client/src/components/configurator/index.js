@@ -25,7 +25,7 @@ const Configurator = () => {
 
     const add_fitness = () => {
         experiment.reset();
-        experiment.add_fitness(f_type);
+        experiment.add_fitness_type(f_type);
         setFitnessList([...experiment.fitness_list]);
     };
 
@@ -67,7 +67,7 @@ const Configurator = () => {
                     <Button 
                         variant="success"
                         className={[classes.BtnRnd, classes.AddFitnessBtn]} 
-                        onClick={add_fitness}
+                        onClick={add_fitness_type}
                         title="Add Fitness Function">
                         <FaPlus />
                     </Button>                    

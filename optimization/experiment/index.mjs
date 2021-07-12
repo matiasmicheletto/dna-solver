@@ -7,16 +7,12 @@ Multiple fitness functions can be created and for each, a GA based optimizer can
 
 import Ga from '../ga/index.mjs';
 import { hsl2rgb, array_mean, matrix_columnwise_mean } from '../tools/index.mjs';
-// In case of having a large number of fitness models, then
-// the "add_fitness" method should be refactored in order to 
-// receive the fitness constructor as argument instead of
-// the enumerators.
+import Fitness from '../fitness/index.mjs';
 import Quadratic from '../fitness/quadratic.mjs';
 import SubsetSum from '../fitness/subsetsum.mjs';
 import NQueens from '../fitness/nqueens.mjs';
 import Knapsack from '../fitness/knapsack.mjs';
 import Tsp from '../fitness/tsp.mjs';
-
 
 
 // Enumerators
@@ -61,7 +57,8 @@ export default class Experiment {
         return this._results;
     }
 
-    add_fitness(type, params = []) {// Create new fitness function
+    add_fitness_type(type, params = []) {
+        // Create new fitness function
         // If the number of models is large, then just
         // pass the constructor instead of the type
         let f;        
@@ -86,6 +83,16 @@ export default class Experiment {
         f.type = type; // Add the type format
         this._fitness_list.push(f);        
         return f.id;
+    }
+
+    add_fitness(constructor, params = []) {
+        // Create a new fitness function (not listed)
+        // the constructor should be an appropiate Fitness constructor
+        if(constructor.prototype instanceof Fitness){
+            const f = new constructor(...params);
+            this._fitness_list.push(f);
+            return f.id;
+        }
     }
 
     remove_fitness(id) { // Delete fitness model from list and all its optimizers

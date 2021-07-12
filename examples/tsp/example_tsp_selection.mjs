@@ -30,7 +30,7 @@ const experiment = new Experiment();
 // In case of needed, we could add different fitness models with different configurations,
 // for example, if we want to test a single optimizer when solving similar problems
 // with different complexity.
-const f_id = experiment.add_fitness(Experiment.fitness_types.TSP); // This returns an identifier for this fitness
+const f_id = experiment.add_fitness_type(Experiment.fitness_types.TSP); // This returns an identifier for this fitness
 
 // We need to configure the TSP problem by defining the destination array and
 // also, we can tell the fitness model to use the MANHATTAN distance equation:

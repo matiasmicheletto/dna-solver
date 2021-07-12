@@ -25,7 +25,7 @@ const dist = distance[instance.distance]; // Distance function to calculate the 
 const experiment = new Experiment();
 
 // We create a new fitness model of the TSP problem with the desired config and add it to the experiment.
-const f_id = experiment.add_fitness(Experiment.fitness_types.TSP, [places, dist]);
+const f_id = experiment.add_fitness_type(Experiment.fitness_types.TSP, [places, dist]);
 
 
 // This time we're testing the crossover and mutation probability parameters, so we add
