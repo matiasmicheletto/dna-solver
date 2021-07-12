@@ -10,9 +10,21 @@ A [Node.js module](optimization) and a [React.js GUI](client) that allows to cre
 
 This project was developed under the context of the final work for the posgraduate course *"Advanced Techniques for Evolutionary Computation"*  by [Dr. Ignacio Ponzoni](https://cs.uns.edu.ar/~ip/) at [DCIC](https://cs.uns.edu.ar/~devcs/) (UNS).  
 
----
 
-Try the latest version [here](http://dna-solver.herokuapp.com/) or use this application locally running the following commands ([Node.js](https://nodejs.org/es/) already installed is required):  
+## Optimization library
+
+The optimization library provides a class to model a generic objective function with an interface to be optimized using Genetic Algorithms. Five class examples are provided to show how to extend this class in order to model common combinatorial optimization problems. The Ga class implements a Genetic Algorithm optimizer with many configuration options. Finally, the Experiment class allows to create and run different experiments to test the behaviour of GA optimizers when configuring different hyperparameters.
+
+![uml](doc/class_diagram.png)
+
+A [React.js](https://reactjs.org/) GUI allows to build experiments graphically. 
+
+![uml](doc/components.png)
+
+
+## Installation and deploy
+
+Try the latest version [here](https://dna-solver.herokuapp.com/) or use this application locally running the following commands ([Node.js](https://nodejs.org/es/) already installed is required):  
 
 ```bash
 $ git clone https://github.com/matiasmicheletto/dna-solver.git
@@ -39,7 +51,7 @@ Email: [matias.micheletto@uns.edu.ar](mailto:matias.micheletto@uns.edu.ar)
 ## Backlog
 
 Module development (93%).  
-- [ ] Fitness function module (75%). 
+- [ ] Fitness function module (100%). 
     - [x] Parabola.  
     - [x] Subset sum problem.  
     - [x] N-Queens problem.  

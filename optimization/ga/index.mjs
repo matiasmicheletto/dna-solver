@@ -31,6 +31,7 @@ Configuration object:
     - mutation: Mutation operator.
         * type: BITFLIP, SWAP or RAND.
 */
+
 import { 
     probability, 
     generate_id, 

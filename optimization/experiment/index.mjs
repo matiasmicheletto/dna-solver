@@ -314,9 +314,9 @@ export default class Experiment {
             return `\rName:                           \x1b[31m${ga_res.name}\x1b[0m
                     \rId:                             ${id}
                     \rFitness evaluations (average):  ${ga_res.avg_fitness_evals}
-                    \rRound elapsed time (average):   ${ga_res.avg_elapsed} ms. 
-                    \rBest fitness (average):         ${ga_res.avg_best_fitness}
-                    \rBest fitness (all rounds):      ${ga_res.abs_best_fitness}
+                    \rRound elapsed time (average):   ${ga_res.avg_elapsed.toFixed(2)} ms. 
+                    \rBest fitness (average):         ${ga_res.avg_best_fitness.toFixed(2)}
+                    \rBest fitness (all rounds):      ${ga_res.abs_best_fitness.toFixed(2)}
                     \rBest solution (all rounds):     ${decode(ga_res.abs_best_solution)}
                     \rBest objective (all rounds):    ${ga_res.abs_best_objective}\n`;
         });

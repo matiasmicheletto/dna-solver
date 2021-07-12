@@ -7,7 +7,7 @@ import {
     Col,
     Collapse 
 } from 'react-bootstrap';
-import { FaDna, FaTimes, FaEllipsisV } from 'react-icons/fa';
+import { FaDna, FaTrashAlt, FaCog } from 'react-icons/fa';
 import { ExperimentCtx } from '../../context/ExperimentCtx';
 import FitnessConfig from '../fitnessconfig';
 import GAItem from '../gaitem';
@@ -73,13 +73,13 @@ const FitnessItem = props => {
                             variant="flat"
                             onClick={()=>showConfig(!config)}
                             title="Configure Fitness">
-                            <FaEllipsisV />
+                            <FaCog />
                         </Button>
                         <Button 
                             variant="flat"
                             onClick={()=>{props.remove(props.fitness.id)}}
                             title="Remove Fitness">
-                            <FaTimes />
+                            <FaTrashAlt />
                         </Button>
                     </Col>
                 </Row>
