@@ -11,6 +11,42 @@ A [Node.js module](optimization) and a [React.js GUI](client) that allows to cre
 This project was developed under the context of the final work for the posgraduate course *"Advanced Techniques for Evolutionary Computation"*  by [Dr. Ignacio Ponzoni](https://cs.uns.edu.ar/~ip/) at [DCIC](https://cs.uns.edu.ar/~devcs/) (UNS).  
 
 
+## Minimal example
+
+Lets solve the [Subset Sum Problem](https://en.wikipedia.org/wiki/Subset_sum_problem) using this library:
+
+```js
+import Ga from 'optimization/ga/index.mjs';
+import SubsetSum from 'optimization/fitness/subsetsum.mjs';
+
+// We're using the following numeric set of 20 elements
+const set = [-96, -91, -87, -84, -82, -75, -71, -27, 12, 30, 46, 53, 73, 79, 80, 88, 90, 94, 94, 95];
+const target = 0;
+
+// We create the already implemented fitness model
+const f = new SubsetSum(set, target);
+// And the GA optimizer attached to this fitness model, configuring the mutation probability as 5%.
+const ga = new Ga(f, {mut_prob: 0.05});
+
+// Then, we run 100 generations
+for(let gen = 0; gen < 100; gen++)
+    ga.evolve();    
+
+// Solution is in the first chromosome, as the population list is always sorted from best to worst
+const solution = ga.population[0];
+
+// Finally, we ṕrint results
+process.stdout.write("Best subset: "+f.decode(solution.genotype)+"\n");
+process.stdout.write("Objective value: "+solution.objective+"\n");
+```
+
+And the output will be something like:
+
+```
+Best subset: -87,-82,-75,30,46,80,88
+Objective value: S = 0, N = 7
+```
+
 ## Installation
 
 Try the latest version [here](https://dna-solver.herokuapp.com/) or use this application locally running the following commands ([Node.js](https://nodejs.org/es/) already installed is required):  
@@ -34,9 +70,11 @@ $ node examples/tsp/example_tsp_selection.mjs
 
 ## Getting started
 
-This library provides a class to model any objective function with an interface to be optimized using Genetic Algorithms. Five class examples are provided to show how to extend this class in order to model common combinatorial optimization problems. The Ga class implements a Genetic Algorithm optimizer with many configuration options. Finally, the Experiment class allows to create and run different experiments to test the behaviour of GA optimizers when configuring different hyperparameters.
+This library provides a class to model any objective function with an interface to be optimized using Genetic Algorithms. Five class examples are provided to show how to extend this class in order to model common combinatorial optimization problems. The Ga class implements a Genetic Algorithm optimizer with many configuration options (see next section). Finally, the Experiment class allows to create and run different experiments to test the behaviour of GA optimizers when configuring different hyperparameters.
 
 ![uml](doc/class_diagram.png)
+
+## Creating a custom Objective function model
 
 To create a new Fitness model, extend the [prototype class](optimization/fitness/index.mjs), for example:
 
@@ -118,6 +156,23 @@ experiment.run({
 process.stdout.write(experiment.getPlainResults());
 ```
 
+## Configuring the GA optimizer
+
+The following table shows the configuration parameters and default values used by the "Ga" class module to implement GA optimization.
+
+| Parameter | Type | Default value | Description |
+| --- | --- | --- | --- |
+| `pop_size` | Integer number greater than 4 | 20 | Population size, number of chromosomes |  
+| `elitism` | Integer number between 0 and `pop_size` | 2 | Number of elite individuals. Elite individuals are force-preserved through generations |  
+| `selection` | ROULETTE, RANK or TOURNAMENT | ROULETTE | Selection operator enumerator |  
+| `crossover` | SINGLE, DOUBLE, CYCLE or PMX | SINGLE | Crossover operator enumerator |  
+| `mutation` | BITFLIP, SWAP or RAND | BITFLIP | Mutation operator enumerator |  
+| `cross_prob` | Float number between 0 and 1 | 0.5 | Crossover probability (probability that a pair of selected individuals to be crossovered) |  
+| `mut_prob` | Float number between 0 and 1 | 0.1 | Mutation probability (probability of an gen to change). Usually 1/(bitstring length) |  
+| `mut_gen` | Function | `()=>Math.round(Math.rand())` | The gen generator function used in mutation |  
+| `rank_r` | Float number between 0 and `2/(pop_size*(pop_size-1))` | 0.002 | Ranking parameter (In case of ranking based selection). High r increases selective pressure |  
+| `tourn_k` | Integer number between 2 and `pop_size` | 3 | K parameter for tournament selection method. Usually between 2 and 5 |  
+| `best_fsw_factor` | Float number between 0 and 1 | 0.2 | Window size for getting the best final slope value proportional to generation number |  
 
 ## Using the GUI
 

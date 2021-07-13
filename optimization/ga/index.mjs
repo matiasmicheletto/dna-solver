@@ -4,8 +4,6 @@ Genetic Algorithm Class Module
 Implements a generic and configurable GA based optimizer.
 
 Configuration object:
-    - fitness: Fitness instance
-        * type: Fitness
     - pop_size: Population size, number of chromosomes.
         * type: Non zero even Number (integer).
     - elitism: Number of elite individuals. Elite individuals are force-preserved through generations.
@@ -27,7 +25,7 @@ Configuration object:
     - selection: Selection operator.
         * type: ROULETTE, RANK or TOURNAMENT.
     - crossover: Crossover operator.
-        * type: SINGLE or DOUBLE.
+        * type: SINGLE, DOUBLE, CX or PMX.
     - mutation: Mutation operator.
         * type: BITFLIP, SWAP or RAND.
 */
@@ -50,6 +48,7 @@ export const selection = {
 export const crossover = {
     SINGLE: "single",
     DOUBLE: "double",
+    CYCLE: "cycle",
     PMX: "pmx"
 };
 
@@ -272,6 +271,9 @@ export default class Ga { // GA model class
             case crossover.DOUBLE:
                 this._crossover = this._double_point_crossover;
                 break;
+            case crossover.CYCLE:
+                this._crossover = this._cx_crossover;
+                break;
             case crossover.PMX:
                 this._crossover = this._pmx_crossover;
                 break;
@@ -352,11 +354,15 @@ export default class Ga { // GA model class
     /// Crossover
 
     _single_point_crossover(k1, k2) { 
-        // Performs crossover between parents k1 and k2 and returns their children
-        const p = Math.floor(Math.random() * (this._population[k1].genotype.length - 2) + 1); // Crossover point
+        // Performs crossover between parents k1 and k2 and returns their children        
+        
+        // Random crossover point
+        const p = Math.floor(Math.random() * (this._population[k1].genotype.length - 2) + 1); 
+
         // Perform genotype crossover
         const g1 = [...this._population[k1].genotype.slice(0, p), ...this._population[k2].genotype.slice(p)];
         const g2 = [...this._population[k2].genotype.slice(0, p), ...this._population[k1].genotype.slice(p)];
+
         // Update population
         this._population[k1] = {
             genotype: g1,
@@ -372,8 +378,10 @@ export default class Ga { // GA model class
 
     _double_point_crossover(k1, k2) {
         // Performs crossover between parents k1 and k2 and returns their children
-        let p1 = Math.floor(Math.random() * (this._population[k1].genotype.length - 2) + 1); // Crossover point 1
-        let p2 = Math.floor(Math.random() * (this._population[k1].genotype.length - 2) + 1); // Crossover point 2
+        
+        // Select two crossover points (if equals, this is the same as single point crossover)
+        let p1 = Math.floor(Math.random() * (this._population[k1].genotype.length - 2) + 1); 
+        let p2 = Math.floor(Math.random() * (this._population[k1].genotype.length - 2) + 1); 
         // Sort crossover points such that p1 < p2
         if( p1 > p2 ) [p1, p2] = [p2, p1];
         // Perform genotype crossover
@@ -392,14 +400,18 @@ export default class Ga { // GA model class
         }
     }
 
+    _cx_crossover(k1, k2) {
+        
+    }
+
     _pmx_crossover(k1, k2) {
         // Partially mapped crossover (PMX)
         // https://gist.github.com/celaus/d5a55e723ce233f2b83af36a4cf456b4
         const s = this.population[k1].genotype;
         const t = this.population[k2].genotype;
 
-        let _map1 = {};
-        let _map2 = {};
+        let map1 = {};
+        let map2 = {};
 
         const x1 = Math.floor(Math.random() * (s.length - 1));
         const x2 = x1 + Math.floor(Math.random() * (s.length - x1));
@@ -409,23 +421,23 @@ export default class Ga { // GA model class
 
         for (let i = x1; i < x2; i++) {
             g1[i] = t[i];
-            _map1[t[i]] = s[i];
+            map1[t[i]] = s[i];
             g2[i] = s[i];
-            _map2[s[i]] = t[i];
+            map2[s[i]] = t[i];
         }
 
         for (let i = 0; i < x1; i++) {
-            while (g1[i] in _map1) 
-                g1[i] = _map1[g1[i]];
-            while (g2[i] in _map2)
-                g2[i] = _map2[g2[i]];
+            while (g1[i] in map1) 
+                g1[i] = map1[g1[i]];
+            while (g2[i] in map2)
+                g2[i] = map2[g2[i]];
         }
 
         for (let i = x2; i < s.length; i++) {
-            while (g1[i] in _map1) 
-                g1[i] = _map1[g1[i]];
-            while (g2[i] in _map2) 
-                g2[i] = _map2[g2[i]];
+            while (g1[i] in map1) 
+                g1[i] = map1[g1[i]];
+            while (g2[i] in map2) 
+                g2[i] = map2[g2[i]];
         }
 
         // Update population
@@ -470,7 +482,7 @@ export default class Ga { // GA model class
                     this._population[ind].genotype[k]
                 ];
                 // Mark individual as not evaluated
-                this._population[ind].genotype.evaluated = false;
+                this._population[ind].evaluated = false;
             }
     }
 
@@ -479,7 +491,7 @@ export default class Ga { // GA model class
         for(let k = 0; k < this._population[ind].genotype.length; k++) // For every gen
             if( probability(this._config.mut_prob) ){ 
                 this._population[ind].genotype[k] = this._config.mut_gen(); // Change for a random value
-                this._population[ind].genotype.evaluated = false; // Mark as not evaluated
+                this._population[ind].evaluated = false; // Mark as not evaluated
             }
     }
 
@@ -530,12 +542,15 @@ export default class Ga { // GA model class
             }
 
         // Compute population fitness values for not evaluated individuals
-        this._population.forEach( (p, ind) => {            
+        this._population.forEach( (p, ind) => { 
             if(!p.evaluated) 
                 this._eval(ind);
         });
 
+        //console.log(this._population);
+
         // Restore elite individuals to population (already evaluated)
+        // These elite individuals will compete with the newly created offspring
         if(this._config.elitism > 0)
             this._population.push(...elite);
 
