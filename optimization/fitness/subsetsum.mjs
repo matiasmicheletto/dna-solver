@@ -15,11 +15,13 @@ export default class SubsetSum extends Fitness {
     }
 
     set T(t) {
-        if(t) this._T = t;
+        if(typeof(t) === "number") 
+            this._T = t;
     }
 
     set set(s) {
-        this._set = s;
+        if(Array.isArray(s))
+            this._set = s;
     }
 
     get T() {

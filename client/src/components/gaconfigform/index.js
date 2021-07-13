@@ -1,6 +1,18 @@
 import React from 'react';
-import { Row, Col, Form, InputGroup } from 'react-bootstrap';
-import { crossover, mutation, selection } from 'optimization/ga/index.mjs';
+import { 
+    Row, 
+    Col, 
+    Form, 
+    InputGroup,
+    Button 
+} from 'react-bootstrap';
+import { 
+    crossover, 
+    mutation, 
+    selection,
+    adapt_params,
+    adapt_vars 
+} from 'optimization/ga/index.mjs';
 import classes from './styles.module.css';
 
 const GAConfigForm = props => (
@@ -70,7 +82,7 @@ const GAConfigForm = props => (
                         type="number"
                         placeholder="Torunament K"
                         min="0"
-                        max="10"                        
+                        max="10"
                         defaultValue={props.current.tourn_k}
                         onChange={v => props.onChange("tourn_k", parseInt(v.target.value))}
                     >
@@ -116,7 +128,7 @@ const GAConfigForm = props => (
                     onChange={v => props.onChange("mutation", v.target.value)}
                 >
                 {
-                    Object.keys(mutation).map((m,ind) => (
+                    Object.keys(mutation).map(m => (
                         <option key={m} value={mutation[m]}>{m}</option>
                     ))
                 }
@@ -134,7 +146,55 @@ const GAConfigForm = props => (
                     onChange={v => props.onChange("mut_prob", parseFloat(v.target.value))}
                 >
                 </Form.Control>
-            </InputGroup>            
+            </InputGroup>
+        </Row>
+        <Row className={classes.FormRow}>
+            <InputGroup as={Col}>
+                <Button
+                    variant="secondary"
+                    className={props.current.param_control_enabled ? classes.CheckedButton: classes.UnCheckedButton} 
+                    onClick={() => props.onChange("param_control_enabled", !props.current.param_control_enabled)}>
+                    {props.current.param_control_enabled ? "Enabled":"Disabled"}
+                </Button>
+            </InputGroup>
+            <InputGroup as={Col} sm>
+                <InputGroup.Text className={classes.InputLabel}>Adaptive param.</InputGroup.Text>
+                <Form.Control className={classes.Input} 
+                    as="select"
+                    value={props.current.controlled_param} 
+                    onChange={v => props.onChange("controlled_param", v.target.value)}
+                >
+                {
+                    Object.keys(adapt_params).map(m => (
+                        <option key={m} value={m}>{adapt_params[m]}</option>
+                    ))
+                }
+                </Form.Control>
+            </InputGroup>
+            <InputGroup as={Col} sm>
+                <InputGroup.Text className={classes.InputLabel}>Incr. factor</InputGroup.Text>
+                <Form.Control className={classes.Input}
+                    type="number"
+                    placeholder="Increment factor"
+                    defaultValue={props.current.param_control_factor}
+                    onChange={v => props.onChange("param_control_factor", parseFloat(v.target.value))}
+                >
+                </Form.Control>
+            </InputGroup>
+            <InputGroup as={Col} sm>
+                <InputGroup.Text className={classes.InputLabel}>Variable</InputGroup.Text>
+                <Form.Control className={classes.Input} 
+                    as="select"
+                    value={props.current.controller_vble}
+                    onChange={v => props.onChange("controller_vble", v.target.value)}
+                >
+                {
+                    Object.keys(adapt_vars).map(m => (
+                        <option key={m} value={m}>{adapt_vars[m]}</option>
+                    ))
+                }
+                </Form.Control>
+            </InputGroup>
         </Row>
     </Form>
 )

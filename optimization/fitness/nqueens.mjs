@@ -11,8 +11,10 @@ export default class NQueens extends Fitness {
     }
 
     set N(val) {
-        this._N = val;
-        this._name = val+"-Queens Puzzle";
+        if(typeof(val)==="number"){
+            this._N = val;
+            this._name = val+"-Queens Puzzle";
+        }
     }
 
     get ga_config() { // Overwrite the random gen generator function        

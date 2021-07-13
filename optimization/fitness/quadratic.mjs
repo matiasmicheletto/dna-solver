@@ -19,13 +19,17 @@ export default class Quadratic extends Fitness {
     }
 
     set nbit(val) {
-        this._nbit = val;
-        this._update_params();
+        if(typeof(val)==="number"){
+            this._nbit = val;
+            this._update_params();
+        }
     }
 
     set a(val) {
-        this._a = val;
-        this._update_params();
+        if(typeof(val)==="number"){
+            this._a = val;
+            this._update_params();
+        }
     }
 
     get name() {

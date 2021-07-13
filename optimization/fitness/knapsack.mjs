@@ -42,12 +42,15 @@ export default class Knapsack extends Fitness {
     }
 
     set W(w) {
-        if(w) this._W = w;            
+        if(typeof(w)==="number")
+            if(w) this._W = w;
     }
 
     set items(items) {
-        this._items = items;
-        this.init();
+        if(Array.isArray(items)){
+            this._items = items;
+            this.init();
+        }
     }
 
     set penalty(f){
@@ -64,7 +67,8 @@ export default class Knapsack extends Fitness {
     }
 
     set sigmoid_slope(ss){
-        this._ss = ss;
+        if(typeof(ss) === "number")
+            this._ss = ss;
     }
 
     get W() {

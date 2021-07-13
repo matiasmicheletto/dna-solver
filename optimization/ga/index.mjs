@@ -28,6 +28,14 @@ Configuration object:
         * type: SINGLE, DOUBLE, CX or PMX.
     - mutation: Mutation operator.
         * type: BITFLIP, SWAP or RAND.
+    - param_control_enabled: Enable or disable automatic parameter control
+        * type: Boolean.
+    - controlled_param:  Parameter to control automatically.
+        * type: String.
+    - param_control_factor: Factor number used in the parameter control
+        * type: Float number.
+    - controller_vble: Variable used to control the parameter
+        * type: String.
 */
 
 import { 
@@ -38,7 +46,8 @@ import {
 } from "../tools/index.mjs";
 
 
-// Operators enumerators
+///// Enumerators /////
+// Genetic operators
 export const selection = {
     ROULETTE: "roulette",
     RANK: "rank",
@@ -58,6 +67,21 @@ export const mutation = {
     RAND: "rand" // Uses mut_gen function as random generator
 };
 
+// Adaptive parameters
+
+export const adapt_params = { 
+    cross_prob: "Crossover probability",
+    mut_prob: "Mutation probability",
+    rank_r: "Ranking dist. (R)",
+    tourn_k: "Tournament size (K)"
+};
+
+export const adapt_vars = { 
+    _generation: "Generation", // Static control
+    _best_final_slope: "Evolution slope", // Adaptive control
+    _fitness_s2: "Population variance", // Adaptive control
+    _fitness_avg: "Population avg. fitness" // Adaptive control
+};
 
 // Default parameters (tunned for general purpose)
 const default_config = { 
@@ -71,7 +95,11 @@ const default_config = {
     best_fsw_factor: 0.2,
     selection: selection.ROULETTE,
     crossover: crossover.SINGLE,
-    mutation: mutation.BITFLIP
+    mutation: mutation.BITFLIP,
+    param_control_enabled: false,
+    controlled_param: "cross_prob",
+    param_control_factor: 0.01,
+    controller_vble: "_generation"
 };
 
 export default class Ga { // GA model class
@@ -128,8 +156,7 @@ export default class Ga { // GA model class
     }
 
     _eval(ind) { // This fitness function evaluates the ind-th individual condition
-        this._population[ind].fitness = this._fitness.eval(this._population[ind].genotype);
-        this._population[ind].evaluated = true;
+        this._population[ind].fitness = this._fitness.eval(this._population[ind].genotype);        
         this._eval_counter++;
     }
 
@@ -224,24 +251,30 @@ export default class Ga { // GA model class
     }
 
     set elitism(e) {
-        this._config.elitism = e;
+        if(e >= 0 && e <= this._config.pop_size)
+            this._config.elitism = e;
     }
 
     set cross_prob(v) {
-        this._config.cross_prob = v;
+        if(v > 0 && v <= 1)
+            this._config.cross_prob = v;
     }
 
-    set mut_prob(v) {        
-        this._config.mut_prob = v;        
+    set mut_prob(v) {      
+        if(v >= 0 && v <= 1)  
+            this._config.mut_prob = v;        
     }
 
     set rank_r(v) {
-        this._config.rank_r = v;
-        this._rank_q = this._config.rank_r*(this._config.pop_size-1)/2 + 1/this._config.pop_size;
+        if(v >= 0 && v < 2/(this._config.pop_size*(this._config.pop_size-1))){
+            this._config.rank_r = v;
+            this._rank_q = this._config.rank_r*(this._config.pop_size-1)/2 + 1/this._config.pop_size;
+        }
     }
 
     set tourn_k(v) {
-        this._config.tourn_k = v;
+        if(v >= 2 && v < this._config.pop_size)
+            this._config.tourn_k = v;
     }
 
     set selection(s) { 
@@ -296,6 +329,29 @@ export default class Ga { // GA model class
                 break
         }
         this._config.mutation = m;
+    }
+
+    set param_control_enabled(v) {
+        // Enable/disable automatic parameter control
+        this._config.param_control_enabled = v;        
+    }
+
+    set controlled_param(v) {
+        // Set the parameter to control (specified in adapt_params)
+        if(v in adapt_params)
+            this._config.controlled_param = v;
+    }
+
+    set param_control_factor(v) {
+        // Set the proportional factor for increment/decrement parameter
+        if(typeof(v) === "number")
+            this._config.param_control_factor = v;
+    }
+
+    set controller_vble(v) {
+        // Set the dependent variable for parameter control
+        if(v in adapt_vars)
+            this._config.controller_vble = v;
     }
 
     //////////// GA METHODS ////////////
@@ -354,50 +410,30 @@ export default class Ga { // GA model class
     /// Crossover
 
     _single_point_crossover(k1, k2) { 
-        // Performs crossover between parents k1 and k2 and returns their children        
-        
+        // Performs single point recombination between parents k1 and k2
+        const s = Array.from(this.population[k1].genotype);
+        const t = Array.from(this.population[k2].genotype);
+
         // Random crossover point
-        const p = Math.floor(Math.random() * (this._population[k1].genotype.length - 2) + 1); 
+        const p = Math.floor(Math.random() * (s.length - 2) + 1); 
 
-        // Perform genotype crossover
-        const g1 = [...this._population[k1].genotype.slice(0, p), ...this._population[k2].genotype.slice(p)];
-        const g2 = [...this._population[k2].genotype.slice(0, p), ...this._population[k1].genotype.slice(p)];
-
-        // Update population
-        this._population[k1] = {
-            genotype: g1,
-            fitness: 0,
-            evaluated: false
-        }
-        this._population[k2] = {
-            genotype: g2,
-            fitness: 0,
-            evaluated: false
-        }
+        // Perform genotype crossover and update population
+        this._population[k1] = {genotype: [...s.slice(0, p), ...t.slice(p)]};
+        this._population[k2] = {genotype: [...t.slice(0, p), ...s.slice(p)]};
     }
 
     _double_point_crossover(k1, k2) {
         // Performs crossover between parents k1 and k2 and returns their children
+        const s = Array.from(this.population[k1].genotype);
+        const t = Array.from(this.population[k2].genotype);
         
-        // Select two crossover points (if equals, this is the same as single point crossover)
-        let p1 = Math.floor(Math.random() * (this._population[k1].genotype.length - 2) + 1); 
-        let p2 = Math.floor(Math.random() * (this._population[k1].genotype.length - 2) + 1); 
-        // Sort crossover points such that p1 < p2
-        if( p1 > p2 ) [p1, p2] = [p2, p1];
-        // Perform genotype crossover
-        const g1 = [...this._population[k1].genotype.slice(0, p1), ...this._population[k2].genotype.slice(p1, p2), ...this._population[k1].genotype.slice(p2)];
-        const g2 = [...this._population[k2].genotype.slice(0, p1), ...this._population[k1].genotype.slice(p1, p2), ...this._population[k2].genotype.slice(p2)];
-        // Update population
-        this._population[k1] = {
-            genotype: g1,
-            fitness: 0,
-            evaluated: false
-        }
-        this._population[k2] = {
-            genotype: g2,
-            fitness: 0,
-            evaluated: false
-        }
+        // Select two crossover points
+        let p1 = Math.floor(Math.random() * (s.length - 2) + 1); 
+        let p2 = Math.floor(Math.random() * (s.length - 1 - p1)) + p1 + 1; 
+        
+        // Perform genotype crossover and update population
+        this._population[k1] = {genotype: [...s.slice(0, p1), ...t.slice(p1, p2), ...s.slice(p2)]};
+        this._population[k2] = {genotype: [...t.slice(0, p1), ...s.slice(p1, p2), ...t.slice(p2)]};
     }
 
     _cx_crossover(k1, k2) {
@@ -407,23 +443,20 @@ export default class Ga { // GA model class
     _pmx_crossover(k1, k2) {
         // Partially mapped crossover (PMX)
         // https://gist.github.com/celaus/d5a55e723ce233f2b83af36a4cf456b4
-        const s = this.population[k1].genotype;
-        const t = this.population[k2].genotype;
+        
+        const x1 = Math.floor(Math.random() * (this.population[k1].genotype.length - 1));
+        const x2 = x1 + Math.floor(Math.random() * (this.population[k1].genotype.length - x1));
 
-        let map1 = {};
-        let map2 = {};
+        let g1 = Array.from(this.population[k1].genotype); 
+        let g2 = Array.from(this.population[k2].genotype);
 
-        const x1 = Math.floor(Math.random() * (s.length - 1));
-        const x2 = x1 + Math.floor(Math.random() * (s.length - x1));
-
-        let g1 = [...Array.from(s)];
-        let g2 = [...Array.from(t)];
+        let map1 = {}; let map2 = {};
 
         for (let i = x1; i < x2; i++) {
-            g1[i] = t[i];
-            map1[t[i]] = s[i];
-            g2[i] = s[i];
-            map2[s[i]] = t[i];
+            g1[i] = this.population[k2].genotype[i];
+            map1[this.population[k2].genotype[i]] = this.population[k1].genotype[i];
+            g2[i] = this.population[k1].genotype[i];
+            map2[this.population[k1].genotype[i]] = this.population[k2].genotype[i];
         }
 
         for (let i = 0; i < x1; i++) {
@@ -433,7 +466,7 @@ export default class Ga { // GA model class
                 g2[i] = map2[g2[i]];
         }
 
-        for (let i = x2; i < s.length; i++) {
+        for (let i = x2; i < this.population[k1].genotype.length; i++) {
             while (g1[i] in map1) 
                 g1[i] = map1[g1[i]];
             while (g2[i] in map2) 
@@ -441,16 +474,8 @@ export default class Ga { // GA model class
         }
 
         // Update population
-        this._population[k1] = {
-            genotype: g1,
-            fitness: 0,
-            evaluated: false
-        }
-        this._population[k2] = {
-            genotype: g2,
-            fitness: 0,
-            evaluated: false
-        }
+        this._population[k1] = {genotype: g1};
+        this._population[k2] = {genotype: g2};
     }
 
 
@@ -459,10 +484,8 @@ export default class Ga { // GA model class
     _bitflip_mutation(ind) { 
         // Applies bitflip mutation to individual "ind". This method is stochastic so no changes may be applied        
         for(let k = 0; k < this._population[ind].genotype.length; k++) // For every gen
-            if( probability(this._config.mut_prob) ){ 
-                this._population[ind].genotype[k] = this._population[ind].genotype[k]===1? 0 : 1; // Bitflip
-                this._population[ind].evaluated = false; // Mark as not evaluated
-            }
+            if( probability(this._config.mut_prob) )
+                this._population[ind].genotype[k] = this._population[ind].genotype[k]===1? 0 : 1; // Bitflip                
     }
 
     _swap_mutation(ind) {
@@ -480,32 +503,28 @@ export default class Ga { // GA model class
                 ] = [
                     this._population[ind].genotype[p], 
                     this._population[ind].genotype[k]
-                ];
-                // Mark individual as not evaluated
-                this._population[ind].evaluated = false;
+                ];                
             }
     }
 
     _rand_gen_mutation(ind) {
         // Selects a random value for a random selected gen. This method is stochastic so no changes may be applied
         for(let k = 0; k < this._population[ind].genotype.length; k++) // For every gen
-            if( probability(this._config.mut_prob) ){ 
+            if( probability(this._config.mut_prob) )
                 this._population[ind].genotype[k] = this._config.mut_gen(); // Change for a random value
-                this._population[ind].evaluated = false; // Mark as not evaluated
-            }
     }
 
     //////////// HELPERS ///////////
+
+    _sort_pop() {
+        // Sort population from best to worst fitness
+        this._population.sort((a,b) => (b.fitness - a.fitness) );
+    }
 
     _update_pop_stats() {
         this._fitness_sum = this._population.reduce((r, a) => a.fitness + r, 0);
         this._fitness_avg = this._fitness_sum / this._population.length;
         this._fitness_s2 = this._population.reduce((r, a) => (a.fitness - this._fitness_avg)*(a.fitness - this._fitness_avg) + r, 0) / this._population.length;
-    }
-
-    _sort_pop() {
-        // Sort population from best to worst fitness
-        this._population.sort((a,b) => (b.fitness - a.fitness) );
     }
 
     _update_stats() {
@@ -522,6 +541,15 @@ export default class Ga { // GA model class
         this._s2_hist.push(this._fitness_s2); 
     }
 
+    _update_params(){
+        // Automatic parameters control
+        if(this._config.controller_vble !== "_generation")
+            this._config[this._config.controlled_param] += this._config.param_control_factor * this[this._config.controller_vble];
+        else
+            this._config[this._config.controlled_param] += this._config.param_control_factor;
+    }
+
+
     /// Iteration
 
     evolve(){ // Compute a generation cycle. Population list is sorted by fitness value
@@ -532,25 +560,19 @@ export default class Ga { // GA model class
         // Select parents list for crossover
         const selected = this._selection(); 
 
-        // Apply crossover to selected individuals, and if crossover is performed, 
-        // apply mutation to offspring
+        // Apply crossover to selected individuals        
         for(let k = 0; k < selected.length-1; k += 2)
             if(probability(this._config.cross_prob)){
-                this._crossover(selected[k], selected[k+1]); 
-                this._mutate(selected[k]); 
-                this._mutate(selected[k+1]);
+                // Perform crossover        
+                this._crossover(selected[k], selected[k+1]);
+                // Mutate and evaluate offspring
+                [selected[k], selected[k+1]].map(el=>{
+                    this._mutate(el);
+                    this._eval(el);
+                });
             }
-
-        // Compute population fitness values for not evaluated individuals
-        this._population.forEach( (p, ind) => { 
-            if(!p.evaluated) 
-                this._eval(ind);
-        });
-
-        //console.log(this._population);
-
-        // Restore elite individuals to population (already evaluated)
-        // These elite individuals will compete with the newly created offspring
+        
+        // Restore elite individuals to population        
         if(this._config.elitism > 0)
             this._population.push(...elite);
 
@@ -564,5 +586,8 @@ export default class Ga { // GA model class
         this._update_stats();
 
         this._generation++;
+
+        if(this._config.param_control_enabled)
+            this._update_params();
     }
 }

@@ -82,15 +82,18 @@ export default class Tsp extends Fitness {
     }
  
     set places(p) {
-        this._places = p;
-        // Weight matrix values should be updated using the new distance equation
-        this._weights = coord_to_weight_matrix(this._places, this._dist_function);
-        // Update normalized coordinates
-        this._norm_places = normalize_coords(this._places);
+        if(Array.isArray(p)){
+            this._places = p;
+            // Weight matrix values should be updated using the new distance equation
+            this._weights = coord_to_weight_matrix(this._places, this._dist_function);
+            // Update normalized coordinates
+            this._norm_places = normalize_coords(this._places);
+        }
     }
 
     set weight_matrix(w) {
-        this._weights = w;
+        if(Array.isArray(w))
+            this._weights = w;
     }
 
     /// GETTERS
