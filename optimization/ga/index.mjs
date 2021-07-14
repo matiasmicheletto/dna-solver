@@ -141,6 +141,9 @@ export default class Ga { // GA model class
             this._population[k] = { genotype: this._fitness.rand_encoded() };
             this._eval(k);
         }
+        // Use a variable for storing the genotype length and ease its access
+        this._gen_len = this._population[0].genotype.length;
+
         // Sort population (selection requires ranked individuals)
         this._sort_pop();
         // Update population statistics
@@ -444,8 +447,8 @@ export default class Ga { // GA model class
         // Partially mapped crossover (PMX)
         // https://gist.github.com/celaus/d5a55e723ce233f2b83af36a4cf456b4
         
-        const x1 = Math.floor(Math.random() * (this.population[k1].genotype.length - 1));
-        const x2 = x1 + Math.floor(Math.random() * (this.population[k1].genotype.length - x1));
+        const x1 = Math.floor(Math.random() * (this._gen_len - 1));
+        const x2 = x1 + Math.floor(Math.random() * (this._gen_len - x1));
 
         let g1 = Array.from(this.population[k1].genotype); 
         let g2 = Array.from(this.population[k2].genotype);
@@ -466,7 +469,7 @@ export default class Ga { // GA model class
                 g2[i] = map2[g2[i]];
         }
 
-        for (let i = x2; i < this.population[k1].genotype.length; i++) {
+        for (let i = x2; i < this._gen_len; i++) {
             while (g1[i] in map1) 
                 g1[i] = map1[g1[i]];
             while (g2[i] in map2) 
@@ -482,20 +485,19 @@ export default class Ga { // GA model class
     /// Mutation
 
     _bitflip_mutation(ind) { 
-        // Applies bitflip mutation to individual "ind". This method is stochastic so no changes may be applied        
-        for(let k = 0; k < this._population[ind].genotype.length; k++) // For every gen
+        // Applies bitflip mutation to individual "ind". 
+        for(let k = 0; k < this._gen_len; k++) // For every gen
             if( probability(this._config.mut_prob) )
                 this._population[ind].genotype[k] = this._population[ind].genotype[k]===1? 0 : 1; // Bitflip                
     }
 
     _swap_mutation(ind) {
-        // Applies gen position swap to individual "ind". This method is stochastic so no changes may be applied
-        const genlen = this._population[ind].genotype.length;
-        for(let k = 0; k < genlen; k++) // For every gen
+        // Applies gen position swap to individual "ind".
+        for(let k = 0; k < this._gen_len; k++) // For every gen
             if( probability(this._config.mut_prob) ){ 
                 let p = k;
                 // Select another random position
-                while(p === k) p = Math.floor(Math.random() * genlen); 
+                while(p === k) p = Math.floor(Math.random() * this._gen_len); 
                 // Inline values swap ([a,b] = [b,a])
                 [
                     this._population[ind].genotype[k], 
@@ -508,8 +510,8 @@ export default class Ga { // GA model class
     }
 
     _rand_gen_mutation(ind) {
-        // Selects a random value for a random selected gen. This method is stochastic so no changes may be applied
-        for(let k = 0; k < this._population[ind].genotype.length; k++) // For every gen
+        // Selects a random value for a random selected gen.
+        for(let k = 0; k < this._gen_len; k++) // For every gen
             if( probability(this._config.mut_prob) )
                 this._population[ind].genotype[k] = this._config.mut_gen(); // Change for a random value
     }
