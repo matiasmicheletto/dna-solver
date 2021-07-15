@@ -141,6 +141,13 @@ const KnapsackConfig = props => {
                                     onChange={v=>{if(v.target.checked) props.configure({penalty:penalty.STEP})}} />
                                 <Form.Check 
                                     name="penalty_radio" 
+                                    label="Ramp" 
+                                    type="radio" 
+                                    checked={false}
+                                    checked={props.fitness.penalty===penalty.RAMP}  
+                                    onChange={v=>{if(v.target.checked) props.configure({penalty:penalty.RAMP})}} />
+                                <Form.Check 
+                                    name="penalty_radio" 
                                     label="Sigmoid" 
                                     type="radio" 
                                     checked={false}
@@ -150,19 +157,19 @@ const KnapsackConfig = props => {
                         </InputGroup>
                     </Col>
                     {
-                        props.fitness.penalty===penalty.SIGMOID && <Col sm="12" md="6" lg="4">
+                        (props.fitness.penalty!==penalty.STEP && <Col sm="12" md="6" lg="4">
                             <InputGroup>
-                                <InputGroup.Text>Sigmoid Slope</InputGroup.Text>
+                                <InputGroup.Text>Penalty Level</InputGroup.Text>
                                 <Form.Control
                                     type="number"
-                                    min="1"
-                                    placeholder="Sigmoid slope"
-                                    defaultValue={props.fitness.sigmoid_slope}
-                                    onChange={v => props.configure({sigmoid_slope: parseInt(v.target.value)})}
+                                    min="0.01"
+                                    placeholder="Penalty"
+                                    defaultValue={props.fitness.penalty_lvl}
+                                    onChange={v => props.configure({penalty_lvl: parseFloat(v.target.value)})}
                                 >
                                 </Form.Control>
                             </InputGroup>
-                        </Col>
+                        </Col>)
                     }
                 </Row>                             
                 <Row style={{marginBottom:"5px", marginTop:"10px"}} >

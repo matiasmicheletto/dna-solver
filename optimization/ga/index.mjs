@@ -70,8 +70,8 @@ export const mutation = {
 // Adaptive parameters
 
 export const adapt_params = { 
-    cross_prob: "Crossover probability",
-    mut_prob: "Mutation probability",
+    cross_prob: "Crossover prob.",
+    mut_prob: "Mutation prob.",
     rank_r: "Ranking dist. (R)",
     tourn_k: "Tournament size (K)"
 };
@@ -146,8 +146,6 @@ export default class Ga { // GA model class
 
         // Sort population (selection requires ranked individuals)
         this._sort_pop();
-        // Update population statistics
-        this._update_pop_stats();
         
         // Restart history arrays
         this._best_hist = []; // Historic values of best fitness
@@ -156,6 +154,8 @@ export default class Ga { // GA model class
         
         // Restart counters
         this._generation = 0; // Generation counter        
+
+        this._update_stats();
     }
 
     _eval(ind) { // This fitness function evaluates the ind-th individual condition
@@ -309,9 +309,15 @@ export default class Ga { // GA model class
                 break;
             case crossover.CYCLE:
                 this._crossover = this._cx_crossover;
+                // Force mutation to swap
+                if(this._config.mutation != mutation.SWAP)
+                    this.mutation = mutation.SWAP;
                 break;
             case crossover.PMX:
                 this._crossover = this._pmx_crossover;
+                // Force mutation to swap
+                if(this._config.mutation != mutation.SWAP)
+                    this.mutation = mutation.SWAP;
                 break;
         }
         this._config.crossover = c;
@@ -523,15 +529,11 @@ export default class Ga { // GA model class
         this._population.sort((a,b) => (b.fitness - a.fitness) );
     }
 
-    _update_pop_stats() {
-        this._fitness_sum = this._population.reduce((r, a) => a.fitness + r, 0);
-        this._fitness_avg = this._fitness_sum / this._population.length;
-        this._fitness_s2 = this._population.reduce((r, a) => (a.fitness - this._fitness_avg)*(a.fitness - this._fitness_avg) + r, 0) / this._population.length;
-    }
-
     _update_stats() {
         // Population metrics
-        this._update_pop_stats();
+        this._fitness_sum = this._population.reduce((r, a) => a.fitness + r, 0); // For roulette, this is necessary on every iteration
+        this._fitness_avg = this._fitness_sum / this._population.length;
+        this._fitness_s2 = this._population.reduce((r, a) => (a.fitness - this._fitness_avg)*(a.fitness - this._fitness_avg) + r, 0) / this._population.length;
 
         // Convergence metric (best historic slope)
         const window = Math.ceil(this._config.best_fsw_factor*this._generation);        
@@ -554,8 +556,7 @@ export default class Ga { // GA model class
 
     /// Iteration
 
-    evolve(){ // Compute a generation cycle. Population list is sorted by fitness value
-
+    evolve(){ // Compute a generation cycle. Population list is already sorted by fitness value
         // Copy elite individuals if elitism is configured
         const elite = this._config.elitism > 0 ? [...this._population.slice(0, this._config.elitism)] : null;
 

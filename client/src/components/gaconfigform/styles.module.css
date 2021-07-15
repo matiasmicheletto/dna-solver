@@ -2,21 +2,27 @@
     margin-top: 15px!important;
 }
 
-.InputLabel{
-    font-weight: bold;
-    background-color: rgba(255,255,255,0.3)!important;
+.Label{
+    color:black!important;
+    cursor: help!important;
+    font-weight: bold!important;
+    background-color: rgba(255,255,255,0.1)!important;
+}
+
+.DisabledLabel {
+    opacity: 0.9!important;
+    font-weight: bold!important;
+    background-color: rgba(255,255,255,0.2)!important;
+    color:lightgray!important;
 }
 
 .Input{
-    background-color: rgba(255,255,255,0.5)!important;
+    color:black!important;
+    background-color: rgba(255,255,255,0.3)!important;
 }
 
-.CheckedButton{
-    color:black;
-    background-color: rgba(255,255,255,0.7)!important;
-}
-
-.UnCheckedButton{
-    color: white;
-    background-color: rgba(255,255,255,0.1)!important;
+.DisabledInput{
+    opacity: 0.4!important;
+    background-color: rgba(255,255,255,0.2)!important;
+    color:gray!important;
 }

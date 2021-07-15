@@ -21,17 +21,31 @@ const default_items = [
 // Weight limit
 const default_w = 67;
 
-// Penalty functions
+// Penalty functions enumerators
 export const penalty = {
     STEP: "step",
+    RAMP: "ramp",
     SIGMOID: "sigmoid"
 };
 
+// Filters for penalty functions
+export const filters = {
+    step: (x,c) => x <= c ? 1:0,
+    sigmoid: (x,c,r) => 1 - 1 / (1 + Math.exp((c - x) * r)),
+    ramp: (x,c,r) => {        
+        if(x <= c - r) 
+            return 1;
+        if(x <= c + r )
+            return 0.5 + (c - x)/2/r;
+        return 0; 
+    }
+};
+
 export default class Knapsack extends Fitness {
-    constructor(items = default_items, W = default_w, p = penalty.STEP, ss = 10) {
+    constructor(items = default_items, W = default_w, p = penalty.STEP, pl = 3) {
         super({_items: items, _W: W, _name:"Knapsack problem"});
+        this.penalty_lvl = pl; // This parameter is used to control filter slope or level
         this.penalty = p; // Use the setter to select the eval method
-        this._ss = ss; // This parameter is used to control sigmoid slope
         this.init();
     }
 
@@ -57,18 +71,21 @@ export default class Knapsack extends Fitness {
         switch(f){
             default:
             case penalty.STEP:
-                this.eval = this._eval_step;
+                this._penalty_fc = x => filters.step(x, this._W);
+                break;
+            case penalty.RAMP:
+                this._penalty_fc = x => filters.ramp(x, this._W, 1/this._pl/2);
                 break;
             case penalty.SIGMOID:
-                this.eval = this._eval_sigmoid;
+                this._penalty_fc = x => filters.sigmoid(x, this._W, this._pl);
                 break;
         }
         this._penalty = f;
     }
 
-    set sigmoid_slope(ss){
-        if(typeof(ss) === "number")
-            this._ss = ss;
+    set penalty_lvl(pl){
+        if(typeof(pl) === "number" && pl > 0)
+            this._pl = pl;            
     }
 
     get W() {
@@ -83,8 +100,8 @@ export default class Knapsack extends Fitness {
         return this._penalty;
     }
 
-    get sigmoid_slope() {
-        return this._ss;
+    get penalty_lvl() {
+        return this._pl;
     }
 
     get config() {
@@ -112,19 +129,9 @@ export default class Knapsack extends Fitness {
         return Array.from(Array(this._items.length).keys()).filter((v, ind) => g[ind]===1).join(", ");
     }
 
-    _eval_step(g) {
-        // Feasible -> V; Unfeasible -> 0
+    eval(g) {
         const obj = this.objective(g);
-        if(obj[1] <= this._W) // Is solution is feasible
-            return obj[0]; // Return value
-        else
-            return 0; // Else fitness is 0
-    }
-
-    _eval_sigmoid(g) {
-        // Value multiplied by sigmoid function        
-        const obj = this.objective(g);
-        return obj[0]*(1 - 1 / (1 + Math.exp((this._W - obj[1]) / this._ss)));
+        return obj[0]*this._penalty_fc(obj[1]);
     }
 
     rand_encoded() {

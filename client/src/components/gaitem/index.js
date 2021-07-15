@@ -164,7 +164,7 @@ const GAItem = props => {
             </Collapse>
             <Collapse in={showConfig}>
                 <Row>
-                    <GAConfigForm current={gaconfig} onChange={updateGAParam}/>
+                    <GAConfigForm current={gaconfig} disabled={freezed} onChange={updateGAParam}/>
                 </Row>
             </Collapse>
         </ListGroup.Item>

@@ -126,10 +126,8 @@ export default class Experiment {
     duplicate_fitness(id) {
         // Copy the fitness model configuration and create a new one with the same
         // parameters
-        console.log(id);
         const index = this._fitness_list.findIndex(el => el.id === id);
         if(index !== -1){
-            console.log("index is", index);
             const FC = this._fitness_list[index].constructor;
             const f = new FC(); // Create another using the constructor
             // Copy the configuration
