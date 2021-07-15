@@ -11,8 +11,7 @@ const NQueensSolutionViewer = props => {
     useEffect(() => {
         const canvas = canvasRef.current;
         canvas.width  = canvas.offsetWidth;
-        canvas.height  = canvas.width;
-        //canvas.height = canvasRef.current.clientWidth; // Make square        
+        canvas.height  = canvas.width; // Make square        
         const ctx = canvas.getContext("2d");
         // Chess square size is the modal width divided by the chess size
         const squareSize = canvasRef.current.clientWidth/props.fitness.N; 
@@ -40,7 +39,7 @@ const NQueensSolutionViewer = props => {
             hidden={true} 
             onLoad={()=>setLoaded(true)}/>
         </center>
-    )
+    );
 };
 
 export default NQueensSolutionViewer;

@@ -21,7 +21,7 @@ const default_items = [
 // Weight limit
 const default_w = 67;
 
-// Penalty functions enumerators
+// Penalty functions enumerator
 export const penalty = {
     STEP: "step",
     RAMP: "ramp",
@@ -42,7 +42,7 @@ export const filters = {
 };
 
 export default class Knapsack extends Fitness {
-    constructor(items = default_items, W = default_w, p = penalty.STEP, pl = 3) {
+    constructor(items = default_items, W = default_w, p = penalty.STEP, pl = 0.2) {
         super({_items: items, _W: W, _name:"Knapsack problem"});
         this.penalty_lvl = pl; // This parameter is used to control filter slope or level
         this.penalty = p; // Use the setter to select the eval method
@@ -53,6 +53,7 @@ export default class Knapsack extends Fitness {
         // Separate items in different arrays
         this._values =  this._items.map(v=>v[0]);
         this._weights = this._items.map(v=>v[1]);
+        this._max_weight = array_sum(this._weights);
     }
 
     set W(w) {
@@ -100,8 +101,16 @@ export default class Knapsack extends Fitness {
         return this._penalty;
     }
 
+    get penalty_fc() {
+        return this._penalty_fc;
+    }
+
     get penalty_lvl() {
         return this._pl;
+    }
+
+    get max_weight() {
+        return this._max_weight;
     }
 
     get config() {
