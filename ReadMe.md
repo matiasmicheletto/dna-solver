@@ -164,23 +164,23 @@ The following table shows the configuration parameters and default values used b
 | --- | --- | --- | --- |
 | `pop_size` | Integer number greater than 4 | `20` | Population size, number of chromosomes |  
 | `elitism` | Integer number between 0 and `pop_size` | `2` | Number of elite individuals. Elite individuals are force-preserved through generations |  
-| `selection` | ROULETTE, RANK or TOURNAMENT | `selection.ROULETTE` | Selection operator enumerator |  
-| `crossover` | SINGLE, DOUBLE, CYCLE or PMX | `crossover.SINGLE` | Crossover operator enumerator |  
-| `mutation` | BITFLIP, SWAP or RAND | `mutation.BITFLIP` | Mutation operator enumerator |  
+| `selection` | ROULETTE, RANK or TOURNAMENT | `ROULETTE` | Selection operator enumerator |  
+| `crossover` | SINGLE, DOUBLE, CYCLE or PMX | `SINGLE` | Crossover operator enumerator |  
+| `mutation` | BITFLIP, SWAP or RAND | `BITFLIP` | Mutation operator enumerator |  
 | `cross_prob` | Float number between 0 and 1 | `0.5` | Crossover probability (probability that a pair of selected individuals to be crossovered) |  
 | `mut_prob` | Float number between 0 and 1 | `0.1` | Mutation probability (probability of an gen to change). Usually 1/(bitstring length) |  
 | `mut_gen` | Function | `()=>Math.round(Math.rand())` | The gen generator function used in mutation |  
 | `rank_r` | Float number between 0 and `2/(pop_size*(pop_size-1))` | `0.002` | Ranking parameter (In case of ranking based selection). High r increases selective pressure |  
 | `tourn_k` | Integer number between 2 and `pop_size` | `3` | K parameter for tournament selection method. Usually between 2 and 5 |  
-| `best_fsw_factor` | Float number between 0 and 1 | `0.2` | Window size for getting the best final slope value proportional to generation number |  
+| `best_fsw_factor` | Float number between 0 and 1 | `0.2` | Window size for getting evolution slope value proportional to generation number |  
 | `param_control_enabled` | Boolean | `false` | Enable or disable the automatic parameter control |  
-| `controlled_param` | Parameter name as String | `"cross_prob"` | The controlled hyperparameter |  
+| `controlled_param` | Parameter name as String | `CROSS_PROB` | The controlled hyperparameter |  
 | `param_control_factor` | Number | `0.01` | The incremental factor of the controller parameter |  
-| `controller_vble` | Variable name as String | `"_generation"` | The controller variable (static control by default) |  
+| `controller_var` | Variable name as String | `GENERATION` | The controller variable (static control by default) |  
 
 ### Automatic parameter control
 
-The last four parameters are used in automatic parameter control There are two operation modes, static or adaptive. For static control, then `_generation` should be used as controller variable, then the controlled parameter will increment its value in `factor` (positive or negative) units on every generation until it reaches its maximum or minimum value. Otherwise, in the case of adaptive control, the controlled parameter will increase or decrease its value in `factor*value` units, where `value` is the numeric value of the controller variable, which can be `_best_final_slope` (evolution slope), `_fitness_s2` (population variance) or `_fitness_avg` (population average fitness).
+The last four parameters are used in automatic parameter control. There are two operation modes, static or adaptive. For static control, then `GENERATION` should be used as controller variable, then the controlled parameter will increment its value in `factor` (positive or negative) units on every generation until it reaches its maximum or minimum value. Otherwise, in the case of adaptive control, the controlled parameter will increase or decrease its value in `factor*value` units, where `value` is the numeric value of the controller variable, which can be `EVOL_SLOPE` (evolution slope), `POP_S2` (population variance) or `POP_AVG` (population average fitness).
 
 
 

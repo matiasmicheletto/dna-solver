@@ -34,7 +34,7 @@ Configuration object:
         * type: String.
     - param_control_factor: Factor number used in the parameter control
         * type: Float number.
-    - controller_vble: Variable used to control the parameter
+    - controller_var: Variable used to control the parameter
         * type: String.
 */
 
@@ -67,20 +67,18 @@ export const mutation = {
     RAND: "rand" // Uses mut_gen function as random generator
 };
 
-// Adaptive parameters
-
-export const adapt_params = { 
-    cross_prob: "Crossover prob.",
-    mut_prob: "Mutation prob.",
-    rank_r: "Ranking dist. (R)",
-    tourn_k: "Tournament size (K)"
+export const controlled_param = { 
+    CROSS_PROB: "_cross_prob",
+    MUT_PROB: "_mut_prob",
+    RANK_R: "_rank_r",
+    TOURN_K: "_tourn_k"
 };
 
-export const adapt_vars = { 
-    _generation: "Generation", // Static control
-    _best_final_slope: "Evolution slope", // Adaptive control
-    _fitness_s2: "Population variance", // Adaptive control
-    _fitness_avg: "Population avg. fitness" // Adaptive control
+export const controller_var = { 
+    GENERATION: "_generation",
+    EVOL_SLOPE: "_best_final_slope",
+    POP_S2: "_fitness_s2",
+    POP_AVG: "_fitness_avg"
 };
 
 // Default parameters (tunned for general purpose)
@@ -97,9 +95,9 @@ const default_config = {
     crossover: crossover.SINGLE,
     mutation: mutation.BITFLIP,
     param_control_enabled: false,
-    controlled_param: "cross_prob",
+    controlled_param: controlled_param.CROSS_PROB,
     param_control_factor: 0.01,
-    controller_vble: "_generation"
+    controller_var: controller_var.GENERATION
 };
 
 export default class Ga { // GA model class
@@ -117,10 +115,7 @@ export default class Ga { // GA model class
 
         // Create and initialize the array of individuals
         this._population = new Array(this._config.pop_size);
-        this.reset(); // Init and sort the array
-
-        // Probability parameter for rank based selection operator
-        this._rank_q = this._config.rank_r*(this._config.pop_size-1)/2 + 1/this._config.pop_size;
+        this.reset(); // Init model variables
 
         // Configure operators (IMPORTANT: The following are setters)
         this.selection = this._config.selection;
@@ -152,6 +147,13 @@ export default class Ga { // GA model class
         this._avg_hist = []; // Historic values of population average fitness
         this._s2_hist = []; // Historic values of population variance fitness
         
+        // Set initial values for dynamic variables
+        this._cross_prob = this._config.cross_prob;
+        this._mut_prob = this._config.mut_prob;
+        this._rank_r = this._config.rank_r;              
+        this._tourn_k = this._config.tourn_k;
+        this._update_rank();
+
         // Restart counters
         this._generation = 0; // Generation counter        
 
@@ -197,11 +199,11 @@ export default class Ga { // GA model class
         return this._config;
     }
 
-    get fitness() { // Fitness object (used mostlty to determine class)
+    get fitness() { // Fitness object (used mostlty to determine fitness class)
         return this._fitness;
     }
 
-    get status() { // Algorithm metrics (may be slow)
+    get status() { // Algorithm current metrics
         return {
             name: this._name,
             id: this._id,
@@ -222,6 +224,7 @@ export default class Ga { // GA model class
             population: this.population // Use the getter method
         }
     }
+
 
     /// Setters
     set name(n) {
@@ -249,8 +252,9 @@ export default class Ga { // GA model class
             this._population.splice(p);
 
         this._config.pop_size = p;
+
         // Update the q parameter as it depends on the population size
-        this._rank_q = this._config.rank_r*(this._config.pop_size-1)/2 + 1/this._config.pop_size;        
+        this._update_rank();
     }
 
     set elitism(e) {
@@ -271,7 +275,7 @@ export default class Ga { // GA model class
     set rank_r(v) {
         if(v >= 0 && v < 2/(this._config.pop_size*(this._config.pop_size-1))){
             this._config.rank_r = v;
-            this._rank_q = this._config.rank_r*(this._config.pop_size-1)/2 + 1/this._config.pop_size;
+            this._update_rank();
         }
     }
 
@@ -346,9 +350,9 @@ export default class Ga { // GA model class
     }
 
     set controlled_param(v) {
-        // Set the parameter to control (specified in adapt_params)
-        if(v in adapt_params)
-            this._config.controlled_param = v;
+        // Set the parameter to control (specified in controlled_param)        
+        if(Object.values(controlled_param).includes(v))
+            this._config.controlled_param = v;        
     }
 
     set param_control_factor(v) {
@@ -357,10 +361,10 @@ export default class Ga { // GA model class
             this._config.param_control_factor = v;
     }
 
-    set controller_vble(v) {
+    set controller_var(v) {
         // Set the dependent variable for parameter control
-        if(v in adapt_vars)
-            this._config.controller_vble = v;
+        if(Object.values(controller_var).includes(v))
+            this._config.controller_var = v;
     }
 
     //////////// GA METHODS ////////////
@@ -391,7 +395,7 @@ export default class Ga { // GA model class
             const r = Math.random(); 
             let s = 0; // Partial adder
             for(let k = 0; k < this._population.length; k++){ // Population is already sorted from best to worst
-                s += this._rank_q - k * this._config.rank_r;
+                s += this._rank_q - k * this._rank_r;
                 if(s >= r){ // If random value reached
                     selected.push(k); // Add individual
                     break;
@@ -406,7 +410,7 @@ export default class Ga { // GA model class
         let selected = [];
         for(let i = 0; i < this._population.length; i++){
             let winner = this._population.length-1;
-            for(let k = 0; k < this._config.tourn_k; k++){ // Run tournament
+            for(let k = 0; k < this._tourn_k; k++){ // Run tournament
                 const candidate = Math.floor(Math.random()*this._population.length); // Random candidate
                 if(candidate < winner) winner = candidate; // Lower index wins
             }
@@ -493,14 +497,14 @@ export default class Ga { // GA model class
     _bitflip_mutation(ind) { 
         // Applies bitflip mutation to individual "ind". 
         for(let k = 0; k < this._gen_len; k++) // For every gen
-            if( probability(this._config.mut_prob) )
+            if( probability(this._mut_prob) )
                 this._population[ind].genotype[k] = this._population[ind].genotype[k]===1? 0 : 1; // Bitflip                
     }
 
     _swap_mutation(ind) {
         // Applies gen position swap to individual "ind".
         for(let k = 0; k < this._gen_len; k++) // For every gen
-            if( probability(this._config.mut_prob) ){ 
+            if( probability(this._mut_prob) ){ 
                 let p = k;
                 // Select another random position
                 while(p === k) p = Math.floor(Math.random() * this._gen_len); 
@@ -518,7 +522,7 @@ export default class Ga { // GA model class
     _rand_gen_mutation(ind) {
         // Selects a random value for a random selected gen.
         for(let k = 0; k < this._gen_len; k++) // For every gen
-            if( probability(this._config.mut_prob) )
+            if( probability(this._mut_prob) )
                 this._population[ind].genotype[k] = this._config.mut_gen(); // Change for a random value
     }
 
@@ -527,6 +531,11 @@ export default class Ga { // GA model class
     _sort_pop() {
         // Sort population from best to worst fitness
         this._population.sort((a,b) => (b.fitness - a.fitness) );
+    }
+
+    _update_rank() {
+        // Update ranking selection parameter
+        this._rank_q = this._rank_r*(this._config.pop_size-1)/2 + 1/this._config.pop_size;
     }
 
     _update_stats() {
@@ -547,10 +556,13 @@ export default class Ga { // GA model class
 
     _update_params(){
         // Automatic parameters control
-        if(this._config.controller_vble !== "_generation")
-            this._config[this._config.controlled_param] += this._config.param_control_factor * this[this._config.controller_vble];
+        if(this._config.controller_var !== controller_var.GENERATION)
+            this[this._config.controlled_param] += this._config.param_control_factor * this[this._config.controller_var];
+            if(this._config.controller_var === controller_var.RANK_R)
+                this._update_rank();
+            // TODO: rank_r and tourn_k should be bounded
         else
-            this._config[this._config.controlled_param] += this._config.param_control_factor;
+            this[this._config.controlled_param] += this._config.param_control_factor;        
     }
 
 
@@ -565,7 +577,7 @@ export default class Ga { // GA model class
 
         // Apply crossover to selected individuals        
         for(let k = 0; k < selected.length-1; k += 2)
-            if(probability(this._config.cross_prob)){
+            if(probability(this._cross_prob)){
                 // Perform crossover        
                 this._crossover(selected[k], selected[k+1]);
                 // Mutate and evaluate offspring

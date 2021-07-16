@@ -133,7 +133,6 @@ const GAItem = props => {
                                     :
                                         <FaPlay />
                                 }
-                                
                             </Button>
                         </Col>
                         <Col md="12" lg="2" className="p-0">

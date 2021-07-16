@@ -10,10 +10,31 @@ import {
     crossover, 
     mutation, 
     selection,
-    adapt_params,
-    adapt_vars 
+    controlled_param,
+    controller_var 
 } from 'optimization/ga/index.mjs';
 import classes from './styles.module.css';
+
+const namespace = { // Parameter names
+    ROULETTE: "Roulette wheel",
+    RANK: "Ranking",
+    TOURNAMENT: "Tournament",
+    SINGLE: "Single point",
+    DOUBLE: "Double point",
+    CYCLE: "Cycle",
+    PMX: "Partially-Mapped",
+    BITFLIP: "Bit flip",
+    RAND: "Random gen",
+    SWAP: "Genes swap",
+    CROSS_PROB: "Crossover prob.",
+    MUT_PROB: "Mutation prob.",
+    RANK_R: "Ranking dist. (R)",
+    TOURN_K: "Tournament size (K)",
+    GENERATION: "Generation",
+    EVOL_SLOPE: "Evolution slope",
+    POP_S2: "Population variance",
+    POP_AVG: "Population avg. fitness"
+};
 
 // Enabled/Disabled class toggler
 const getLabelClass = disabled => disabled? classes.DisabledLabel : classes.Label;
@@ -65,7 +86,7 @@ const GAConfigForm = props => (
                     >
                     {
                         Object.keys(selection).map((s,ind) => (
-                            <option key={s} value={selection[s]}>{s}</option>
+                            <option key={s} value={selection[s]}>{namespace[s]}</option>
                         ))
                     }
                     </Form.Control>
@@ -121,7 +142,7 @@ const GAConfigForm = props => (
                     >
                     {
                         Object.keys(crossover).map((c,ind) => (
-                            <option key={c} value={crossover[c]}>{c}</option>
+                            <option key={c} value={crossover[c]}>{namespace[c]}</option>
                         ))
                     }
                     </Form.Control>
@@ -156,7 +177,7 @@ const GAConfigForm = props => (
                     >
                     {
                         Object.keys(mutation).map(m => (
-                            <option key={m} value={mutation[m]}>{m}</option>
+                            <option key={m} value={mutation[m]}>{namespace[m]}</option>
                         ))
                     }
                     </Form.Control>
@@ -200,8 +221,8 @@ const GAConfigForm = props => (
                         onChange={v => props.onChange("controlled_param", v.target.value)}
                     >
                     {
-                        Object.keys(adapt_params).map(m => (
-                            <option key={m} value={m}>{adapt_params[m]}</option>
+                        Object.keys(controlled_param).map(m => (
+                            <option key={m} value={controlled_param[m]}>{namespace[m]}</option>
                         ))
                     }
                     </Form.Control>                
@@ -228,12 +249,12 @@ const GAConfigForm = props => (
                         className={getInputClass(props.disabled || !props.current.param_control_enabled)} 
                         disabled={props.disabled || !props.current.param_control_enabled}
                         as="select"
-                        value={props.current.controller_vble}
-                        onChange={v => props.onChange("controller_vble", v.target.value)}
+                        value={props.current.controller_var}
+                        onChange={v => props.onChange("controller_var", v.target.value)}
                     >
                     {
-                        Object.keys(adapt_vars).map(m => (
-                            <option key={m} value={m}>{adapt_vars[m]}</option>
+                        Object.keys(controller_var).map(m => (
+                            <option key={m} value={controller_var[m]}>{namespace[m]}</option>
                         ))
                     }
                     </Form.Control>
