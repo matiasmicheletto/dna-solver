@@ -200,7 +200,7 @@ License: GPL-3.0
 
 ## Backlog
 
-Module development (93%).  
+Module development (100%).  
 - [x] Fitness function module (100%). 
     - [x] Parabola.  
     - [x] Subset sum problem.  

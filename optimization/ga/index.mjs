@@ -436,7 +436,7 @@ export default class Ga { // GA model class
     }
 
     _double_point_crossover(k1, k2) {
-        // Performs crossover between parents k1 and k2 and returns their children
+        // Performs double point crossover
         const s = Array.from(this.population[k1].genotype);
         const t = Array.from(this.population[k2].genotype);
         
@@ -450,7 +450,27 @@ export default class Ga { // GA model class
     }
 
     _cx_crossover(k1, k2) {
-        
+        // Cycle crossover
+        const s = Array.from(this.population[k1].genotype);
+        const t = Array.from(this.population[k2].genotype);
+
+        let cycles = []; // Cycles list
+        let togo = Array.from(Array(s.length).keys()); // Positions to go
+        let current = -1; // Current position (initially not in togo)
+        while(togo.length > 0){ // While positions to visit
+            if(togo.includes(current)){ // If we have not been here
+                togo.splice(togo.findIndex(el => el === current), 1); // Remove from togo
+            }else{ // If already been here, pass to new cycle
+                cycles.push([]); // Next cycle 
+                current = togo.shift(); // Next pos
+            }
+            // Add current element from s
+            cycles[cycles.length-1].push(s[current]); 
+            // Search for position of the paired element
+            current = s.findIndex(el => el === t[current]);
+        }
+
+        /// TODO: build children alternating cycles from parents
     }
 
     _pmx_crossover(k1, k2) {
