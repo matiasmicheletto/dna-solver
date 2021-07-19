@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from 'react';
+import React, { useState, useContext, useRef, useEffect } from 'react';
 import { 
     Row, 
     Col, 
@@ -13,6 +13,53 @@ import { LoadingContext } from '../../context/LoadingContext';
 import { distance } from 'optimization/fitness/tsp.mjs';
 import { csv2Array } from 'optimization/tools/index.mjs';
 
+
+const MapViewer = props => {
+    const canvasRef = useRef(null);        
+
+    useEffect(() => {                
+
+        const canvas = canvasRef.current;
+        // Fixed dimensions
+        const cw = canvas.width = 500;
+        const ch = canvas.height = 250;
+        const ctx = canvas.getContext("2d");         
+        
+        const places = props.places;
+        
+        // Draw positions as filled circles
+        for(let p = 0; p < places.length; p++){            
+            const posx = (places[p][0]*.9 + .05)*cw;
+            const posy = (places[p][1]*.9 + .05)*ch;
+            ctx.beginPath();
+            ctx.arc(posx, posy, 5, 0, 2 * Math.PI); 
+            ctx.fill();
+            ctx.strokeText(p,posx+6,posy+6);
+        }
+        
+        // Draw paths in order
+        if(props.paths){
+            ctx.strokeStyle = "red";
+            ctx.beginPath();
+            for(let p = 0; p < places.length; p++){            
+                const posx = (places[p][0]*.9 + .05)*cw;
+                const posy = (places[p][1]*.9 + .05)*ch;
+                ctx.lineTo(posx, posy);
+            }
+            // Return to origin
+            const xo = (places[0][0]*.9 + .05)*cw;
+            const yo = (places[0][1]*.9 + .05)*ch;
+            ctx.lineTo(xo, yo);
+            ctx.stroke();
+        }
+    });
+
+    return(
+        <center>
+            <canvas ref={canvasRef} style={{width:"100%"}}></canvas>
+        </center>
+    );
+}
 
 const PlacesTable = props => ( // Table for listing the coordinates
     <Table striped bordered hover responsive>
@@ -203,7 +250,7 @@ const TSPConfig = props => {
             <Row style={{marginTop: "15px"}}>
                 <Col md="9" className={classes.ProblemDesc}>
                     <p>The weight matrix is obtained by selecting the appropiate distance function. In case of "EXPLICIT" distance
-                        function is selected, then a distance matrix should be provided uploading a CSV file.</p>                    
+                        function selected, then a distance matrix should be provided by uploading a CSV file.</p>                    
                 </Col>
                 <Col md="3">
                     <Form.Group>                        
@@ -230,9 +277,14 @@ const TSPConfig = props => {
                 </Col>
             </Row>
             <Row style={{marginTop: "15px"}}>
-                <h5>Current configuration</h5>
-                <Collapsible name="coordinates list" places={props.fitness.places} />
-                <Collapsible name="weight matrix" weights={props.fitness.weight_matrix} />
+                <Col  md="12" lg="6">
+                        <MapViewer places={props.fitness.norm_places}/>
+                </Col>
+                <Col md="12" lg="6">
+                    <h5>Current configuration</h5>
+                    <Collapsible name="coordinates list" places={props.fitness.places} />
+                    <Collapsible name="weight matrix" weights={props.fitness.weight_matrix} />
+                </Col>
             </Row>
         </Form>
     );

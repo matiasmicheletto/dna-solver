@@ -82,18 +82,21 @@ export default class Tsp extends Fitness {
     }
  
     set places(p) {
-        if(Array.isArray(p)){
-            this._places = p;
-            // Weight matrix values should be updated using the new distance equation
-            this._weights = coord_to_weight_matrix(this._places, this._dist_function);
-            // Update normalized coordinates
-            this._norm_places = normalize_coords(this._places);
-        }
+        if(Array.isArray(p))
+            if(p.length > 2){ // Should contain at least 3 destinations
+                this._places = p;
+                // Weight matrix values should be updated using the new distance equation
+                this._weights = coord_to_weight_matrix(this._places, this._dist_function);
+                // Update normalized coordinates
+                this._norm_places = normalize_coords(this._places);
+            }
     }
 
     set weight_matrix(w) {
         if(Array.isArray(w))
-            this._weights = w;
+            if(w.length > 2) // At least 3 elements
+                this._weights = w;
+        
     }
 
     /// GETTERS
@@ -130,7 +133,8 @@ export default class Tsp extends Fitness {
         // Adding a GA module configuration attributes will overwrite the defaults one
         return {
             mutation: mutation.SWAP,
-            crossover: crossover.PMX
+            crossover: crossover.PMX,
+            mut_prob: 1/this._places.length
         }
     }
 

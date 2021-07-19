@@ -11,7 +11,7 @@ export default class NQueens extends Fitness {
     }
 
     set N(val) {
-        if(typeof(val)==="number"){
+        if(typeof(val)==="number" && val >= 3){
             this._N = val;
             this._name = val+"-Queens Puzzle";
         }
@@ -21,7 +21,8 @@ export default class NQueens extends Fitness {
         const N = this._N; // For using this._N inside the mut_gen function
         return {
             mutation: mutation.RAND, // Rand operator uses mut_gen function
-            mut_gen: function(){return Math.floor(Math.random()*N)}
+            mut_prob: 1/N, // Mutation probability
+            mut_gen: function(idx){return Math.floor(Math.random()*N)}
         };
     }
 

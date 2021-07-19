@@ -57,15 +57,16 @@ export default class Knapsack extends Fitness {
     }
 
     set W(w) {
-        if(typeof(w)==="number")
+        if(typeof(w)==="number" && w > 0)
             if(w) this._W = w;
     }
 
     set items(items) {
-        if(Array.isArray(items)){
-            this._items = items;
-            this.init();
-        }
+        if(Array.isArray(items))
+            if(items.length > 2){ // At least 3 items
+                this._items = items;
+                this.init();
+            }
     }
 
     set penalty(f){
