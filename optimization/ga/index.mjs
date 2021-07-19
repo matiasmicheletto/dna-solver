@@ -470,7 +470,18 @@ export default class Ga { // GA model class
             current = s.findIndex(el => el === t[current]);
         }
 
-        /// TODO: build children alternating cycles from parents
+        // Find longer cycle
+        const longer = cycles.map(c => c.length).reduce((idxm, el, idx, arr) => el > arr[idxm] ? idx : idxm, 0);
+        
+        // Swap elements of longer cycle for obtaining the offspring
+        const g1 = [];
+        const g2 = [];
+        for(let k = 0; k < s.length; k++)
+            [g1[k], g2[k]] = cycles[longer].includes(s[k]) ? [t[k], s[k]] : [s[k], t[k]];		
+        
+        // Update population
+        this._population[k1] = {genotype: g1};
+        this._population[k2] = {genotype: g2};
     }
 
     _pmx_crossover(k1, k2) {
