@@ -16,7 +16,7 @@ import {
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import classes from './styles.module.css';
 import { LoadingContext } from '../../context/LoadingContext';
-import { penalty, filters } from 'optimization/fitness/knapsack.mjs';
+import { penalty } from 'optimization/fitness/knapsack.mjs';
 import { csv2Array } from 'optimization/tools/index.mjs';
 
 /*
@@ -198,15 +198,13 @@ const KnapsackConfig = props => {
                                     <Form.Check 
                                         name="penalty_radio" 
                                         label="Ramp" 
-                                        type="radio" 
-                                        checked={false}
+                                        type="radio"                                         
                                         checked={props.fitness.penalty===penalty.RAMP}  
                                         onChange={v=>{if(v.target.checked) props.configure({penalty:penalty.RAMP})}} />
                                     <Form.Check 
                                         name="penalty_radio" 
                                         label="Sigmoid" 
-                                        type="radio" 
-                                        checked={false}
+                                        type="radio"                                         
                                         checked={props.fitness.penalty===penalty.SIGMOID}  
                                         onChange={v=>{if(v.target.checked) props.configure({penalty:penalty.SIGMOID})}} />
                                 </Form>

@@ -9,13 +9,13 @@ import { selection } from 'optimization/ga/index.mjs';
 // subset which sum equals to 0.
 
 const set = [-96, -91, -87, -84, -82, -75, -71, -27, 12, 30, 46, 53, 73, 79, 80, 88, 90, 94, 94, 95];
-
+const target = 0;
 
 ///////// Solution //////////
 
 // Build the experiment manager and add the Subset sum fitness model with the given set
 const experiment = new Experiment();
-const f_id = experiment.add_fitness(SubsetSum, [set, 0]); 
+const f_id = experiment.add_fitness(SubsetSum, [set, target]); 
 
 // Now we initialize five optimizers with an increasing number of population.
 // We are using the tournament selection operator with k = 3 (default).

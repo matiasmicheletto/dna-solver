@@ -12,10 +12,6 @@ Configuration object:
         * type: Float number between 0 and 1.
     - mut_prob: Mutation probability (probability of an gen to change).
         * type: Float number between 0 and 1. Usually 1/(bitstring length).
-    - mut_gen: gen generator for mutation.
-        * type: Function.
-        * input: None.
-        * ouput: Number.
     - rank_r: Ranking parameter (In case of ranking based selection). High r increases selective pressure. 
         * type: Float number between 0 and 2/(pop_size*(pop_size-1)).
     - tourn_k: K parameter for tournament selection method.
@@ -86,8 +82,7 @@ const default_config = {
     pop_size: 20, 
     elitism: 2,
     cross_prob: 0.5, 
-    mut_prob: 0.1, 
-    mut_gen: () => Math.round(Math.random()), // Used for mutation.RAND
+    mut_prob: 0.1,     
     rank_r: 0.002,
     tourn_k: 3,
     best_fsw_factor: 0.2,
@@ -554,7 +549,7 @@ export default class Ga { // GA model class
         // Selects a random value for a random selected gen.
         for(let k = 0; k < this._gen_len; k++) // For every gen
             if( probability(this._mut_prob) )
-                this._population[ind].genotype[k] = this._config.mut_gen(); // Change for a random value
+                this._population[ind].genotype[k] = this._fitness.mut_gen(k); // Change for a random value
     }
 
     //////////// HELPERS ///////////

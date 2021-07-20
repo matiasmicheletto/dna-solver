@@ -21,8 +21,7 @@ export default class NQueens extends Fitness {
         const N = this._N; // For using this._N inside the mut_gen function
         return {
             mutation: mutation.RAND, // Rand operator uses mut_gen function
-            mut_prob: 1/N, // Mutation probability
-            mut_gen: function(idx){return Math.floor(Math.random()*N)}
+            mut_prob: 1/N // Mutation probability
         };
     }
 
@@ -68,6 +67,11 @@ export default class NQueens extends Fitness {
             ...
         */
         return 100 / ( this.objective(g) + 1 );
+    }
+
+    mut_gen(idx) {
+        // Random gen generator function
+        return Math.floor(Math.random()*this._N);
     }
 
     rand_encoded() { // Random order of numbers from 1 to N

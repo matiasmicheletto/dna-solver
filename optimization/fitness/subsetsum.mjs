@@ -21,7 +21,8 @@ export default class SubsetSum extends Fitness {
 
     set set(s) {
         if(Array.isArray(s))
-            this._set = s;
+            if(s.length > 3)
+                this._set = s;
     }
 
     get T() {

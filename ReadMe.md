@@ -169,7 +169,6 @@ The following table shows the configuration parameters and default values used b
 | `mutation` | BITFLIP, SWAP or RAND | `BITFLIP` | Mutation operator enumerator |  
 | `cross_prob` | Float number between 0 and 1 | `0.5` | Crossover probability (probability that a pair of selected individuals to be crossovered) |  
 | `mut_prob` | Float number between 0 and 1 | `0.1` | Mutation probability (probability of an gen to change). Usually 1/(bitstring length) |  
-| `mut_gen` | Function | `()=>Math.round(Math.rand())` | The gen generator function used in mutation |  
 | `rank_r` | Float number between 0 and `2/(pop_size*(pop_size-1))` | `0.002` | Ranking parameter (In case of ranking based selection). High r increases selective pressure |  
 | `tourn_k` | Integer number between 2 and `pop_size` | `3` | K parameter for tournament selection method. Usually between 2 and 5 |  
 | `best_fsw_factor` | Float number between 0 and 1 | `0.2` | Window size for getting evolution slope value proportional to generation number |  
