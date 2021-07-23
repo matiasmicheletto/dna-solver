@@ -19,11 +19,16 @@ class Server {
     // Serve examples files and directories
     this.app.use('/examples', serveIndex(path.join(__dirname, "../examples")));
     this.app.use('/examples', express.static(path.join(__dirname, "../examples")));
+    // Serve presentation folder
+    this.app.use(express.static(path.join(__dirname, "../slides")));
   }
 
   routes() {    
     this.app.get("/", (req, res) => {
       res.sendFile(path.join(__dirname, "../client/build/index.html"));
+    });
+    this.app.get("/slides", (req, res) => {
+      res.sendFile(path.join(__dirname, "../slides/index.html"));
     });
   }
 

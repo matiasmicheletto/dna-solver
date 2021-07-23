@@ -1,0 +1,891 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>TACE - Trabajo Final</title>
+
+		<meta name="description" content="Técnicas Avanzadas de Computación Evolutiva - Trabajo Final 2021">
+		<meta name="author" content="Matias Micheletto">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+		<link rel="stylesheet" href="dist/theme/black.css" id="theme">
+        <link rel="stylesheet" href="dist/style.css">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
+		<link rel="stylesheet" href="plugin/chalkboard/style.css" id="theme">
+		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+	</head>
+
+	<body>
+		<div class="reveal">
+
+			<div class="slides">
+				<section data-background="img/backgrounds/dna4.jpg" class="opaque">
+					<h5>Técnicas Avanzadas de Computación Evolutiva</h5>					
+					<h5>Trabajo Final<i></i></h5>
+					<br>
+					<h3>Librería para Gestión de Experimentos de Optimización con Algoritmos Genéticos</h3>
+					<br><br>
+					<p style="font-size: 60%;">Matías Micheletto - 2021</p>	
+				</section>
+
+                <section data-background="img/backgrounds/dna5.jpg" class="opaque">
+                    <h4>Objetivos</h4>
+                    <ul style="font-size:75%;">
+                        <li>Implementar una librería con módulos para:</li>
+                        <ul>
+                            <li>Optimización mediante algoritmos genéticos.</li>
+                            <li>Funciones objetivo y fitness para problemas clásicos de optimización.</li>
+                            <li>Creación y organización de los experimentos de optimización.</li>
+                        </ul>
+                        <li>Desarrollar una GUI para la utilización del módulo en forma gráfica.</li>
+                        <li>Prueba, documentación y despliegue.</li>
+                    </ul>
+                </section>
+
+                <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade">
+                    <h4>Elección de la tecnología</h4>
+                    <img src="img/Tools.png" width="60%"/>
+                </section>
+
+                <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade">
+                    <h4>Elección de la tecnología</h4>
+                    <img src="img/browser-logos.png" width="50%"/>
+                </section>
+
+                <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade">
+                    <img src="img/Client-Server-4.png"/>
+                </section>
+
+                
+
+                <section data-background="img/backgrounds/dna3.jpg" class="opaque" data-transition="fade">
+                    <h4>Arquitectura</h4>
+                    <img src="img/UML1.png"/>
+                </section>
+
+                <section data-background="img/backgrounds/dna3.jpg" class="opaque" data-transition="fade">
+                    <h4>Arquitectura</h4>
+                    <img src="img/UML2.png"/>
+                </section>
+
+                <section data-background="img/backgrounds/dna3.jpg" class="opaque" data-transition="fade">
+                    <h4>Arquitectura</h4>
+                    <img src="img/UML3.png"/>
+                </section>
+
+                <section data-background="img/backgrounds/dna3.jpg" class="opaque" data-transition="fade">
+                    <h4>Arquitectura</h4>
+                    <img src="img/UML4.png"/>
+                </section>
+
+                <section data-background="img/backgrounds/particles.png" class="opaque" >
+                    <h5>Ejemplo mínimo</h5>
+                    <pre><code class="javascript" data-trim data-line-numbers>
+                        import Ga from 'optimization/ga/index.mjs';
+                        import SubsetSum from 'optimization/fitness/subsetsum.mjs';
+
+                        const set = [-96, -91, -87, -84, -82, -75, -71, -27, 12, 30, 46, 53, 73, 79, 80, 88, 90, 94, 94, 95];
+                        const target = 0;
+
+                        const f = new SubsetSum(set, target);
+                        const ga = new Ga(f, {mut_prob: 0.05});
+
+                        for(let gen = 0; gen < 100; gen++)
+                            ga.evolve();
+
+                        const solution = ga.population[0];
+
+                        process.stdout.write("Best subset: "+f.decode(solution.genotype)+"\n");
+                        process.stdout.write("Objective value: "+solution.objective+"\n");
+
+                        //Best subset: -87,-84,-71,12,46,90,94
+                        //Objective value: S = 0, N = 7                        
+                    </code></pre>
+                </section>
+
+
+                <section data-background="img/backgrounds/dna5.jpg" class="opaque">
+                    <h4>Repositorio público</h4>
+                    <img src="img/logos/github.png" width="120px" style="margin:20px"/>
+                    <br>
+                    <a href="https://github.com/matiasmicheletto/dna-solver" rel="noreferrer noopener" target="_blank">github.com/matiasmicheletto/dna-solver</a>
+                </section>
+
+
+                <section data-background="img/backgrounds/dna5.jpg" class="opaque">
+                    <h4>Estructura del directorio</h4>
+                    <img src="img/DirStructure0.png" width="600px"/>
+                </section>
+
+                <section data-background="img/backgrounds/dna6.jpg" class="opaque">
+                    <h4>Módulo de optimización</h4>
+                    <h3>Algoritmos Genéticos</h3>  
+                </section>
+
+                <section data-background="img/backgrounds/particles.png" class="opaque" >
+                    <p>Parámetros de configuración GA</p>
+                    <pre><code class="javascript" data-trim data-line-numbers>
+                        const default_config = { 
+                            pop_size: 20, 
+                            elitism: 2,
+                            selection: selection.ROULETTE,
+                            crossover: crossover.SINGLE,
+                            mutation: mutation.BITFLIP,
+                            cross_prob: 0.5, 
+                            mut_prob: 0.1, 
+                            rank_r: 0.002,
+                            tourn_k: 3,
+                            best_fsw_factor: 0.2,
+                            param_control_enabled: false,
+                            controlled_param: controlled_param.CROSS_PROB,
+                            param_control_factor: 0.01,
+                            controller_var: controller_var.GENERATION
+                        };
+                    </code></pre>
+                </section>
+
+                <section data-background="img/backgrounds/dna6.jpg" class="opaque">         
+                    <img src="img/ConfiObj.png" height="700px"/>
+                </section>
+
+                <section data-background="img/backgrounds/particles.png" class="opaque" >
+                    <h5>Iteración</h5>
+                    <pre><code class="javascript" data-trim data-line-numbers="0|4,8,10">
+                            evolve(){ 
+                                const elite = this._config.elitism > 0 ? Array.from(this._population.slice(0, this._config.elitism)) : null;
+
+                                const selected = this._selection(); 
+
+                                for(let k = 0; k < selected.length-1; k += 2)
+                                    if(probability(this._cross_prob)){
+                                        this._crossover(selected[k], selected[k+1]);                                        
+                                        [selected[k], selected[k+1]].map(el=>{
+                                            this._mutate(el);
+                                            this._eval(el);
+                                        });
+                                    }
+
+                                if(this._config.elitism > 0)
+                                    this._population.push(...elite);
+
+                                this._sort_pop();
+
+                                this._population.splice(this._config.pop_size); 
+
+                                if(this._config.param_control_enabled)
+                                    this._update_params();
+
+                                this._update_stats();   
+                            }
+                    </code></pre>
+                </section>
+                
+
+                <section data-background="img/backgrounds/particles.png" class="opaque" >
+                    <h5>Configuración de operadores genéticos</h5>
+                    <p>(Ejemplo para el caso de selección)</p>
+                    <pre><code class="javascript" data-trim data-line-numbers>
+                        set selection(s) { 
+                            switch(s){
+                                default: 
+                                case selection.ROULETTE:
+                                    this._selection = this._roulette_selection;
+                                    break;
+                                case selection.RANK:
+                                    this._selection = this._rank_selection;
+                                    break;
+                                case selection.TOURNAMENT:
+                                    this._selection = this._tournament_selection;
+                                    break;
+                            }
+                            this._config.selection = s;
+                        }
+                    </code></pre>
+                </section>
+
+                
+                <section>
+                    <section data-background="img/backgrounds/dna4.jpg" class="opaque">
+                        <h4>Métodos de selección</h4>
+                        <ul>
+                            <li>Ruleta</li>
+                            <li>Ranking</li>
+                            <li>Torneo</li>
+                        </ul>
+                    </section>
+
+                    <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade">
+                        <h5>Selección por ruleta</h5>
+                        <pre><code class="javascript" data-trim data-line-numbers="4,5,7-11">
+                            _roulette_selection() {                                 
+                                let selected = [];
+                                for(let i = 0; i < this._population.length; i++){
+                                    const r = Math.random()*this._fitness_sum; 
+                                    let s = 0; 
+                                    for(let k in this._population){ 
+                                        s += this._population[k].fitness;
+                                        if(s >= r){ 
+                                            selected.push(k);
+                                            break;
+                                        }
+                                    }
+                                }
+                                return selected;
+                            }
+                        </code></pre>
+                    </section>
+
+                    <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade">
+                        <h5>Selección por ranking</h5>
+                        <pre><code class="javascript" data-trim data-line-numbers="4,5,7-11">
+                            _rank_selection() {                                
+                                let selected = [];
+                                for(let i = 0; i < this._population.length; i++){
+                                    const r = Math.random(); 
+                                    let s = 0;
+                                    for(let k in this._population){
+                                        s += this._rank_q - k * this._rank_r;
+                                        if(s >= r){
+                                            selected.push(k);
+                                            break;
+                                        }
+                                    }
+                                }
+                                return selected;
+                            }
+                        </code></pre>
+                    </section>
+
+                    <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade">
+                        <h5>Selección por torneo</h5>
+                        <pre><code class="javascript" data-trim data-line-numbers >
+                            _tournament_selection() {                                
+                                let selected = [];
+                                for(let i in this._population.length){
+                                    let winner = this._population.length-1;
+                                    for(let k = 0; k < this._tourn_k; k++){
+                                        const candidate = Math.floor(Math.random()*this._population.length); 
+                                        if(candidate < winner) winner = candidate;
+                                    }
+                                    selected.push(winner);
+                                }
+                                return selected;
+                            }
+                        </code></pre>
+                    </section>
+                </section>
+
+
+                <section>
+                    <section data-background="img/backgrounds/dna4.jpg" class="opaque">
+                        <h4>Métodos de recombinación</h4>
+                        <ul>
+                            <li>Recombinación en un punto</li>
+                            <li>Recombinación en dos puntos</li>
+                            <li>Recombinación por ciclos</li>
+                            <li>Recombinación por mapeo parcial</li>
+                        </ul>
+                    </section>
+
+                    <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade">
+                        <h5>Recombinación en uno y dos puntos</h5>
+                        <pre><code class="javascript" data-trim data-line-numbers>
+                            _single_point_crossover(k1, k2) { 
+                                const s = Array.from(this.population[k1].genotype);
+                                const t = Array.from(this.population[k2].genotype);
+
+                                const p = Math.floor(Math.random() * (s.length - 2) + 1); 
+
+                                this._population[k1] = {genotype: [...s.slice(0, p), ...t.slice(p)]};
+                                this._population[k2] = {genotype: [...t.slice(0, p), ...s.slice(p)]};
+                            }
+
+                            _double_point_crossover(k1, k2) {
+                                const s = Array.from(this.population[k1].genotype);
+                                const t = Array.from(this.population[k2].genotype);
+                                
+                                let p1 = Math.floor(Math.random() * (s.length - 2) + 1); 
+                                let p2 = Math.floor(Math.random() * (s.length - 1 - p1)) + p1 + 1; 
+                                
+                                this._population[k1] = {genotype: [...s.slice(0, p1), ...t.slice(p1, p2), ...s.slice(p2)]};
+                                this._population[k2] = {genotype: [...t.slice(0, p1), ...s.slice(p1, p2), ...t.slice(p2)]};
+                            }
+                        </code></pre>                    
+                    </section>
+
+                    
+
+                    <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade">
+                        <h5>Recombinación por ciclos</h5>
+                        <img src="img/Cycle_crossover.png" height="600px">
+                    </section>
+
+                    <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade">
+                        <h5>Recombinación por ciclos</h5>
+                        <img src="img/Cycle_crossover2.png" height="600px">
+                    </section>
+
+                    <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade">
+                        <h5>Recombinación por ciclos</h5>
+                        <img src="img/Cycle_crossover4.png" height="600px">
+                    </section>
+
+                    <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade">
+                        <h5>Recombinación por ciclos</h5>
+                        <img src="img/Cycle_crossover5.png" height="600px">
+                    </section>
+
+
+                    <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade">
+                        <h5>Recombinación por ciclos</h5>
+                        <pre><code class="javascript" data-trim data-line-numbers>
+                            _cx_crossover(k1, k2) {
+                                const s = Array.from(this.population[k1].genotype);
+                                const t = Array.from(this.population[k2].genotype);
+
+                                let cycles = [];
+                                let togo = Array.from(Array(s.length).keys());
+                                let current = -1;
+                                while(togo.length > 0){
+                                    if(togo.includes(current))
+                                        togo.splice(togo.findIndex(el => el === current), 1);
+                                    else{
+                                        cycles.push([]);
+                                        current = togo.shift();
+                                    }                                
+                                    cycles[cycles.length-1].push(s[current]);                                 
+                                    current = s.findIndex(el => el === t[current]);
+                                }
+
+                                const longer = cycles.map(c => c.length).reduce((idxm, el, idx, arr) => el > arr[idxm] ? idx : idxm, 0);
+                                
+                                const g1 = []; const g2 = [];
+                                for(let k = 0; k < s.length; k++)
+                                    [g1[k], g2[k]] = cycles[longer].includes(s[k]) ? [t[k], s[k]] : [s[k], t[k]];       
+                                
+                                this._population[k1] = {genotype: g1};
+                                this._population[k2] = {genotype: g2};
+                            }
+                        </code></pre>
+                    </section>
+
+
+                    <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade" >
+                        <h5>Recombinación por mapeo parcial (PMX) </h5>  
+                        <img src="img/Partially-mapped-crossover-method-1.png" style="max-height:550px"/>
+                    </section>
+                    <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade" >
+                        <h5>Recombinación por mapeo parcial (PMX) </h5>  
+                        <img src="img/Partially-mapped-crossover-method-2.png" style="max-height:550px"/>
+                    </section>
+                    <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade" >
+                        <h5>Recombinación por mapeo parcial (PMX) </h5>  
+                        <img src="img/Partially-mapped-crossover-method-3.png" style="max-height:550px"/>
+                    </section>
+
+                    <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade">
+                        <h5>Recombinación por mapeo parcial (PMX) </h5>  
+                        <pre><code class="javascript" data-trim data-line-numbers>
+                            _pmx_crossover(k1, k2) {                            
+                                // https://gist.github.com/celaus/d5a55e723ce233f2b83af36a4cf456b4
+                                
+                                const x1 = Math.floor(Math.random() * (this._gen_len - 1));
+                                const x2 = x1 + Math.floor(Math.random() * (this._gen_len - x1));
+                        
+                                let g1 = Array.from(this.population[k1].genotype); 
+                                let g2 = Array.from(this.population[k2].genotype);
+                        
+                                let map1 = {}; let map2 = {};
+                        
+                                for (let i = x1; i < x2; i++) {
+                                    g1[i] = this.population[k2].genotype[i];
+                                    map1[this.population[k2].genotype[i]] = this.population[k1].genotype[i];
+                                    g2[i] = this.population[k1].genotype[i];
+                                    map2[this.population[k1].genotype[i]] = this.population[k2].genotype[i];
+                                }
+                        
+                                for (let i = 0; i < x1; i++) {
+                                    while (g1[i] in map1) 
+                                        g1[i] = map1[g1[i]];
+                                    while (g2[i] in map2)
+                                        g2[i] = map2[g2[i]];
+                                }
+                        
+                                for (let i = x2; i < this._gen_len; i++) {
+                                    while (g1[i] in map1) 
+                                        g1[i] = map1[g1[i]];
+                                    while (g2[i] in map2) 
+                                        g2[i] = map2[g2[i]];
+                                }
+                        
+                                this._population[k1] = {genotype: g1};
+                                this._population[k2] = {genotype: g2};
+                            }
+                        </code></pre>
+                    </section>
+                </section>
+
+
+                <section>
+                    <section data-background="img/backgrounds/dna4.jpg" class="opaque">
+                        <h4>Métodos de mutación</h4>
+                        <ul>
+                            <li>Mutación binaria <i>(bitflip)</i></li>
+                            <li>Cambio aleatorio de gen</li>
+                            <li>Intercambio de posiciones</li>
+                        </ul>
+                    </section>
+
+                    <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade">
+                        <br><br><br>
+                        <h5>Mutación binaria</h5>
+                        <pre><code class="javascript" data-trim data-line-numbers >
+                            _bitflip_mutation(ind) {                                 
+                                const L = this._population[ind].genotype.length;
+                                for(let k = 0; k < L; k++)
+                                    if( probability(this._mut_prob) )
+                                        this._population[ind].genotype[k] = 
+                                            this._population[ind].genotype[k]===1 ? 0 : 1; 
+                            }
+                        </code></pre>
+                    </section>
+
+                    <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade">
+                        <br><br><br>
+                        <h5>Cambio aleatorio de gen</h5>
+                        <pre><code class="javascript" data-trim data-line-numbers >
+                            _rand_allele_mutation(ind) {
+                                const L = this._population[ind].genotype.length;
+                                for(let k = 0; k < L; k++)
+                                    if( probability(this._mut_prob) )
+                                        this._population[ind].genotype[k] = 
+                                            this._fitness.mut_gen(k);
+                            }
+                        </code></pre>
+                    </section>
+
+                    <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade">
+                        <br><br>
+                        <h5>Intercambio de posiciones</h5>
+                        <pre><code class="javascript" data-trim data-line-numbers >
+                            _swap_mutation(ind) {
+                                const L = this._population[ind].genotype.length;
+                                for(let k = 0; k < L; k++)
+                                    if( probability(this._mut_prob) ){ 
+                                        let p = k;
+                                        while(p === k) 
+                                            p = Math.floor(Math.random() * L); 
+                                        [this._population[ind].genotype[k], this._population[ind].genotype[p]] = [this._population[ind].genotype[p], this._population[ind].genotype[k]];
+                                    }
+                            }
+                        </code></pre>
+                    </section>
+                </section>
+
+                <section data-background="img/backgrounds/dna4.jpg" class="opaque">
+                    <h5>Modulo de fitness</h5>
+                    <h3>Función objetivo</h3>
+                </section>
+
+
+                <section data-background="img/backgrounds/dna4.jpg" class="opaque">
+                    <h4>Modelos implementados</h4>
+                    <ul>
+                        <li>Función cuadrática (parábola).</li>
+                        <li>Problema de la suma de subconjuntos.</li>
+                        <li>Problema de las N reinas.</li>
+                        <li>Problema de la mochila.</li>
+                        <li>Problema del viajante.</li>
+                    </ul>
+                </section>
+
+                <section data-background="img/backgrounds/particles.png" class="opaque">
+                    <h4>Prototipo Fitness</h4>
+                    <pre><code class="javascript" data-trim data-line-numbers="2-7|9-19|21-23|25-27">
+                        class Fitness { 
+                            constructor(params) {
+                                this._id = generate_id(); 
+                                this._name = "N/D";
+                                for(let p in params)
+                                    this[p] = params[p];
+                            }
+                        
+                            get id() { 
+                                return this._id;
+                            }
+                        
+                            get name() { 
+                                return this._name;
+                            }
+                        
+                            get ga_config() {
+                                return {};
+                            }
+
+                            rand_encoded() {
+                                return [];
+                            }
+
+                            eval(g) {
+                                return 0;
+                            }
+                        }
+                    </code></pre>
+                </section>
+
+                <section data-background="img/backgrounds/dna4.jpg" class="opaque">
+                    <h4>Problema de las N-Reinas</h4>
+                    <img src="img/NQueens_sol.png" />
+                </section>
+
+                <section data-background="img/backgrounds/particles.png" class="opaque" data-transition="fade">
+                    <h4>Problema de las N reinas</h4>
+                    <pre><code class="javascript" data-trim data-line-numbers="2-7|9-23|25-27|29-33|35-56|39-42|43-47|48-52|58-60">
+                        class NQueens extends Fitness {
+                            constructor(N = 8) {
+                                super({
+                                    _N: N, 
+                                    _name: N+"-Queens Puzzle"
+                                });
+                            }
+                        
+                            set N(val) {
+                                if(typeof(val)==="number" && val >= 3)
+                                    this._N = val;
+                            }
+                        
+                            get N() {
+                                return this._N;
+                            }
+                        
+                            get ga_config() {                                 
+                                return {
+                                    mutation: mutation.RAND,                                     
+                                    mut_prob: 1/this._N;
+                                };
+                            }
+
+                            mut_gen(idx) {                             
+                                return Math.floor(Math.random()*this._N);
+                            }
+                        
+                            rand_encoded() {
+                                let numbers = Array.from(Array(this._N).keys());
+                                shuffle_array(numbers);
+                                return numbers;
+                            }
+                        
+                            objective(columns) {
+                                let cntr = 0;
+                                for(let col1=0; col1 < this._N-1; col1++){
+                                    for(let col2=col1+1; col2 < this._N; col2++){
+                                        if(columns[col1] === columns[col2]) { 
+                                            cntr++; 
+                                            continue; 
+                                        }
+                                        if(col1 + columns[col1] === 
+                                                col2 + columns[col2]) { 
+                                            cntr++; 
+                                            continue; 
+                                        }
+                                        if(col2 - col1 === 
+                                                columns[col2] - columns[col1]) { 
+                                            cntr++; 
+                                            continue; 
+                                        }
+                                    }
+                                }
+                                return cntr;
+                            }
+                        
+                            eval(g) { 
+                                return 100 / ( this.objective(g) + 1 );
+                            }
+                        };
+                    </code></pre>
+                </section>
+
+
+                <section data-background="img/backgrounds/dna4.jpg" class="opaque">
+                    <h4>Problema de la suma de subconjuntos</h4>
+                    <img src="img/Subsetsum_sol.png" />
+                </section>
+
+                <section data-background="img/backgrounds/particles.png" class="opaque" data-transition="fade">
+                    <h4>Problema de la suma de subconjuntos</h4>
+                    <pre><code class="javascript" data-trim data-line-numbers="2-8|10-27|29-33|35-42|44-47">
+                        class SubsetSum extends Fitness {
+                            constructor(set = default_set, T = 0) {
+                                super({
+                                    _set: set, 
+                                    _T: T, 
+                                    _name:"Subset sum problem"
+                                });
+                            }
+                        
+                            set T(t) {
+                                if(typeof(t)==="number") 
+                                    this._T = t;
+                            }
+                        
+                            set set(s) {
+                                if(Array.isArray(s))
+                                    if(s.length >= 3)
+                                        this._set = s;
+                            }
+                        
+                            get T() {
+                                return this._T;
+                            }
+                        
+                            get set() {
+                                return this._set;
+                            }
+                        
+                            objective(selected) {
+                                const subset  = this._set
+                                    .filter((v, ind) => selected[ind]===1);
+                                return [array_sum(subset), subset.length];
+                            }
+                        
+                            eval(g) {
+                                if(!g.every(item => item === 0)){
+                                    const obj = this.objective(g);
+                                    return Math.abs(100/(Math.abs(obj[0]-this._T)+1)-obj[1]/g.length);
+                                }else{
+                                    return 0;
+                                }
+                            }
+                        
+                            rand_encoded() {
+                                return new Array(this._set.length).fill(0)
+                                    .map(() => Math.round(Math.random()) );
+                            }
+                        }
+                    </code></pre>
+                </section>
+
+                <section data-background="img/backgrounds/code1.jpg" class="opaque">
+                    <h3>Módulo de experimentos</h3>
+                    <p>Evaluar el desempeño de un AG utilizando distintos tamaños de población para resolver el problema de la Suma de Subconjuntos.</p>
+                </section>
+
+                <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade">
+                    <h5>Ejemplo - Desarrollo</h5>
+                    <pre><code class="javascript" data-trim data-line-numbers="1-2|4|6|8-12|14-17|19" >
+                        const set = [-96, -91, -87, -84, -82, -75, -71, -27, 12, 30, 46, 53, 73, 79, 80, 88, 90, 94, 94, 95];
+                        const target = 0;
+                        
+                        const experiment = new Experiment();
+
+                        const f_id = experiment.add_fitness(SubsetSum, [set, target]); 
+
+                        experiment.add_ga(f_id, {selection: selection.TOURNAMENT, pop_size: 10, name: "Pop. size = 10"});
+                        experiment.add_ga(f_id, {selection: selection.TOURNAMENT, pop_size: 20, name: "Pop. size = 20"});
+                        experiment.add_ga(f_id, {selection: selection.TOURNAMENT, pop_size: 30, name: "Pop. size = 30"});
+                        experiment.add_ga(f_id, {selection: selection.TOURNAMENT, pop_size: 40, name: "Pop. size = 40"});
+                        experiment.add_ga(f_id, {selection: selection.TOURNAMENT, pop_size: 50, name: "Pop. size = 50"});
+
+                        experiment.run({
+                            rounds:50, 
+                            iters:500
+                        });
+
+                        process.stdout.write(experiment.getPlainResults());
+                    </code></pre>
+                </section>
+
+                <section data-background="img/backgrounds/code1.jpg" class="opaque" data-transition="fade">
+                    <h5>Ejemplo - Salida</h5>
+                    <pre><code style="font-size: 70%;line-height: normal;" class="text" data-trim data-line-numbers="1-7|8-15|18-25|28-35|38-45|48-55" >
+                        New optimizer "Pop. size = 10" initialized (ID: _liyffob6z6q1625768318649).
+                        New optimizer "Pop. size = 20" initialized (ID: _etzb5gxua5o1625768318651).
+                        New optimizer "Pop. size = 30" initialized (ID: _gjj149qk7qq1625768318651).
+                        New optimizer "Pop. size = 40" initialized (ID: _oztad39nxy1625768318651).
+                        New optimizer "Pop. size = 50" initialized (ID: _ycxpfm3zqxf1625768318652).
+                        Running 50 rounds of 500 iterations...
+                        ███████████████████████████████████████░ 98% | ETA: 1s | 98/100
+                        Name:                           Pop. size = 10
+                        Id:                             _liyffob6z6q1625768318649
+                        Fitness evaluations (average):  1689.16
+                        Round elapsed time (average):   3.66 ms. 
+                        Best fitness (average):         99.58299999999997
+                        Best fitness (all rounds):      99.8
+                        Best solution (all rounds):     -87,-82,79,90
+                        Best objective (all rounds):    S = 0, N = 4
+
+                        ------------------------------------------------------
+                        Name:                           Pop. size = 20
+                        Id:                             _etzb5gxua5o1625768318651
+                        Fitness evaluations (average):  3382.98
+                        Round elapsed time (average):   6.44 ms. 
+                        Best fitness (average):         99.69200000000001
+                        Best fitness (all rounds):      99.85
+                        Best solution (all rounds):     -91,12,79
+                        Best objective (all rounds):    S = 0, N = 3
+
+                        ------------------------------------------------------
+                        Name:                           Pop. size = 30
+                        Id:                             _gjj149qk7qq1625768318651
+                        Fitness evaluations (average):  5077.18
+                        Round elapsed time (average):   9.46 ms. 
+                        Best fitness (average):         99.70100000000001
+                        Best fitness (all rounds):      99.8
+                        Best solution (all rounds):     -82,-27,30,79
+                        Best objective (all rounds):    S = 0, N = 4
+
+                        ------------------------------------------------------
+                        Name:                           Pop. size = 40
+                        Id:                             _oztad39nxy1625768318651
+                        Fitness evaluations (average):  6769.36
+                        Round elapsed time (average):   12.58 ms. 
+                        Best fitness (average):         99.73400000000004
+                        Best fitness (all rounds):      99.85
+                        Best solution (all rounds):     -91,12,79
+                        Best objective (all rounds):    S = 0, N = 3
+
+                        ------------------------------------------------------
+                        Name:                           Pop. size = 50
+                        Id:                             _ycxpfm3zqxf1625768318652
+                        Fitness evaluations (average):  8471.62
+                        Round elapsed time (average):   15.56 ms. 
+                        Best fitness (average):         99.73999999999998
+                        Best fitness (all rounds):      99.8
+                        Best solution (all rounds):     -75,-27,12,90
+                        Best objective (all rounds):    S = 0, N = 4
+                    </code></pre>
+                </section>
+
+                <section data-background="img/backgrounds/dna6.jpg" class="opaque">
+                    <h4>Aplicación web (GUI)</h4>
+                    <img src="img/logos/react.png" width="120px" style="margin:20px"/>
+                    <img src="img/logos/bootstrap.png" width="100px" style="margin:20px"/>
+                    <img src="img/logos/highcharts.png" width="200px" style="margin:20px"/>
+                    <br>
+                    <img src="img/logos/nodejs.png" width="200px" style="margin:20px"/>
+                    <img src="img/logos/heroku.png" width="120px" style="margin:20px"/>
+                    <img src="img/logos/github.png" width="120px" style="margin:20px"/>
+                </section>
+
+                <section data-background="img/backgrounds/dna6.jpg" class="opaque" data-transition="fade">
+                    <h4>GUI</h4>
+                    <img src="img/Components.png"/>
+                </section>
+
+                <section data-background="img/backgrounds/dna6.jpg" class="opaque" data-transition="fade">
+                    <h4>GUI</h4>
+                    <img src="img/DirStructure2.png" width="800px"/>
+                </section>
+
+
+                <section data-background="img/backgrounds/dna6.jpg" class="opaque">
+                    <h4>Aplicación web</h4>
+                    <a style="font-size: 130%" href="https://dna-solver.herokuapp.com" rel="noreferrer noopener" target="_blank">dna-solver.herokuapp.com</a>
+                </section>
+
+                <section data-background="img/backgrounds/dna1.jpg" class="opaque">
+                    <h4>Problema de las N-Reinas</h4>
+                    <img src="img/NQueens.png" />
+                </section>
+
+                <section data-background-iframe="https://dna-solver.herokuapp.com/" data-background-interactive>
+                    <aside class="notes">
+                        <ol>
+                            <li>1 x N reinas de 12</li>    
+                            <li>4 x GA</li>
+                            <li>Configurar single-point, double-point, cycle y pmx</li>
+                            <li>Correr 10x200</li>                            
+                        </ol>
+                    </aside>
+                </section>
+
+                <section data-background="img/backgrounds/dna1.jpg" class="opaque">
+                    <h4>Problema de la mochila</h4>  
+                    <img src="img/knapsack.png" />
+                </section>
+
+                <section data-background-iframe="https://dna-solver.herokuapp.com/" data-background-interactive>
+                    <aside class="notes">
+                        <ol>
+                            <li>Agregar un bloque de fitness Knapsack.</li>
+                            <li>Explicar funcion objetivo y de costo step, ramp, sigmoid</li>
+                            <li>3x fitness con distintos penalty fc</li>
+                            <li>(opt)<b>correr 50x100</b></li>
+                        </ol>
+                    </aside>
+                </section>
+
+                <section data-background="img/backgrounds/dna1.jpg" class="opaque">
+                    <h4>Problema del viajante</h4>  
+                    <img src="img/USATSP-unscreen.gif" width="50%"/>
+                </section>
+
+                <section data-background-iframe="https://dna-solver.herokuapp.com/" data-background-interactive>  
+                    <aside class="notes">
+                        <ol>
+                            <li>Agregar un bloque de fitness TSP.</li>
+                            <li>Mostrar carga de archivos de configuracion</li>
+                            <li>Crear dos optimizadores</li>
+                            <li>Cambiar crossover a CYCLE (!importante)</li>
+                            <li>Usar mut_prob por defecto en uno (0.03)</li>
+                            <li>Usar mut_prob 0.1 en el otro con adaptivo mut_prob = -0.00001 * generation</li>
+                            <li>Correr 5 x 1000 iteraciones</li>
+                            <li>Formas de mejorar el análisis -> usar 5 o 10k iteraciones con adaptivo prop. a curva de evol</li>
+                        </ol>
+                    </aside>
+                </section>
+
+                <section data-background="img/backgrounds/dna5.jpg" class="opaque">
+                    <h4>Resumen</h4>
+                    <ul style="font-size:75%;">                        
+                        <li><b>Flexibilidad</b>. La librería cumple doble propósito:
+                            <ol>
+                                <li>Ajuste hiperparamétrico (tunning).</li>
+                                <li>Uso en producción.</li>
+                            </ol>
+                        </li>
+                        <li><b>Portabilidad multiplataforma</b>. Puede ser utilizada tanto en el front-end como en el back-end (NodeJS).</li>
+                        <li><b>Extensibilidad.</b> Creación de módulos mediante patrón Prototipo.</li>
+                        <li><b>Bajo rendimiento.</b> Implementada con lenguaje interpretado.</li>
+                    </ul>
+                </section>
+
+			</div>
+		</div>
+
+        <script src="dist/reveal.js"></script>
+		<script src="plugin/zoom/zoom.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/search/search.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script src="plugin/chalkboard/plugin.js"></script>
+		<script>			
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				center: true,
+				hash: true,
+                transition: 'slide', // none/fade/slide/convex/concave/zoom
+				backgroundTransition: 'fade',
+				plugins: [ 
+                    RevealZoom, 
+                    RevealNotes, 
+                    RevealSearch, 
+                    RevealMarkdown, 
+                    RevealHighlight, 
+                    RevealChalkboard 
+                ]
+			});
+		</script> 
+
+	</body>
+</html>
