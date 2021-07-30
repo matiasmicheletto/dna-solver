@@ -6,14 +6,22 @@
     <img src="https://img.shields.io/website?down_color=red&down_message=offline&style=plastic&up_color=green&up_message=online&url=https%3A%2F%2Fdna-solver.herokuapp.com">
 </p>
 
-A [Node.js module](optimization) and a [React.js GUI](client) that allows to create and test Genetic Algorithms experiments with focus on hyperparametric optimization for solving the most common problems present in the combinatorial optimization literature.
+A [javascript](optimization) library and a [React.js GUI](client) that allows to create and test Genetic Algorithms experiments with focus on hyperparametric optimization for solving the most common problems present in the combinatorial optimization literature.
 
 This project was developed under the context of the final work for the posgraduate course *"Advanced Techniques for Evolutionary Computation"*  by [Dr. Ignacio Ponzoni](https://cs.uns.edu.ar/~ip/) at [DCIC](https://cs.uns.edu.ar/~devcs/) (UNS).  
+
+## Author's note
+
+I hope the reader find this project helpful. I have not much knowledge in software architecture or design patterns, but my intention was to make readable code and a useful tool for those who are teaching or learning about Genetic Algorithms or Numerical Optimization Techniques. 
+
+![care](doc/clean.jpg)
+
+This library was written in javascript. This allows you to share the code through any medium and because its easy for someone to get access to an internet browser, almost every user will be able to run this code, on almost any smart device. Consider this as the only and most important advantage of this software, against other tools as Python or Matlab.
 
 
 ## Minimal example
 
-Lets solve the [Subset Sum Problem](https://en.wikipedia.org/wiki/Subset_sum_problem) using this library:
+Lets solve the [Subset Sum Problem](https://en.wikipedia.org/wiki/Subset_sum_problem) using this library. Here I'm using Node.js, but with a few adjustments, you can make it work on the browser too.
 
 ```js
 import Ga from 'optimization/ga/index.mjs';
@@ -164,18 +172,19 @@ The following table shows the configuration parameters and default values used b
 | --- | --- | --- | --- |
 | `pop_size` | Integer number greater than 4 | `20` | Population size, number of chromosomes |  
 | `elitism` | Integer number between 0 and `pop_size` | `2` | Number of elite individuals. Elite individuals are force-preserved through generations |  
-| `selection` | ROULETTE, RANK or TOURNAMENT | `ROULETTE` | Selection operator enumerator |  
-| `crossover` | SINGLE, DOUBLE, CYCLE or PMX | `SINGLE` | Crossover operator enumerator |  
-| `mutation` | BITFLIP, SWAP or RAND | `BITFLIP` | Mutation operator enumerator |  
+| `selection` | `ROULETTE`, `RANK` or `TOURNAMENT` | `ROULETTE` | Selection operator enumerator |  
+| `crossover` | `SINGLE`, `DOUBLE`, `CYCLE` or `PMX` | `SINGLE` | Crossover operator enumerator |  
+| `mutation` | `BITFLIP`, `SWAP` or `RAND` | `BITFLIP` | Mutation operator enumerator |  
 | `cross_prob` | Float number between 0 and 1 | `0.5` | Crossover probability (probability that a pair of selected individuals to be crossovered) |  
 | `mut_prob` | Float number between 0 and 1 | `0.1` | Mutation probability (probability of an gen to change). Usually 1/(bitstring length) |  
 | `rank_r` | Float number between 0 and `2/(pop_size*(pop_size-1))` | `0.002` | Ranking parameter (In case of ranking based selection). High r increases selective pressure |  
 | `tourn_k` | Integer number between 2 and `pop_size` | `3` | K parameter for tournament selection method. Usually between 2 and 5 |  
 | `best_fsw_factor` | Float number between 0 and 1 | `0.2` | Window size for getting evolution slope value proportional to generation number |  
 | `param_control_enabled` | Boolean | `false` | Enable or disable the automatic parameter control |  
-| `controlled_param` | Parameter name as String | `CROSS_PROB` | The controlled hyperparameter |  
+| `controlled_param` | `CROSS_PROB`, `MUT_PROB`, `RANK_R` or `TOURN_K` | `CROSS_PROB` | The controlled hyperparameter |  
 | `param_control_factor` | Number | `0.01` | The incremental factor of the controller parameter |  
-| `controller_var` | Variable name as String | `GENERATION` | The controller variable (static control by default) |  
+| `controller_var` | `GENERATION`, `POP_S2`, `EVOL_SLOPE` or `POP_AVG` | `GENERATION` | The controller variable (static control by default) |  
+
 
 ### Automatic parameter control
 
@@ -234,7 +243,7 @@ GUI development (100%)
 - [x] Graphical fitness model configuration (100%).  
   - [x] Problem description.  
   - [x] Parameter configuration.  
-- [ ] Graphical optimizer configuration (66%).  
+- [x] Graphical optimizer configuration (100%).  
   - [x] Static parameters configuration.  
   - [x] Name edition.  
   - [x] Adaptive/static parameter configuration.  

@@ -21,17 +21,17 @@ Configuration object:
     - selection: Selection operator.
         * type: ROULETTE, RANK or TOURNAMENT.
     - crossover: Crossover operator.
-        * type: SINGLE, DOUBLE, CX or PMX.
+        * type: SINGLE, DOUBLE, CYCLE or PMX.
     - mutation: Mutation operator.
         * type: BITFLIP, SWAP or RAND.
     - param_control_enabled: Enable or disable automatic parameter control
         * type: Boolean.
     - controlled_param:  Parameter to control automatically.
-        * type: String.
+        * type: CROSS_PROB, MUT_PROB, RANK_R or TOURN_K
     - param_control_factor: Factor number used in the parameter control
         * type: Float number.
     - controller_var: Variable used to control the parameter
-        * type: String.
+        * type: GENERATION, POP_S2, EVOL_SLOPE or POP_AVG
 */
 
 import { 
