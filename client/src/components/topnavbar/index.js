@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 //import { LoadingContext } from '../../context/LoadingContext';
-import logo from '../../img/logo_uns.png';
+import logo from '../../img/logo.png';
 import { FaGithub, FaInfoCircle, FaQuestionCircle } from 'react-icons/fa';
 import InfoModal from '../modals/info';
 import HelpModal from '../modals/help';
