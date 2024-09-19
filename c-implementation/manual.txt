@@ -1,0 +1,25 @@
+NAME
+   dna-solver | C++ implementation
+
+SYNOPSIS
+   test [OPTIONS]...
+
+DESCRIPTION:
+   This program implements a C++ library for Genetic Algorithm optimization
+
+OPTIONS:
+   -h, --help     Display this help message.
+
+EXAMPLES:
+   1. solver 
+      - Test the library 
+
+AUTHORS
+   Code was written by Dr. Matias J. Micheletto.
+
+REPORTING BUGS
+   Guidelines available at <https://github.com/matiasmicheletto/dna-solver>.
+
+COPYRIGHT
+   Copyright   ©   2024   Free   Software   Foundation,  Inc.   License  GPLv3+:  GNU  GPL  version  3  or  later <https://gnu.org/licenses/gpl.html>.
+   This is free software: you are free to change and redistribute it.  There is NO WARRANTY, to the  extent  permitted by law.
