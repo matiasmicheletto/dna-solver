@@ -1,0 +1,37 @@
+.
+├── examples
+│   ├── quadratic
+│   │   ├── chromosome.h
+│   │   ├── fitness.h
+│   │   ├── gene.h
+│   │   └── main.cpp
+│   └── subsetsum
+│       ├── chromosome.h
+│       ├── fitness.h
+│       ├── gene.h
+│       ├── main.cpp
+│       └── Makefile
+├── Makefile
+├── manual.txt
+├── obj
+│   ├── lib
+│   │   └── ga
+│   │       ├── chromosome.o
+│   │       └── ga.o
+│   └── main.o
+├── project_tree.txt
+├── solver
+└── src
+    ├── lib
+    │   ├── ga
+    │   │   ├── chromosome.cpp
+    │   │   ├── chromosome.h
+    │   │   ├── fitness.h
+    │   │   ├── ga.cpp
+    │   │   ├── ga.h
+    │   │   └── gene.h
+    │   └── misc
+    │       └── help.h
+    └── main.cpp
+
+11 directories, 24 files
