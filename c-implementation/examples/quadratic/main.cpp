@@ -6,9 +6,12 @@
 int main(int argc, char **argv) {
     srand(time(nullptr));
 
+    /*
     testGene();
-    testChromosome();
+    testMutation();
+    testCrossover();
     testFitness();
+    */
     testGA();
     return 0;
 }

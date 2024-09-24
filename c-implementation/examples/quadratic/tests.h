@@ -14,28 +14,42 @@ void testGene() {
     std::cout << std::endl;
 }
 
-void testChromosome() {
+void testMutation() {
     std::cout << std::endl << "----------------------" << std::endl;
-    std::cout << "Testing chromosome" << std::endl;
+    std::cout << "Testing mutation" << std::endl;
     std::cout << "Chromosome created: ";
-    BinaryStringCh *c = new BinaryStringCh(64);
-    c->print();
+    BinaryStringCh *c = new BinaryStringCh();
+    c->printGenotype();
+    c->printPhenotype();
 
     std::cout << std::endl << "Mutated chromosome: ";
     c->mutate();
-    c->print();
+    c->printGenotype();
+    c->printPhenotype();
+}
 
-    std::cout << std::endl << "Crossover against: ";
-    BinaryStringCh *c2 = new BinaryStringCh(64);
-    c2->print();
+void testCrossover() {
+    std::cout << std::endl << "----------------------" << std::endl;
+    std::cout << "Testing crossover" << std::endl;
+    std::cout << "Chromosome 1: ";
+    BinaryStringCh *c = new BinaryStringCh();
+    c->printGenotype();
+    c->printPhenotype();
+
+    std::cout << std::endl << "Chromosome 2: ";
+    BinaryStringCh *c2 = new BinaryStringCh();
+    c2->printGenotype();
+    c2->printPhenotype();
 
     c->crossover(c2);
 
     std::cout << std::endl << "Offspring:" << std::endl;
     std::cout << "Chromosome 1: ";
-    c->print();
+    c->printGenotype();
+    c->printPhenotype();
     std::cout << "Chromosome 2: ";
-    c2->print();
+    c2->printGenotype();
+    c2->printPhenotype();
     
     delete c;
     delete c2;
@@ -49,7 +63,8 @@ void testFitness() {
     
     std::cout << "Evaluating chromosome: ";
     BinaryStringCh *c = f->generateChromosome();
-    c->print();
+    c->printGenotype();
+    c->printPhenotype();
     double result = f->evaluate(c);
     std::cout << "Result: " << result << std::endl;
 
@@ -62,19 +77,19 @@ void testGA() {
     std::cout << "Testing Genetic Algorithm" << std::endl;
 
     GAConfig config;
-    config.fitness = new QuadraticFitness();
+    config.fitnessFunction = new QuadraticFitness();
     config.populationSize = 100;
-    config.generations = 10;
-    config.mutation_rate = 0.01;
-    config.crossover_rate = 0.8;
-    config.elitismRate = 0.1;
-    config.maxIter = 1000;
+    config.maxGenerations = 500;
+    config.mutationRate = 0.1;
+    config.crossoverRate = 0.8;
+    config.elitismRate = 0.05;
     config.timeout = 360;
-    config.stagnationThreshold = 0.1;
+    config.stagnationThreshold = 0;
     config.print();
 
     GeneticAlgorithm *ga = new GeneticAlgorithm(config);
-    ga->run();
+    GAResults results = ga->run();
+    results.print();
 
     delete ga;
 }

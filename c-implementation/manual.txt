@@ -2,17 +2,22 @@ NAME
    dna-solver | C++ implementation
 
 SYNOPSIS
-   test [OPTIONS]...
+   solver [OPTIONS]...
 
 DESCRIPTION:
-   This program implements a C++ library for Genetic Algorithm optimization
+   This program implements a C++ library for Genetic Algorithm optimization. To solve optimization problems, make a new directory and define the model for the Genes, Chromosomes and Fitness function, then configure the parameters and run the algorithm in the main.cpp file.
+
+   * To run the GA method, it only requires the fitness function to be passed to its constructor. So chromosomes are built from the fitness model.
+   * Genes can be adapted to any type of variable or class, and only requires a constructor and a randomize function for their initialization.
+   * Chromosomes are arrays of Genes, and the crossover and mutation operators cannot be modified (yet), as the base class implements these methods.
+   * The fitness function is responsible of creating new Chromosomes and evaluating them.
+
 
 OPTIONS:
    -h, --help     Display this help message.
 
 EXAMPLES:
-   1. solver 
-      - Test the library 
+   There are examples in the "examples/" folder.
 
 AUTHORS
    Code was written by Dr. Matias J. Micheletto.

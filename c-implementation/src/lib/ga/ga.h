@@ -7,53 +7,75 @@
 #include <vector>
 #include <algorithm>
 #include <chrono>
+#include <math.h>
 #include "fitness.h"
 #include "chromosome.h"
 
 struct GAConfig { // Configuration parameters for the Genetic Algorithm
-    Fitness *fitness;
+    Fitness *fitnessFunction;
     unsigned int populationSize;
-    unsigned int generations;
-    double mutation_rate;
-    double crossover_rate;
+    unsigned int maxGenerations;
+    double mutationRate;
+    double crossoverRate;
     double elitismRate;
-    unsigned int maxIter;
     unsigned int timeout;
     double stagnationThreshold;
 
     void print() {
-        std::cout << "Fitness function: " << fitness->getName() << std::endl;
+        std::cout << "Fitness function: " << fitnessFunction->getName() << std::endl;
         std::cout << "GA Configuration: " << std::endl;
         std::cout << "Population size: " << populationSize << std::endl;
-        std::cout << "Generations: " << generations << std::endl;
-        std::cout << "Mutation rate: " << mutation_rate << std::endl;
-        std::cout << "Crossover rate: " << crossover_rate << std::endl;
+        std::cout << "Max generations: " << maxGenerations << std::endl;
+        std::cout << "Mutation rate: " << mutationRate << std::endl;
+        std::cout << "Crossover rate: " << crossoverRate << std::endl;
         std::cout << "Elitism rate: " << elitismRate << std::endl << std::endl;
     }
 
     GAConfig() : 
-        fitness(nullptr),
+        fitnessFunction(nullptr),
         populationSize(100), 
-        generations(10), 
-        mutation_rate(0.01), 
-        crossover_rate(0.8), 
+        maxGenerations(1000), 
+        mutationRate(0.01), 
+        crossoverRate(0.8), 
         elitismRate(0.1),
-        maxIter(1000),
         timeout(360),
-        stagnationThreshold(0.1) {}
+        stagnationThreshold(1.0E-6) {}
 };
 
 enum STOP_CONDITION { // Stop condition for the Genetic Algorithm
-    MAX_ITER,
+    MAX_GENERATIONS,
     TIMEOUT,
     STAGNATION
 };
 
 struct GAResults { // Results of the Genetic Algorithm
     Chromosome *best;
-    double best_fitness;
-    unsigned int iterations;
+    double bestFitnessValue;
+    unsigned int generations;
     STOP_CONDITION stop_condition;
+
+    void print() {
+        std::cout << std::endl << "Best fitness: " << bestFitnessValue << std::endl;
+        std::cout << "Best chromosome:" << std::endl;
+        std::cout << "  - ";
+        best->printGenotype();
+        std::cout << "  - ";
+        best->printPhenotype();
+
+        std::cout << std::endl << "Generations: " << generations << std::endl;
+        std::cout << "Stop condition: ";
+        switch (stop_condition) {
+            case MAX_GENERATIONS:
+                std::cout << "Max generations" << std::endl;
+                break;
+            case TIMEOUT:
+                std::cout << "Timeout" << std::endl;
+                break;
+            case STAGNATION:
+                std::cout << "Stagnation" << std::endl;
+                break;
+        }
+    }
 };
 
 
@@ -71,12 +93,9 @@ class GeneticAlgorithm {
     private:
         GAConfig config;
         std::vector<Chromosome*> population;
-        double fitnessSum;
-        unsigned int iter;
-        double lastBestFitness;
 
         void sortPopulation();
-        void evaluatePopulation();
+        void evaluation();
         void selection();
         void crossover();
         void mutation();

@@ -10,16 +10,20 @@ class BoolGene : public Gene {
             randomize();
         }
 
-        void randomize() override{
+        inline void randomize() override{
             digit = (bool) (rand() % 2);
         }
 
-        void print() const override {
+        inline void print() const override {
             std::cout << digit << " ";
         }
 
-        bool getValue() const {
+        inline bool getValue() const {
             return digit;
+        }
+
+        inline void setValue(bool value) {
+            digit = value;
         }
 
     private:
