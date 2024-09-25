@@ -1,25 +1,27 @@
-# Compiler and flags
 CPP      = g++
-CFLAGS   = -Wall -std=c++11
+CFLAGS   = -Wall -pthread 
+LDFLAGS  = -lgsl -lgslcblas -lm
 
-# Include directories
-INCLUDES = -I../../src/lib/ga
-
-# Source and object files
-SRC      = main.cpp
-OBJS     = ../../obj/lib/ga/chromosome.o ../../obj/lib/ga/ga.o
-
-# Target executable
 TARGET   = subsetsum_example
 
-# Default rule
+SOURCES      = main.cpp
+
+OBJECTS     = ../../obj/lib/ga/chromosome.o ../../obj/lib/ga/ga.o
+
+INCLUDES = -I../../src/lib/ga
+
 all: $(TARGET)
 
-# Linking rule
-$(TARGET): $(SRC) $(OBJS)
-	$(CPP) $(CFLAGS) $(INCLUDES) $(SRC) $(OBJS) -o $(TARGET)
 
-# Clean up
+$(TARGET): $(OBJECTS)
+	@echo "Compiling example..."
+	$(CPP) $(CFLAGS) $(INCLUDES) $(SOURCES) $(OBJECTS) -o $(TARGET)
+	@echo "Example compiled"
+
+../../obj/lib/ga/main.o: $(SOURCES)
+	@mkdir -p $(@D)
+	$(CPP) $(CFLAGS) $(INCLUDES) -c $(SOURCES) -o $@
+
 clean:
 	rm -f $(TARGET)
 

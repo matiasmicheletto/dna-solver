@@ -46,28 +46,21 @@ void GeneticAlgorithm::selection() { // Roulette wheel selection
 
     // Select the best individuals between the rest of the population
     //for (unsigned int i = elitism; i < config.populationSize; i++) {
-    unsigned int tries = 0;
     while(new_population.size() < config.populationSize){
         const double r = (double) rand() / (double) RAND_MAX * fitnessSum;
         double sum = 0.0;
         for (unsigned int j = elitism; j < config.populationSize; j++) {
             sum += adjustedFitness[j];
             if (sum >= r) {
-                new_population.push_back(population[j]);
+                Chromosome *ch = config.fitnessFunction->generateChromosome();
+                ch->clone(*population[j]);
+                new_population.push_back(ch);
                 break;
             }
         }
-        tries++;
-        if(tries > 1000){
-            std::cout << "Error in selection" << std::endl;
-            std::cout << "Min fitness: " << minFitness << " offset: " << offset << " fitnessSum: " << fitnessSum << std::endl;
-            exit(1);
-            break;
-        }
     }
 
-    // Update the population
-    population = std::move(new_population);
+    population = new_population;
 }
 
 void GeneticAlgorithm::crossover() {

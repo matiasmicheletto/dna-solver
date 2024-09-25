@@ -61,7 +61,6 @@ struct GAResults { // Results of the Genetic Algorithm
         best->printGenotype();
         std::cout << "  - ";
         best->printPhenotype();
-
         std::cout << std::endl << "Generations: " << generations << std::endl;
         std::cout << "Stop condition: ";
         switch (stop_condition) {

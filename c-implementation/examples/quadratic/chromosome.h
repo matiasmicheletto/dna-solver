@@ -8,22 +8,20 @@
 #include "../../src/lib/ga/chromosome.h"
 #include "gene.h"
 
-#define CH_SIZE 32
-
 class BinaryStringCh : public Chromosome { // Models a float value using binary code
     public:
-        BinaryStringCh() : Chromosome(CH_SIZE) {
+        BinaryStringCh(unsigned int size) : Chromosome(size) {
             // Generate random chromosome representing values between -100 and 100;
             const double value = (float)rand() / (float)RAND_MAX * 100.0 - 100.0;
             std::vector<bool> binary = flt2Bin(value);
-            for (unsigned int i = 0; i < CH_SIZE; i++) {
+            for (unsigned int i = 0; i < size; i++) {
                 BoolGene *b = new BoolGene();
                 b->setValue(binary[i]);
                 genes.push_back(b);
             }
         }
 
-        float getValue() const {
+        float getPhenotype() const {
             // Convert gene array to binary array and then to double
             std::vector<bool> binaryArray;
             for (Gene* gene : genes)
@@ -39,6 +37,10 @@ class BinaryStringCh : public Chromosome { // Models a float value using binary 
             std::cout << std::endl;
         }
 
+        void printPhenotype() const override {
+            std::cout << "Phenotype: " << getPhenotype() << std::endl;
+        }
+
         void clone(const Chromosome& other) { // Copy the genes from another chromosome
             std::vector<Gene*> otherGenes = other.getGenes();
             std::vector<Gene*> thisGenes = getGenes();
@@ -47,10 +49,6 @@ class BinaryStringCh : public Chromosome { // Models a float value using binary 
                 BoolGene *otherGene = (BoolGene*) otherGenes[i];
                 thisGene->setValue(otherGene->getValue());
             }
-        }
-
-        void printPhenotype() const override {
-            std::cout << "Phenotype: " << getValue() << std::endl;
         }
 };
 

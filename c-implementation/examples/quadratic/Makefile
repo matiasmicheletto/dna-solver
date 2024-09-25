@@ -5,23 +5,23 @@ LDFLAGS  = -lgsl -lgslcblas -lm
 
 TARGET   = quadratic_example
 
-TEST_SOURCES      = main.cpp
+SOURCES      = main.cpp
 
-TEST_OBJECTS     = ../../obj/lib/ga/chromosome.o ../../obj/lib/ga/ga.o
+OBJECTS     = ../../obj/lib/ga/chromosome.o ../../obj/lib/ga/ga.o
 
 INCLUDES = -I../../src/lib/ga
 
 all: $(TARGET)
 
 
-$(TARGET): $(TEST_OBJECTS)
-	@echo "Compiling tests..."
-	$(CPP) $(CFLAGS) $(INCLUDES) $(TEST_SOURCES) $(TEST_OBJECTS) -o $(TARGET)
-	@echo "Tests compiled"
+$(TARGET): $(OBJECTS)
+	@echo "Compiling example..."
+	$(CPP) $(CFLAGS) $(INCLUDES) $(SOURCES) $(OBJECTS) -o $(TARGET)
+	@echo "example compiled"
 
-../../obj/lib/ga/main.o: $(TEST_SOURCES)
+../../obj/lib/ga/main.o: $(SOURCES)
 	@mkdir -p $(@D)
-	$(CPP) $(CFLAGS) $(INCLUDES) -c $(TEST_SOURCES) -o $@
+	$(CPP) $(CFLAGS) $(INCLUDES) -c $(SOURCES) -o $@
 
 clean:
 	rm -f $(TARGET)
