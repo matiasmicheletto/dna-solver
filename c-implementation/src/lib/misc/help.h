@@ -1,3 +1,6 @@
+#ifndef HELP_H
+#define HELP_H
+
 #include <iostream>
 #include <fstream>
 
@@ -14,3 +17,5 @@ void printHelp(const char* file) { // Open readme file with manual and print on 
     }
     exit(1);
 }
+
+#endif // HELP_H

@@ -15,6 +15,14 @@ DESCRIPTION:
 
 OPTIONS:
    -h, --help     Display this help message.
+   -p, --pop      Population size.
+   -t, --timeout  Timeout in seconds. Default is 60.  
+   -g, --gens     Max generations of the GA method.
+   -s, --stagn    Stagnation threshold.
+   -m, --mut      Mutation rate.
+   -c, --cross    Crossover rate.
+   -e, --elite    Elite rate.
+   -l, --prlevel  Information print level.
 
 EXAMPLES:
    There are examples in the "examples/" folder.

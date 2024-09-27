@@ -18,7 +18,7 @@ void testMutation() {
     std::cout << std::endl << "----------------------" << std::endl;
     std::cout << "Testing mutation" << std::endl;
     std::cout << "Chromosome created: ";
-    BinaryStringCh *c = new BinaryStringCh();
+    BinaryStringCh *c = new BinaryStringCh(FLOAT_BITS);
     c->printGenotype();
     c->printPhenotype();
 
@@ -32,12 +32,12 @@ void testCrossover() {
     std::cout << std::endl << "----------------------" << std::endl;
     std::cout << "Testing crossover" << std::endl;
     std::cout << "Chromosome 1: ";
-    BinaryStringCh *c = new BinaryStringCh();
+    BinaryStringCh *c = new BinaryStringCh(FLOAT_BITS);
     c->printGenotype();
     c->printPhenotype();
 
     std::cout << std::endl << "Chromosome 2: ";
-    BinaryStringCh *c2 = new BinaryStringCh();
+    BinaryStringCh *c2 = new BinaryStringCh(FLOAT_BITS);
     c2->printGenotype();
     c2->printPhenotype();
 

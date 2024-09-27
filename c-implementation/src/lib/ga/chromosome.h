@@ -24,8 +24,12 @@ class Chromosome { // Abstract class that models a chromosome (list of genes wit
         virtual void printPhenotype() const = 0;
     
     protected:
-        Chromosome(unsigned int size) {}; 
+        Chromosome(unsigned int size) {
+            mutProb = 10.0/(double)size;
+        } 
         std::vector<Gene*> genes; 
+        double mutProb;
+        Uniform uniform; // RANDOM
 };
 
 #endif // CHROMOSOME_H

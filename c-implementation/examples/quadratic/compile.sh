@@ -1,5 +1,6 @@
 cd ../..
-make
+make clean
+make DEBUG=1
 cd examples/quadratic
 make clean 
-make
+make DEBUG=1

@@ -2,3 +2,7 @@ node_modules/
 client/node_modules/
 draft
 .env
+c-implementation/obj/
+c-implementation/solver
+c-implementation/examples/quadratic/quadratic_example
+c-implementation/examples/subsetsum/subsetsum_example
