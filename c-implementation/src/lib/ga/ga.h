@@ -104,7 +104,7 @@ class GeneticAlgorithm {
     private:
         GAConfig config;
         std::vector<Chromosome*> population;
-        Uniform uniform; // RANDOM
+        Uniform uniform;
 
         void sortPopulation();
         void initPopulation();

@@ -6,12 +6,25 @@
 #include <cstring>
 #include <cstdlib>
 #include "util.h"
+#include "../../src/lib/misc/help.h"
 #include "../../src/lib/ga/ga.h"
 
+
+/*
+    This example shows how to find the maximum of a quadratic function.
+    The function is f(x) = -x^2 + 2x + 1, which has a maximum in x = 1.
+    The chromosome is a binary string representing a float value between -100 and 100. 
+*/
+
+// We are using a float representation (32 bit) for the x variable.
 #define FLOAT_BITS 32
 
 int main(int argc, char **argv);
 
+// First, we define the gene, which is the minimal unit of a chromosome.
+// In this case, it consist of a single boolean value.
+// This may seem like an overkill, but later we'll see that the chromosome 
+// class works with Gene type objects, to ease the problem modelling.
 class BoolGene : public Gene {
     public:    
         BoolGene() : Gene() {
@@ -20,7 +33,6 @@ class BoolGene : public Gene {
 
         inline void randomize() override{
             digit = uniform.random() < 0.5; //RANDOM
-            //digit = u_random() < 0.5;
         }
 
         inline void print() const override {
@@ -39,12 +51,18 @@ class BoolGene : public Gene {
         bool digit;
 };
 
+
+// The chromosome class is a container for genes. It is basically an array of genes, 
+// which is the genotype, and it models a float number, which is its phenotype, using binary
+// to float conversion.
+// The chromosome is initialized with a random float value between -100 and 100.
+// Crossover and mutation operators are implemented in the base class, and thats why
+// we defined genes instead of directly using the chromosome class.
 class BinaryStringCh : public Chromosome { // Models a float value using binary code
     public:
         BinaryStringCh(unsigned int size) : Chromosome(size) {
             // Generate random chromosome representing values between -100 and 100;
-            const double value = uniform.random(-100.0, 100.0); // RANDOM
-            //const double value = u_random(-100.0, 100.0);
+            const double value = uniform.random(-100.0, 100.0);
             std::vector<bool> binary = flt2Bin(value);
             for (unsigned int i = 0; i < size; i++) {
                 BoolGene *b = new BoolGene();
@@ -84,6 +102,10 @@ class BinaryStringCh : public Chromosome { // Models a float value using binary 
         }
 };
 
+// The fitness function is the quadratic function we want to maximize.
+// This function models the problem, it is the only input required by the genetic algorithm,
+// and as the algorithm needs to initialize its population, the fitness function is in charge of
+// providing the constructors for the chromosomes, and their fitness values. 
 class QuadraticFitness : public Fitness {
     public:
         QuadraticFitness() : Fitness() {}
@@ -110,12 +132,22 @@ class QuadraticFitness : public Fitness {
         }
 };
 
-
+// These definitions allows to run the algorithm in a few steps, and let us 
+// focus in the configuration parameters (hyperparameters).
 int main(int argc, char **argv) {
+
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
+            printHelp();
+            return 0;
+        }
+    }
 
     GeneticAlgorithm *ga = new GeneticAlgorithm(new QuadraticFitness());
 
-    ga->setConfig(argc, argv);
+    // The configuration can be loaded directly from the program parameters.
+    // See the manual for the list of arguments and how to use them.
+    ga->setConfig(argc, argv); 
     ga->print();
     
     GAResults results = ga->run();

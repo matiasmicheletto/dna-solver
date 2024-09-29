@@ -1,5 +1,3 @@
-#define MANUAL "manual.txt"
-
 #include "lib/misc/help.h"
 #include "lib/ga/fitness.h"
 #include "lib/ga/chromosome.h"
@@ -12,7 +10,7 @@
 int main(int argc, char **argv) {
     for(int i = 0; i < argc; i++) {    
         if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0 || argc == 1)
-            printHelp(MANUAL);
+            printHelp();
     }
     return 0;
 }

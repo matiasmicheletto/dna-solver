@@ -141,7 +141,7 @@ void GeneticAlgorithm::selection() { // Roulette wheel selection
 
 void GeneticAlgorithm::crossover() {
     for (unsigned int i = 0; i < config.populationSize; i++) {
-        if (uniform.random() < config.crossoverRate) { // RANDOM
+        if (uniform.random() < config.crossoverRate) {
             unsigned int parent1 = uniform.random(config.populationSize); //RANDOM
             population[i]->crossover(population[parent1]);
         }
@@ -150,8 +150,7 @@ void GeneticAlgorithm::crossover() {
 
 void GeneticAlgorithm::mutation() {
     for (unsigned int i = 0; i < config.populationSize; i++) {
-        if (uniform.random() < config.mutationRate) { // RANDOM
-        //if (u_random() < config.mutationRate) {
+        if (uniform.random() < config.mutationRate) {
             population[i]->mutate();
         }
     }

@@ -4,6 +4,7 @@
 #include <cstring>
 #include <math.h>
 
+#include "../../src/lib/misc/help.h"
 #include "../../src/lib/misc/uniform.h" //RANDOM
 #include "../../src/lib/ga/ga.h"
 
@@ -140,11 +141,16 @@ class SubSetSumFitness : public Fitness {
 
 int main(int argc, char **argv) {
 
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
+            printHelp();
+            return 0;
+        }
+    }
+
     // Target
-    // RANDOM
     Uniform uniform;
     unsigned int target = (unsigned int) uniform.random(100, 200);
-    //unsigned int target = (unsigned int) u_random(100, 200);
     
     // Generate set
     std::vector<unsigned int> set;

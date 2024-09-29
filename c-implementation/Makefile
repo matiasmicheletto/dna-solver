@@ -19,6 +19,9 @@ ifdef DEBUG
     CFLAGS += -DDEBUG=true
 endif
 
+CFLAGS += -DMANUAL_PATH=\"../../manual.txt\"
+
+
 all: $(TARGET)
 
 $(TARGET): $(SOLVER_OBJECTS)

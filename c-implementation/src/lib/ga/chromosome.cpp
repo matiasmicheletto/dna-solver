@@ -11,15 +11,13 @@ Chromosome::~Chromosome() {
 
 void Chromosome::mutate() { // Mutate each gene with a probability of 1/genes.size()
     for (unsigned int i = 0; i < genes.size(); i++) {
-        if (uniform.random() < mutProb) // RANDOM
-        //if (u_random() < mutProb)
+        if (uniform.random() < mutProb)
             genes[i]->randomize();
     }
 }
 
 void Chromosome::crossover(Chromosome* other) { // Single point crossover
-    unsigned int pivot = uniform.random(genes.size()); // RANDOM
-    //unsigned int pivot = u_random(genes.size());
+    unsigned int pivot = uniform.random(genes.size());
     // From 0 to pivot, swap genes
     for (unsigned int i = 0; i < pivot; i++){
         std::swap(genes[i], other->genes[i]);

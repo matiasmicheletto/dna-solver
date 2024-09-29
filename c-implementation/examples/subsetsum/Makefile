@@ -16,6 +16,8 @@ ifdef DEBUG
     CFLAGS += -DDEBUG=true
 endif
 
+CFLAGS += -DMANUAL_PATH=\"../../manual.txt\"
+
 $(TARGET): $(OBJECTS)
 	@echo "Compiling example..."
 	$(CPP) $(CFLAGS) $(INCLUDES) $(SOURCES) $(OBJECTS) -o $(TARGET)

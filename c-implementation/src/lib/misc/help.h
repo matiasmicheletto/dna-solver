@@ -1,11 +1,9 @@
-#ifndef HELP_H
-#define HELP_H
-
 #include <iostream>
 #include <fstream>
+#include <string>
 
-void printHelp(const char* file) { // Open readme file with manual and print on terminal   
-    std::ifstream manualFile(file);
+void printHelp() {
+    std::ifstream manualFile(MANUAL_PATH); // Defined in the Makefile
     if (manualFile.is_open()) {
         std::string line;
         while (getline(manualFile, line)) {
@@ -13,9 +11,7 @@ void printHelp(const char* file) { // Open readme file with manual and print on 
         }
         manualFile.close();
     } else {
-        std::cerr << "Error: Unable to open manual file." << std::endl;
+        std::cerr << "Error: Unable to open manual file at " << MANUAL_PATH << std::endl;
     }
     exit(1);
 }
-
-#endif // HELP_H

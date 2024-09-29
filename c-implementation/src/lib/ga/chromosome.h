@@ -29,7 +29,7 @@ class Chromosome { // Abstract class that models a chromosome (list of genes wit
         } 
         std::vector<Gene*> genes; 
         double mutProb;
-        Uniform uniform; // RANDOM
+        Uniform uniform;
 };
 
 #endif // CHROMOSOME_H
