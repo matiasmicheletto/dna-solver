@@ -71,6 +71,10 @@ class BinaryStringCh : public Chromosome { // Models a float value using binary 
             }
         }
 
+        std::string getName() const override {
+            return "Binary float value";
+        }
+
         float getPhenotype() const {
             // Convert gene array to binary array and then to double
             std::vector<bool> binaryArray;
@@ -91,8 +95,8 @@ class BinaryStringCh : public Chromosome { // Models a float value using binary 
             std::cout << "Phenotype: " << getPhenotype() << std::endl;
         }
 
-        void clone(const Chromosome& other) { // Copy the genes from another chromosome
-            std::vector<Gene*> otherGenes = other.getGenes();
+        void clone(const Chromosome* other) { // Copy the genes from another chromosome
+            std::vector<Gene*> otherGenes = other->getGenes();
             std::vector<Gene*> thisGenes = getGenes();
             for (unsigned int i = 0; i < otherGenes.size(); i++) {
                 BoolGene *thisGene = (BoolGene*) thisGenes[i];
@@ -136,12 +140,7 @@ class QuadraticFitness : public Fitness {
 // focus in the configuration parameters (hyperparameters).
 int main(int argc, char **argv) {
 
-    for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
-            printHelp();
-            return 0;
-        }
-    }
+    askedForHelp(argc, argv);
 
     GeneticAlgorithm *ga = new GeneticAlgorithm(new QuadraticFitness());
 

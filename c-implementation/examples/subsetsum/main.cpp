@@ -8,7 +8,7 @@
 #include "../../src/lib/misc/uniform.h" //RANDOM
 #include "../../src/lib/ga/ga.h"
 
-#define SET_SIZE 25
+#define SET_SIZE 50
 
 class BoolGene : public Gene {
     public:    
@@ -48,6 +48,10 @@ class BinaryStringCh : public Chromosome { // Models a float value using binary 
             }
         }
 
+        std::string getName() const override {
+            return "Subset selection array";
+        }
+
         unsigned int getPhenotype() const { // Sums selected (active genes) values from the set
             unsigned int sum = 0;
             for (unsigned int i = 0; i < genes.size(); i++) {
@@ -78,8 +82,8 @@ class BinaryStringCh : public Chromosome { // Models a float value using binary 
             std::cout << "- Sum = " << getPhenotype() << std::endl;
         }
 
-        void clone(const Chromosome& other) { // Copy the genes from another chromosome
-            std::vector<Gene*> otherGenes = other.getGenes();
+        void clone(const Chromosome* other) { // Copy the genes from another chromosome
+            std::vector<Gene*> otherGenes = other->getGenes();
             // To access the child class methods, we need to cast the genes
             std::vector<Gene*> thisGenes = getGenes(); 
             for (unsigned int i = 0; i < otherGenes.size(); i++) {
@@ -96,6 +100,7 @@ class BinaryStringCh : public Chromosome { // Models a float value using binary 
                     std::cerr << "Gene cast failed" << std::endl;
                 }
             }
+            fitness = other->fitness;
         }
     
     private:
@@ -141,12 +146,7 @@ class SubSetSumFitness : public Fitness {
 
 int main(int argc, char **argv) {
 
-    for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
-            printHelp();
-            return 0;
-        }
-    }
+    askedForHelp(argc, argv);
 
     // Target
     Uniform uniform;
@@ -156,7 +156,6 @@ int main(int argc, char **argv) {
     std::vector<unsigned int> set;
     for (int i = 0; i < SET_SIZE; i++) {
         unsigned int n = (unsigned int) uniform.random(1, 100);
-        //unsigned int n = (unsigned int) u_random(1, 100);
         set.push_back(n);
     }
 

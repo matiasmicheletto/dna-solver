@@ -18,7 +18,7 @@ OPTIONS:
    -p, --pop      Population size.
    -t, --timeout  Timeout in seconds. Default is 60.  
    -g, --gens     Max generations of the GA method.
-   -s, --stagn    Stagnation threshold.
+   -s, --stagn    Stagnation window lengh (generations without improvement).
    -m, --mut      Mutation rate.
    -c, --cross    Crossover rate.
    -e, --elite    Elite rate.

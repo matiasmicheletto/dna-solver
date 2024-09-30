@@ -9,11 +9,13 @@
 class Chromosome { // Abstract class that models a chromosome (list of genes with GA operators)
     public:
         Chromosome(const Chromosome& ch);
-        ~Chromosome();
+        virtual ~Chromosome();
+
+        virtual std::string getName() const = 0;
 
         void mutate(); 
         void crossover(Chromosome* other);
-        virtual void clone(const Chromosome& other) = 0;
+        virtual void clone(const Chromosome* other) = 0;
         
         double fitness; // Fitness value of the chromosome (value is updated by the fitness function)
         
@@ -27,6 +29,7 @@ class Chromosome { // Abstract class that models a chromosome (list of genes wit
         Chromosome(unsigned int size) {
             mutProb = 10.0/(double)size;
         } 
+
         std::vector<Gene*> genes; 
         double mutProb;
         Uniform uniform;

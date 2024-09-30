@@ -84,7 +84,7 @@ void testGA() {
     config.crossoverRate = 0.8;
     config.elitismRate = 0.05;
     config.timeout = 360;
-    config.stagnationThreshold = 0;
+    config.stagnationWindow = 0;
     config.print();
 
     GeneticAlgorithm *ga = new GeneticAlgorithm(config);
