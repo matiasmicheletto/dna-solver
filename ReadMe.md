@@ -6,7 +6,11 @@
     <img src="https://img.shields.io/website?down_color=red&down_message=offline&style=plastic&up_color=green&up_message=online&url=https%3A%2F%2Fdna-solver.herokuapp.com">
 </p>
 
-A [javascript](optimization) library and a [React.js GUI](client) that allows to create and test Genetic Algorithms experiments with focus on hyperparametric optimization for solving the most common problems present in the combinatorial optimization literature.
+A set of libraries and tools to create and test Genetic Algorithms experiments for combinatorial optimization problems.
+
+With the [javascript](optimization) library and the [React.js GUI](client) it is possible to create and test Genetic Algorithms experiments with focus on hyperparametric optimization for solving the most common problems present in the combinatorial optimization literature.
+
+The C++ implementation, on the other hand, is available [here](c-implementation), faster than the javascript one, but it not as flexible as the javascript implementation.
 
 This project was developed under the context of the final work for the posgraduate course *"Advanced Techniques for Evolutionary Computation"*  by [Dr. Ignacio Ponzoni](https://cs.uns.edu.ar/~ip/) at [DCIC](https://cs.uns.edu.ar/~devcs/) (UNS).  
 
@@ -16,10 +20,11 @@ I hope the reader find this project helpful. I have not much knowledge in softwa
 
 ![care](doc/clean.jpg)
 
-This library was written in javascript. This allows you to share the code through any medium and because its easy for someone to get access to an internet browser, almost every user will be able to run this code, on almost any smart device. Consider this as the only and most important advantage of this software, against other tools as Python or Matlab.
+The main contribution of the library was written in javascript. This allows you to share the code through any medium and because its easy for someone to get access to an internet browser, almost every user will be able to run this code, on almost any smart device. Consider this as the only and most important advantage of this software, against other tools as Python or Matlab.
 
+## Javascript
 
-## Minimal example
+### Minimal JS example
 
 Lets solve the [Subset Sum Problem](https://en.wikipedia.org/wiki/Subset_sum_problem) using this library. Here I'm using Node.js, but with a few adjustments, you can make it work on the browser too.
 
@@ -55,7 +60,7 @@ Best subset: -87,-82,-75,30,46,80,88
 Objective value: S = 0, N = 7
 ```
 
-## Installation
+### Installation
 
 Try the latest version [here](https://dna-solver.herokuapp.com/) or use this application locally running the following commands ([Node.js](https://nodejs.org/es/) already installed is required):  
 
@@ -76,13 +81,13 @@ $ npm install cli-progress ./optimization
 $ node examples/tsp/example_tsp_selection.mjs
 ```
 
-## Getting started
+### Getting started
 
 This library provides a class to model any objective function with an interface to be optimized using Genetic Algorithms. Five class examples are provided to show how to extend this class in order to model common combinatorial optimization problems. The Ga class implements a Genetic Algorithm optimizer with many configuration options (see next section). Finally, the Experiment class allows to create and run different experiments to test the behaviour of GA optimizers when configuring different hyperparameters.
 
 ![uml](doc/class_diagram.png)
 
-## Creating a custom Objective function model
+### Creating a custom Objective function model
 
 To create a new Fitness model, extend the [prototype class](optimization/fitness/index.mjs), for example:
 
@@ -164,7 +169,7 @@ experiment.run({
 process.stdout.write(experiment.getPlainResults());
 ```
 
-## Configuring the GA optimizer
+### Configuring the GA optimizer
 
 The following table shows the configuration parameters and default values used by the "Ga" class module to implement GA optimization.
 
@@ -192,11 +197,206 @@ The last four parameters are used in automatic parameter control. There are two 
 
 
 
-## Using the GUI
+### Using the GUI
 
 A [React.js](https://reactjs.org/) and [Bootstrap](https://react-bootstrap.github.io/) GUI allows to build experiments graphically. There are two components that depend on the Fitness models, ["FitnessConfig"](client/src/components/fitnessconfig) and ["SolutionViewer"](client/src/components/solutionviewer). If not appropiate components are provided to configurate the model, then the FitnessConfig section will be displayed as a blank or empty space, and the SolutionViewer will show the solution vectors as dash-separated-element strings. Some ReactJS knowledge is required to code and include the components for a new Fitness model, but the ones provided will be helpful to understand the idea.
 
 ![uml](doc/components.png)
+
+
+
+## C++ implementation
+
+This implementation is the most recent and there is still work to be done. It fulfils a basic function and gives the users the possibility to easily modify its internal structure for adapting it to their needs. 
+
+### Minimal C++ example
+
+This example shows how to solve the [Subset Sum Problem](https://en.wikipedia.org/wiki/Subset_sum_problem).
+
+
+
+```cpp
+// Import other required libraries 
+#include <iostream>
+#include <vector>
+#include <random>
+#include "ga.h" // Adjust the path to the ga.h file
+
+// We're using the following numeric set of 20 elements
+std::vector<int> set = {-96, -91, -87, -84, -82, -75, -71, -27, 12, 30, 46, 53, 73, 79, 80, 88, 90, 94, 94, 95};
+
+// We define the gene model, which consists of a binary string of 20 bits.
+
+class BoolGene : public Gene {
+    public:    
+        BoolGene() : Gene() {
+            randomize();
+        }
+
+        inline void randomize() override{
+            digit = rand() % 2;
+        }
+
+        inline void print() const override {
+            std::cout << digit << " ";
+        }
+
+        inline bool getValue() const {
+            return digit;
+        }
+
+        inline void setValue(bool value) {
+            digit = value;
+        }
+
+    private:
+        bool digit;
+};
+
+// Then, we define the chromosome model. This chromosome will have 20 genes, each one representing a number in the set, where 1 means the number is selected and 0 means it is not.
+class BinaryStringCh : public Chromosome {
+    public:
+        // The constructor of the parent class Chromosome requires as an argument the number of genes, because the mutation probability is set as 1/(number of genes).
+        // The initialization of the gene vector is carried out in the child class constructor. In this case, we create a set of the previoulsy defined genes.
+        BinaryStringCh(std::vector<unsigned int> *set) : Chromosome(set->size()) {
+            this->set = set;
+            unsigned int size = set->size();
+            for (unsigned int i = 0; i < size; i++) {
+                BoolGene *ig = new BoolGene();
+                genes.push_back(ig);
+            }
+        }
+
+        // The chromosome name is defined here and used mostly for debuggin purposes.
+        std::string getName() const override {
+            return "Subset selection array";
+        }
+
+        // The phenotype is information that is represented by the genes. In this case, each chromosome defines a sum value, depending on its genes values.
+        unsigned int getPhenotype() const {
+            unsigned int sum = 0;
+            for (unsigned int i = 0; i < genes.size(); i++) {
+                BoolGene *gene = (BoolGene*) genes[i];
+                if (gene->getValue()) {
+                    sum += set->at(i);
+                }
+            }
+            return sum;
+        }
+
+        // The genotype is the representation of the phenotype, the print method allows to see what is the internal value of the chromosome, for example, when printing results.
+        void printGenotype() const override {
+            std::cout << "Genotype: ";
+            for (Gene* gene : genes) {
+                gene->print();
+            }
+            std::cout << std::endl;
+        }
+
+        // Printing the phenotype of a chromosome is useful to understand the solution found by the algorithm.
+        void printPhenotype() const override {
+            std::cout << "Phenotype: Subset = ";
+            for (unsigned int i = 0; i < genes.size(); i++) {
+                BoolGene *gene = (BoolGene*) genes[i];
+                if (gene->getValue()) {
+                    std::cout << set->at(i) << " ";
+                }
+            }
+            std::cout << "- Sum = " << getPhenotype() << std::endl;
+        }
+
+        // The clone method allows to buld another chromosome with the same genes values.
+        void clone(const Chromosome* other) {
+            std::vector<Gene*> otherGenes = other->getGenes();
+            // To access the child class methods, we need to cast the genes
+            std::vector<Gene*> thisGenes = getGenes(); 
+            for (unsigned int i = 0; i < otherGenes.size(); i++) {
+                BoolGene *thisGene = dynamic_cast<BoolGene*>(thisGenes[i]);
+                BoolGene *otherGene = dynamic_cast<BoolGene*>(otherGenes[i]);
+                if (thisGene && otherGene) {
+                    thisGene->setValue(otherGene->getValue());
+                } else {
+                    std::cerr << "Gene cast failed" << std::endl;
+                }
+            }
+            fitness = other->fitness;
+        }
+    
+    private:
+        std::vector<unsigned int> *set;
+};
+
+// Finally, we define the fitness model. This model will evaluate the chromosome, giving a higher value to the best solutions.
+class SubSetSumFitness : public Fitness {
+    public:
+        SubSetSumFitness(std::vector<unsigned int> *set, long int target) : Fitness() {
+            this->set = set;
+            this->target = target;
+        }
+
+        // The name of the fitness model is defined here.
+        std::string getName() const override {
+            return "Quadratic function";
+        }
+        
+        // The following function is the core of the fitness model. It evaluates the chromosome and returns a numeric value that represents the quality of the solution. As it can be seen, the result is computed as: 
+        // 100 / (abs(error) + 1) - sizeCost
+        // where error is the difference between the target value and the sum of the selected numbers, and sizeCost is the proportion of selected numbers in the chromosome.
+        // This minimizes the error between the subset sum and the target value, and at the same time, it tries to minimize the number of selected numbers.
+        double evaluate(const Chromosome *chromosome) const override {
+            BinaryStringCh *c = (BinaryStringCh*) chromosome;
+            unsigned int subSetSize = 0;
+            for(unsigned int i = 0; i < set->size(); i++){
+                BoolGene *gene = (BoolGene*) c->getGenes()[i];
+                if(gene->getValue()){
+                    subSetSize++;
+                }
+            }
+            const long int error = (long int)c->getPhenotype() - (long int)target;
+            const double sizeCost = (double)subSetSize/(double)set->size();
+            return abs(100.0 / ((double) abs(error) + 1.0) - sizeCost);
+        }
+
+        // The chromosome generator is defined here. It returns a new chromosome with random genes values. This method is defined here because the fitness model knows the chromosome structure, and the genetic algorithm need to generate new chromosomes at the initialization process.
+        BinaryStringCh* generateChromosome() const override {
+            BinaryStringCh *ch = new BinaryStringCh(set);
+            ch->fitness = evaluate(ch);
+            return ch;
+        }
+    
+    private:
+        std::vector<unsigned int> *set;
+        unsigned int target;
+};
+
+int main(int argc, char **argv) {
+    
+    // We create the already implemented fitness model
+    SubSetSumFitness f(&set, 0);
+    GeneticAlgorithm ga(&f, 0.05);
+    
+    // The genetic algorithm requires the fitness function to construct the object.
+    GeneticAlgorithm *ga = new GeneticAlgorithm(f);
+    
+    // The library provides a method to configure the genetic algorithm. This method receives the command line arguments and sets the parameters of the genetic algorithm.
+    // Check the manual.txt file to see the available parameters.
+    // There is an overloaded setConfig function that takes a GAConfig object with all the configuration parameters. If the setConfig function is not called, the genetic algorithm will use the default parameters.
+    ga->setConfig(argc, argv);
+
+    // The print function displays the configuration of the genetic algorithm.
+    ga->print();
+
+    // The run function executes the genetic algorithm and returns the best solution found.
+    GAResults results = ga->run();
+
+    // The print function displays the results of the genetic algorithm.
+    results.print();
+
+    delete ga;
+
+    return 0;
+}
+```
 
 ---
 

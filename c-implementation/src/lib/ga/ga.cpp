@@ -63,6 +63,15 @@ void GeneticAlgorithm::setFitnessFunction(Fitness *fitnessFunction) {
     initPopulation();
 }
 
+void GeneticAlgorithm::setPopulation(std::vector<Chromosome*> population) {
+    clearPopulation();
+    this->population = population;
+    for(unsigned int i = 0; i < population.size(); i++){
+        config.fitnessFunction->evaluate(population[i]);
+    }
+    sortPopulation();
+}
+
 void GeneticAlgorithm::sortPopulation() {
     std::sort(population.begin(), population.end(), [](Chromosome* a, Chromosome* b) {
         return a->fitness > b->fitness; // Sort in descending order

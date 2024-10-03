@@ -1,9 +1,3 @@
-#include <iostream>
-#include <cstdlib>
-#include <vector>
-#include <cstring>
-#include <math.h>
-
 #include "../../src/lib/misc/help.h"
 #include "../../src/lib/misc/uniform.h" //RANDOM
 #include "../../src/lib/ga/ga.h"

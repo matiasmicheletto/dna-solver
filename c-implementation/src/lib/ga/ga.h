@@ -99,6 +99,7 @@ class GeneticAlgorithm {
         void setConfig(GAConfig config);
         void setConfig(int argc, char **argv);
         void setFitnessFunction(Fitness *fitnessFunction);
+        void setPopulation(std::vector<Chromosome*> population);
 
         GAResults run();
 
