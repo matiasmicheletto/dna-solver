@@ -101,21 +101,21 @@ class GeneticAlgorithm {
         void setFitnessFunction(Fitness *fitnessFunction);
         void setPopulation(std::vector<Chromosome*> population);
 
-        GAResults run();
+        virtual GAResults run();
 
         void print();
     
-    private:
+    protected:
         GAConfig config;
         std::vector<Chromosome*> population;
         Uniform uniform;
 
-        void sortPopulation();
+        virtual void sortPopulation();
         void initPopulation();
         void clearPopulation();
         
-        void evaluation();
-        void selection();
+        virtual void evaluation();
+        virtual void selection();
         void crossover();
         void mutation();
 };

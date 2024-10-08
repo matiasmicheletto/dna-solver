@@ -5,13 +5,21 @@
 
 class Fitness { // Abstract class that models a fitness function
     public:
-        virtual ~Fitness(){}
+        virtual ~Fitness() = default;
         virtual std::string getName() const = 0;
-        virtual double evaluate(const Chromosome *chromosome) const = 0;
+        
+        virtual double evaluate(const Chromosome *chromosome) const {
+            return 0.0;
+        }
+        
+        virtual void evaluate(const Chromosome *chromosome, std::vector<double> &objectives) const {
+            return;
+        }
+        
         virtual Chromosome* generateChromosome() const = 0;
 
     protected:
-        Fitness(){}
+        Fitness() = default;
 };
 
 #endif // FITNESS_H

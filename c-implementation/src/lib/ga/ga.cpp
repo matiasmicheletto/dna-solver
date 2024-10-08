@@ -102,13 +102,6 @@ void GeneticAlgorithm::evaluation() {
 }
 
 void GeneticAlgorithm::selection() { // Roulette wheel selection
-    
-    /*
-    std::cout << "Prev population" << std::endl;
-    for (unsigned int i = 0; i < config.populationSize; i++) {
-        std::cout << "Chromosome " << i << ": " << population[i]->fitness << std::endl;
-    }
-    */
 
     // Keep the best chromosomes
     unsigned int elite = config.elitismRate * (double) config.populationSize;
