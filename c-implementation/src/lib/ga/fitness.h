@@ -12,10 +12,6 @@ class Fitness { // Abstract class that models a fitness function
             return 0.0;
         }
         
-        virtual void evaluate(const Chromosome *chromosome, std::vector<double> &objectives) const {
-            return;
-        }
-        
         virtual Chromosome* generateChromosome() const = 0;
 
     protected:

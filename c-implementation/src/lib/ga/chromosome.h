@@ -8,27 +8,32 @@
 
 class Chromosome { // Abstract class that models a chromosome (list of genes with GA operators)
     public:
+        Chromosome(){};
         Chromosome(const Chromosome& ch);
         virtual ~Chromosome();
 
         virtual std::string getName() const = 0;
 
-        void mutate(); 
-        void crossover(Chromosome* other);
+        virtual void mutate(); 
+        virtual void crossover(Chromosome* other);
         virtual void clone(const Chromosome* other) = 0;
-        
-        double fitness; // Fitness value of the chromosome (value is updated by the fitness function)
         
         inline std::vector<Gene*> getGenes() const { return genes; }
         inline void setGenes(std::vector<Gene*> genes) { this->genes = genes; }
 
         virtual void printGenotype() const;
         virtual void printPhenotype() const = 0;
+
+        double fitness; // Fitness value of the chromosome (value is updated by the fitness function)
+        
+        // For multi-objective optimization
+        std::vector<double> objectives;
+        std::vector<Chromosome*> dominatedChromosomes;
+        unsigned int dominationCount;
+        double crowdingDistance;
     
     protected:
-        Chromosome(unsigned int size) {
-            mutProb = 10.0/(double)size;
-        } 
+        Chromosome(double mutProb) : mutProb(mutProb) {}
 
         std::vector<Gene*> genes; 
         double mutProb;

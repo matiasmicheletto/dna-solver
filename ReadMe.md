@@ -207,7 +207,7 @@ A [React.js](https://reactjs.org/) and [Bootstrap](https://react-bootstrap.githu
 
 ## C++ implementation
 
-This implementation is the most recent and there is still work to be done. It fulfils a basic function and gives the users the possibility to easily modify its internal structure for adapting it to their needs. 
+This tool is the most recent and there is still work to be done, especially refactoring the implementations in order to improve readability, modularity and maintainability. It fulfils a basic function and gives the users the possibility to easily modify its internal structure for adapting it to their needs. 
 
 ### Minimal C++ example
 
@@ -403,59 +403,3 @@ int main(int argc, char **argv) {
 Author: [Matías Micheletto](matiasmicheletto.github.io) - [matias.micheletto@uns.edu.ar](mailto:matias.micheletto@uns.edu.ar)  
 ICIC - CONICET - UNS  
 License: GPL-3.0
-
----
-
-## Backlog
-
-Module development (100%).  
-- [x] Fitness function module (100%). 
-    - [x] Parabola.  
-    - [x] Subset sum problem.  
-    - [x] N-Queens problem.  
-    - [x] TSP Problem.  
-- [x] Optimizer module (100%).  
-    - [x] Fitness model configuratinon.  
-    - [x] Population size and elitism configuration.  
-    - [x] Configuration of selection operators.  
-    - [x] Configuration of crossover operators.  
-    - [x] Configuration of mutation operators.  
-    - [x] Termination criteria (fixed to generations number).  
-    - [x] Parameter control (static and adaptive).  
-- [x] Experiment manager module (100%).  
-    - [x] Fitness modules lists management.  
-    - [x] Optimizers list management.  
-    - [x] Optimizers duplication.  
-    - [x] Fitness and optimizers configuration.  
-    - [x] Experiment execution.  
-    - [x] Result summarization.  
-- [x] Command line optimization example scripts (100%).  
-    - [x] Example 1: Simple TSP. Experiment configuration.  
-    - [x] Example 2: NQueens. Multiple fitness experiment.  
-    - [x] Example 3: Complex TSP. Parameter tunning.  
-- [x] Export results as plain text file (100%).  
-- [x] Generate NodeJS module (100%).  
-
-GUI development (100%)  
-- [x] Graphical experiment configuration (100%).  
-  - [x] Add and remove fitness models.  
-  - [x] Add and remove optimizers.  
-- [x] Graphical fitness model configuration (100%).  
-  - [x] Problem description.  
-  - [x] Parameter configuration.  
-- [x] Graphical optimizer configuration (100%).  
-  - [x] Static parameters configuration.  
-  - [x] Name edition.  
-  - [x] Adaptive/static parameter configuration.  
-- [x] Graphical experiment control (100%).  
-  - [x] Run and reset buttons.  
-  - [x] Iterations and rounds configuration.  
-  - [x] Timeout configuration.   
-- [x] Graphical experiment output (100%).  
-  - [x] Experiment results summary.  
-  - [x] Solution evolution history.  
-  - [x] Optimizers comparative bar plot.  
-- [x] Solution candidate visualization (100%).  
-  - [x] Quadratic function plot.  
-  - [x] Chess board for N-Queens.  
-  - [x] TSP destinations map.  

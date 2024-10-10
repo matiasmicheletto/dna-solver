@@ -13,7 +13,7 @@ SOLVER_OBJECTS  = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SOLVER_SOURCES))
 
 HEADERS         = $(wildcard $(LIBDIR)/**/*.h)
 
-INCLUDES = -I$(LIBDIR) -I$(LIBDIR)/ga
+INCLUDES = -I$(LIBDIR) -I$(LIBDIR)/ga -I$(LIBDIR)/moga
 
 ifdef DEBUG
     CFLAGS += -DDEBUG=true

@@ -60,11 +60,11 @@ class BoolGene : public Gene {
 // we defined genes instead of directly using the chromosome class.
 class BinaryStringCh : public Chromosome { // Models a float value using binary code
     public:
-        BinaryStringCh(unsigned int size) : Chromosome(size) {
+        BinaryStringCh(double mutProb) : Chromosome(mutProb) {
             // Generate random chromosome representing values between -100 and 100;
             const double value = uniform.random(-100.0, 100.0);
             std::vector<bool> binary = flt2Bin(value);
-            for (unsigned int i = 0; i < size; i++) {
+            for (unsigned int i = 0; i < FLOAT_BITS; i++) {
                 BoolGene *b = new BoolGene();
                 b->setValue(binary[i]);
                 genes.push_back(b);
@@ -130,7 +130,8 @@ class QuadraticFitness : public Fitness {
         }
 
         BinaryStringCh* generateChromosome() const override {
-            BinaryStringCh *ch = new BinaryStringCh(FLOAT_BITS);
+            double mutProb = 10.0/(double)FLOAT_BITS;
+            BinaryStringCh *ch = new BinaryStringCh(mutProb);
             ch->fitness = evaluate(ch);
             return ch;
         }
@@ -151,8 +152,6 @@ int main(int argc, char **argv) {
     
     GAResults results = ga->run();
     results.print();
-
-    delete ga;
 
     return 0;
 }

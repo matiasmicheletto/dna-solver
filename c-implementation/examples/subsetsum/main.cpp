@@ -33,7 +33,7 @@ class BoolGene : public Gene {
 
 class BinaryStringCh : public Chromosome { // Models a float value using binary code
     public:
-        BinaryStringCh(std::vector<unsigned int> *set) : Chromosome(set->size()) {
+        BinaryStringCh(std::vector<unsigned int> *set, double mutProb) : Chromosome(mutProb) {
             this->set = set;
             unsigned int size = set->size();
             for (unsigned int i = 0; i < size; i++) {
@@ -127,7 +127,7 @@ class SubSetSumFitness : public Fitness {
         }
 
         BinaryStringCh* generateChromosome() const override {
-            BinaryStringCh *ch = new BinaryStringCh(set);
+            BinaryStringCh *ch = new BinaryStringCh(set, 10.0/(double)set->size());
             ch->fitness = evaluate(ch);
             return ch;
         }
@@ -167,8 +167,6 @@ int main(int argc, char **argv) {
 
     GAResults results = ga->run();
     results.print();
-
-    delete ga;
 
     return 0;
 }

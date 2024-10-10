@@ -49,18 +49,19 @@ struct GAConfig { // Configuration parameters for the Genetic Algorithm
         printLevel(0) {}
 };
 
-enum STOP_CONDITION { // Stop condition for the Genetic Algorithm
+enum STATUS { // Stop condition for the Genetic Algorithm
+    IDLE,
+    RUNNING,
     MAX_GENERATIONS,
     TIMEOUT,
-    STAGNATION
+    STAGNATED
 };
 
 struct GAResults { // Results of the Genetic Algorithm
     Chromosome *best;
     double bestFitnessValue;
     unsigned int generations;
-    unsigned int stagnatedGenerations;
-    STOP_CONDITION stop_condition;
+    STATUS status;
     int elapsed;
 
     void print() {
@@ -72,16 +73,23 @@ struct GAResults { // Results of the Genetic Algorithm
         best->printPhenotype();
         std::cout << std::endl << "Generations: " << generations << std::endl;
         std::cout << "Stop condition: ";
-        switch (stop_condition) {
+        switch (status) {
+            case IDLE:
+                std::cout << "Idle" << std::endl;
+                break;
+            case RUNNING:
+                std::cout << "Population evolving" << std::endl;
             case MAX_GENERATIONS:
                 std::cout << "Max generations" << std::endl;
                 break;
             case TIMEOUT:
                 std::cout << "Timeout" << std::endl;
                 break;
-            case STAGNATION:
+            case STAGNATED:
                 std::cout << "Stagnation" << std::endl;
                 break;
+            default:
+                std::cout << "Unknown" << std::endl;
         }
     }
 };
@@ -107,8 +115,15 @@ class GeneticAlgorithm {
     
     protected:
         GAConfig config;
+        STATUS status;
         std::vector<Chromosome*> population;
         Uniform uniform;
+        Chromosome *bestChromosome;
+        double bestFitnessValue;
+
+        unsigned int currentGeneration;
+        unsigned int stagnatedGenerations;
+
 
         virtual void sortPopulation();
         void initPopulation();
