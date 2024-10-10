@@ -23,12 +23,13 @@ OPTIONS:
    -c, --cross    Crossover rate.
    -e, --elite    Elite rate.
    -l, --prlevel  Information print level.
+   -o, --output   -Only for Multi-objective- output type (TEXT, CSV)
 
 EXAMPLES:
    There are examples in the "examples/" folder.
 
 AUTHORS
-   Code was written by Dr. Matias J. Micheletto.
+   Design and programming: Dr. Matias J. Micheletto <https://beacons.ai/matias.miche>.
 
 REPORTING BUGS
    Guidelines available at <https://github.com/matiasmicheletto/dna-solver>.

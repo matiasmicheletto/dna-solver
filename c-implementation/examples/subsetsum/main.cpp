@@ -2,7 +2,7 @@
 #include "../../src/lib/misc/uniform.h" //RANDOM
 #include "../../src/lib/ga/ga.h"
 
-#define SET_SIZE 50
+#define SET_SIZE 20
 
 class BoolGene : public Gene {
     public:    
@@ -81,11 +81,6 @@ class BinaryStringCh : public Chromosome { // Models a float value using binary 
             // To access the child class methods, we need to cast the genes
             std::vector<Gene*> thisGenes = getGenes(); 
             for (unsigned int i = 0; i < otherGenes.size(); i++) {
-                
-                //BoolGene *thisGene = (BoolGene*) thisGenes[i];
-                //BoolGene *otherGene = (BoolGene*) otherGenes[i];
-                //thisGene->setValue(otherGene->getValue()); 
-
                 BoolGene *thisGene = dynamic_cast<BoolGene*>(thisGenes[i]);
                 BoolGene *otherGene = dynamic_cast<BoolGene*>(otherGenes[i]);
                 if (thisGene && otherGene) {
@@ -109,10 +104,10 @@ class SubSetSumFitness : public Fitness {
         }
 
         std::string getName() const override {
-            return "Quadratic function";
+            return "Subset sum function";
         }
         
-        double evaluate(const Chromosome *chromosome) const override {
+        void evaluate(const Chromosome *chromosome) const override {
             BinaryStringCh *c = (BinaryStringCh*) chromosome;
             unsigned int subSetSize = 0;
             for(unsigned int i = 0; i < set->size(); i++){
@@ -121,14 +116,15 @@ class SubSetSumFitness : public Fitness {
                     subSetSize++;
                 }
             }
-            const long int error = (long int)c->getPhenotype() - (long int)target;
-            const double sizeCost = (double)subSetSize/(double)set->size();
-            return abs(100.0 / ((double) abs(error) + 1.0) - sizeCost);
+            const double error = abs((double) c->getPhenotype() - (double) target);
+            //const double sizeCost = (double)subSetSize/(double)set->size();
+
+            c->fitness = abs(100.0 / (error + 1.0));
         }
 
         BinaryStringCh* generateChromosome() const override {
             BinaryStringCh *ch = new BinaryStringCh(set, 10.0/(double)set->size());
-            ch->fitness = evaluate(ch);
+            evaluate(ch);
             return ch;
         }
     
@@ -166,7 +162,9 @@ int main(int argc, char **argv) {
     ga->print();
 
     GAResults results = ga->run();
-    results.print();
+    
+    results.printStats();
+    results.printBest();
 
     return 0;
 }

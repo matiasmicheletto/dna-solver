@@ -16,7 +16,7 @@ class Chromosome { // Abstract class that models a chromosome (list of genes wit
 
         virtual void mutate(); 
         virtual void crossover(Chromosome* other);
-        virtual void clone(const Chromosome* other) = 0;
+        virtual void clone(const Chromosome* other) = 0; // Copy genes and fitness value
         
         inline std::vector<Gene*> getGenes() const { return genes; }
         inline void setGenes(std::vector<Gene*> genes) { this->genes = genes; }
@@ -25,9 +25,9 @@ class Chromosome { // Abstract class that models a chromosome (list of genes wit
         virtual void printPhenotype() const = 0;
 
         double fitness; // Fitness value of the chromosome (value is updated by the fitness function)
-        
+
         // For multi-objective optimization
-        std::vector<double> objectives;
+        std::vector<double> objectives; 
         std::vector<Chromosome*> dominatedChromosomes;
         unsigned int dominationCount;
         double crowdingDistance;

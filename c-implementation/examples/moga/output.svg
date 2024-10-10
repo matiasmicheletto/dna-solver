@@ -1,0 +1,58 @@
+<svg width="1000" height="1000" xmlns="http://www.w3.org/2000/svg">
+<line x1="50" y1="500" x2="950" y2="500" style="stroke:black;stroke-width:2" />
+<line x1="50" y1="50" x2="50" y2="950" style="stroke:black;stroke-width:2" />
+<line x1="50" y1="50" x2="50" y2="950" style="stroke:lightgray;stroke-width:1" />
+<line x1="50" y1="50" x2="950" y2="50" style="stroke:lightgray;stroke-width:1" />
+<line x1="140" y1="50" x2="140" y2="950" style="stroke:lightgray;stroke-width:1" />
+<line x1="50" y1="140" x2="950" y2="140" style="stroke:lightgray;stroke-width:1" />
+<line x1="230" y1="50" x2="230" y2="950" style="stroke:lightgray;stroke-width:1" />
+<line x1="50" y1="230" x2="950" y2="230" style="stroke:lightgray;stroke-width:1" />
+<line x1="320" y1="50" x2="320" y2="950" style="stroke:lightgray;stroke-width:1" />
+<line x1="50" y1="320" x2="950" y2="320" style="stroke:lightgray;stroke-width:1" />
+<line x1="410" y1="50" x2="410" y2="950" style="stroke:lightgray;stroke-width:1" />
+<line x1="50" y1="410" x2="950" y2="410" style="stroke:lightgray;stroke-width:1" />
+<line x1="500" y1="50" x2="500" y2="950" style="stroke:lightgray;stroke-width:1" />
+<line x1="50" y1="500" x2="950" y2="500" style="stroke:lightgray;stroke-width:1" />
+<line x1="590" y1="50" x2="590" y2="950" style="stroke:lightgray;stroke-width:1" />
+<line x1="50" y1="590" x2="950" y2="590" style="stroke:lightgray;stroke-width:1" />
+<line x1="680" y1="50" x2="680" y2="950" style="stroke:lightgray;stroke-width:1" />
+<line x1="50" y1="680" x2="950" y2="680" style="stroke:lightgray;stroke-width:1" />
+<line x1="770" y1="50" x2="770" y2="950" style="stroke:lightgray;stroke-width:1" />
+<line x1="50" y1="770" x2="950" y2="770" style="stroke:lightgray;stroke-width:1" />
+<line x1="860" y1="50" x2="860" y2="950" style="stroke:lightgray;stroke-width:1" />
+<line x1="50" y1="860" x2="950" y2="860" style="stroke:lightgray;stroke-width:1" />
+<line x1="950" y1="50" x2="950" y2="950" style="stroke:lightgray;stroke-width:1" />
+<line x1="50" y1="950" x2="950" y2="950" style="stroke:lightgray;stroke-width:1" />
+<circle cx="52.0892" cy="926.194" r="5" fill="red" />
+<circle cx="50.0005" cy="910.277" r="5" fill="red" />
+<circle cx="50.5333" cy="918.704" r="5" fill="red" />
+<circle cx="65.4289" cy="944.256" r="5" fill="red" />
+<circle cx="51.0275" cy="921.794" r="5" fill="red" />
+<circle cx="124.518" cy="944.674" r="5" fill="red" />
+<circle cx="50.0018" cy="910.537" r="5" fill="red" />
+<circle cx="56.2795" cy="935.418" r="5" fill="red" />
+<circle cx="60.1201" cy="940.119" r="5" fill="red" />
+<circle cx="68.8967" cy="946.089" r="5" fill="red" />
+<circle cx="53.2354" cy="929.517" r="5" fill="red" />
+<circle cx="50.8064" cy="920.552" r="5" fill="red" />
+<circle cx="50.6791" cy="919.744" r="5" fill="red" />
+<circle cx="55.6078" cy="934.346" r="5" fill="red" />
+<circle cx="100.907" cy="949.343" r="5" fill="red" />
+<circle cx="63.9489" cy="943.293" r="5" fill="red" />
+<circle cx="81.7251" cy="949.521" r="5" fill="red" />
+<circle cx="57.209" cy="936.753" r="5" fill="red" />
+<circle cx="51.6384" cy="924.553" r="5" fill="red" />
+<circle cx="50.1811" cy="915.202" r="5" fill="red" />
+<circle cx="50.9306" cy="921.272" r="5" fill="red" />
+<circle cx="79.8218" cy="949.254" r="5" fill="red" />
+<circle cx="84.4053" cy="949.789" r="5" fill="red" />
+<circle cx="75.2014" cy="948.298" r="5" fill="red" />
+<circle cx="52.4225" cy="927.265" r="5" fill="red" />
+<circle cx="79.8754" cy="949.263" r="5" fill="red" />
+<circle cx="52.7144" cy="928.126" r="5" fill="red" />
+<circle cx="710.658" cy="-75.7817" r="5" fill="red" />
+<circle cx="50.0614" cy="913.072" r="5" fill="red" />
+<circle cx="50.315" cy="902.585" r="5" fill="red" />
+<text x="500" y="980" font-size="16" text-anchor="middle">Objective 1</text>
+<text x="20" y="500" font-size="16" text-anchor="middle" transform="rotate(-90 20,500)">Objective 2</text>
+</svg>

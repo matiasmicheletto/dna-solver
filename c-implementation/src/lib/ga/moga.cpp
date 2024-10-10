@@ -54,7 +54,7 @@ void MultiObjectiveGA::sortPopulation() { // Non-dominated sorting
 
 void MultiObjectiveGA::evaluation() {
     for (unsigned int i = 0; i < config.populationSize; i++) {
-        population[i]->objectives = config.fitness->evaluateMO(population[i]);
+        config.fitnessFunction->evaluate(population[i]);
     }
 }
 
@@ -91,7 +91,93 @@ void MultiObjectiveGA::selection() { // Crowding distance
     }
 }
 
-GAResults MultiObjectiveGA::run() {
+void MultiObjectiveGA::print() {
+
+    if(config.printLevel < 0 || config.printLevel > 3){
+        std::cerr << "Invalid print level" << std::endl;
+        return;
+    }
+
+    if(config.printLevel >= 0)
+        config.print();
+
+    if(config.printLevel >= 1){
+        if(population.size() == 0){
+            std::cout << "Population not initialized" << std::endl;
+            return;
+        }
+    }
+    if(config.printLevel >= 2){
+        std::cout << "Population objectives: " << std::endl;        
+        for (unsigned int i = 0; i < paretoFronts[0].size(); i++) {
+            std::cout << "Chromosome " << i << ": " << std::endl;
+            for(unsigned int j = 0; j < paretoFronts[0][i]->objectives.size(); j++){
+                std::cout << "    Objective " << j << ": " << paretoFronts[0][i]->objectives[j] << std::endl;
+            }
+        }
+    }
+    if(config.printLevel >= 3){
+        std::cout << "Population genes: " << std::endl;
+        for (unsigned int i = 0; i < paretoFronts[0].size(); i++) {
+            paretoFronts[0][i]->printGenotype();
+            paretoFronts[0][i]->printPhenotype();
+        }
+    }
+}
+
+GAResults MultiObjectiveGA::run() { // Try to avoid overriding this method
     GAResults results;
+
+    if (config.fitnessFunction == nullptr) {
+        std::cerr << "Fitness function not set" << std::endl;
+        return results;
+    }
+
+    if (population.size() == 0) {
+        std::cerr << "Population not initialized" << std::endl;
+        return results;
+    }
+
+    status = RUNNING;
+    currentGeneration = 0;
+    
+    // Start the timer
+    auto start = std::chrono::high_resolution_clock::now();
+    
+    while(status == RUNNING) {
+
+        // GA steps
+        sortPopulation();
+        selection();
+        crossover();
+        mutation();
+        evaluation();
+
+
+        ///// Check stop conditions ///////
+
+        auto elapsed = std::chrono::high_resolution_clock::now() - start; // Time in milliseconds
+        if (std::chrono::duration_cast<std::chrono::seconds>(elapsed).count() > config.timeout) {
+            std::cout << "Timeout reached (" << config.timeout << "s)" << std::endl;
+            status = TIMEOUT;
+            break;
+        }
+
+        currentGeneration++;
+        if(currentGeneration >= config.maxGenerations){
+            std::cout << "Max generations reached (" << config.maxGenerations << ")" << std::endl;
+            status = MAX_GENERATIONS;
+            break;
+        }
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start); // Convert to milliseconds
+
+    results.status = status;
+    results.paretoFront = paretoFronts[0];
+    results.generations = currentGeneration;
+    results.elapsed = static_cast<int>(duration.count());
+
     return results;
 }

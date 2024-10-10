@@ -37,7 +37,11 @@ class VariableChromosome : public Chromosome {
         }
 
         void printPhenotype() const override {
-            std::cout << x << std::endl;
+            std::cout << x;
+        }
+
+        void printGenotype() const override {
+            std::cout << "Genotype: " << x << std::endl;
         }
 
         void crossover(Chromosome* other) override {
@@ -53,9 +57,8 @@ class VariableChromosome : public Chromosome {
         void clone(const Chromosome* other) override {
             VariableChromosome *otherCh = (VariableChromosome*) other;
             x = otherCh->getPhenotype();   
+            objectives = otherCh->objectives;
         }
-
-        std::vector<double> fitness;
 
     private:
         double x;
@@ -65,23 +68,23 @@ class VariableChromosome : public Chromosome {
 
 // The fitness function is the multi-objective function we want to maximize.
 // Unlike the single-objective case, the fitness function returns a vector of fitness values.
-class SquareFitness : public MOFitness {
+class MOSquareFitness : public Fitness {
     public:
         std::string getName() const override {
-            return "Multi-objective fitness function";
+            return "f(x) = {x^2, (x-2)^2}";
         }
 
-        std::vector<double> evaluateMO(const Chromosome *chromosome) const {
+        void evaluate(const Chromosome *chromosome) const {
             VariableChromosome *c = (VariableChromosome*) chromosome;
             double x = c->getPhenotype();
             double f1 = pow(x, 2);
             double f2 = pow(x - 2, 2);
-            return {f1, f2};
+            c->objectives = {f1, f2};
         }
 
         VariableChromosome* generateChromosome() const override {
             VariableChromosome *ch = new VariableChromosome();
-            ch->fitness = evaluateMO(ch);
+            evaluate(ch);
             return ch;
         }
 };
@@ -94,15 +97,24 @@ int main(int argc, char **argv) {
 
     askedForHelp(argc, argv);
 
-    MultiObjectiveGA *moga = new MultiObjectiveGA(new SquareFitness());
+    MultiObjectiveGA *moga = new MultiObjectiveGA(new MOSquareFitness());
 
     // The configuration can be loaded directly from the program parameters.
     // See the manual for the list of arguments and how to use them.
     moga->setConfig(argc, argv); 
-    moga->print();
+    
     
     GAResults results = moga->run();
-    results.print();
+
+    /*
+    moga->print();
+    results.printStats();
+    results.printPareto();
+    results.printCSV();
+    */
+    
+    results.printSVG();
+
 
     return 0;
 }

@@ -2,16 +2,15 @@
 
 GeneticAlgorithm::GeneticAlgorithm() { 
     // Initialize with default configuration
-    config = GAConfig(); // Cannot initialize population without a fitness function
-    status = IDLE;
-    bestChromosome = config.fitnessFunction->generateChromosome();
+    config = GAConfig();
+    // Cannot initialize with default constructor
 }
 
 GeneticAlgorithm::GeneticAlgorithm(Fitness *fitnessFunction, GAConfig config) {
     // Initialize with a fitness function and configuration
     config.fitnessFunction = fitnessFunction;
     this->config = config;
-    initPopulation();
+    initialize();
 }
 
 GeneticAlgorithm::~GeneticAlgorithm() {
@@ -27,7 +26,7 @@ void GeneticAlgorithm::setConfig(GAConfig config) {
     if(config.fitnessFunction == nullptr)
         std::cerr << "Warning: configuration updated without fitness function" << std::endl;
 
-    initPopulation();
+    initialize();
 }
 
 void GeneticAlgorithm::setConfig(int argc, char **argv) {
@@ -50,18 +49,27 @@ void GeneticAlgorithm::setConfig(int argc, char **argv) {
             config.stagnationWindow = atof(argv[i + 1]);
         } else if (strcmp(argv[i], "-l") == 0) {
             config.printLevel = atoi(argv[i + 1]);
+        }else if(strcmp(argv[i], "-o") == 0) {
+            if(i+1 < argc){
+                if(std::strcmp(argv[i+1], "TXT") == 0)
+                    config.outputFormat = OUTPUTFORMAT::TXT;
+                if(std::strcmp(argv[i+1], "CSV") == 0)
+                    config.outputFormat = OUTPUTFORMAT::CSV;
+                if(std::strcmp(argv[i+1], "SVG") == 0)
+                    config.outputFormat = OUTPUTFORMAT::SVG;
+            }
         }
     }
 
     if(config.fitnessFunction == nullptr)
         std::cerr << "Warning: configuration updated without fitness function" << std::endl;
-
-    initPopulation();
+    else
+        initialize();
 }
 
 void GeneticAlgorithm::setFitnessFunction(Fitness *fitnessFunction) {
     config.fitnessFunction = fitnessFunction;
-    initPopulation();
+    initialize();
 }
 
 void GeneticAlgorithm::setPopulation(std::vector<Chromosome*> population) {
@@ -79,7 +87,12 @@ void GeneticAlgorithm::sortPopulation() {
     });
 }
 
-void GeneticAlgorithm::initPopulation(){
+void GeneticAlgorithm::clearPopulation() {
+    population.clear();
+}
+
+void GeneticAlgorithm::initialize(){
+
     if(config.fitnessFunction == nullptr){
         std::cerr << "Fitness function not set" << std::endl;
         return;
@@ -90,34 +103,38 @@ void GeneticAlgorithm::initPopulation(){
         population.push_back(ch);
     }
     sortPopulation(); // Sort the population by fitness best to worse
-}
 
-void GeneticAlgorithm::clearPopulation() {
-    population.clear();
+    // Calculate the number of elite individuals
+    elite = config.elitismRate * (double) config.populationSize;
+
+    // This is not a pointer to the best in the population, to avoid losing the best individual
+    // during the evolution
+    bestChromosome = config.fitnessFunction->generateChromosome();
+
+    status = IDLE;
 }
 
 void GeneticAlgorithm::evaluation() {
     long int bestFitnessIndex = -1;
     for (unsigned int i = 0; i < config.populationSize; i++) {
-        population[i]->fitness = config.fitnessFunction->evaluate(population[i]);
+        config.fitnessFunction->evaluate(population[i]);
         if(population[i]->fitness > bestFitnessValue){
+            std::cout << "New best fitness: " << population[i]->fitness << std::endl;
+            bestFitnessValue = population[i]->fitness;
             bestFitnessIndex = i;
         }
     }
-    /*
+    
     if(bestFitnessIndex != -1){
-        bestFitnessValue = population[bestFitnessIndex]->fitness;
         bestChromosome->clone(population[bestFitnessIndex]);
     }else{
         stagnatedGenerations++;
     }
-    */
 }
 
 void GeneticAlgorithm::selection() { // Roulette wheel selection
 
     // Keep the best chromosomes
-    unsigned int elite = config.elitismRate * (double) config.populationSize;
     std::vector<Chromosome*> newPopulation;
     for (unsigned int i = 0; i < elite; i++) {
         newPopulation.push_back(population[i]);
@@ -241,13 +258,12 @@ GAResults GeneticAlgorithm::run() {
     stagnatedGenerations = 0;
     unsigned int maxStagationGenerations = config.stagnationWindow*config.maxGenerations;
 
-    // Start chronometer
+    // Start timer
     auto start = std::chrono::high_resolution_clock::now();
 
     while (status == RUNNING){
         
         // GA steps
-        
         sortPopulation(); // Sort the population from best to worst fitness
         selection(); // Select the best individual by roulette wheel method
         crossover(); // Apply crossover using single point method
@@ -277,11 +293,6 @@ GAResults GeneticAlgorithm::run() {
             break;
         }
     }
-
-    // Get the best chromosome
-    bestChromosome = std::max_element(population.begin(), population.end(), [](Chromosome* a, Chromosome* b) {
-        return a->fitness < b->fitness; // Sort in descending order
-    }).operator*();
 
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start); // Convert to milliseconds

@@ -103,6 +103,7 @@ class BinaryStringCh : public Chromosome { // Models a float value using binary 
                 BoolGene *otherGene = (BoolGene*) otherGenes[i];
                 thisGene->setValue(otherGene->getValue());
             }
+            fitness = other->fitness;
         }
 };
 
@@ -115,10 +116,10 @@ class QuadraticFitness : public Fitness {
         QuadraticFitness() : Fitness() {}
 
         std::string getName() const override {
-            return "Quadratic function";
+            return "f(x) = -x^2 + 2x + 1";
         }
         
-        double evaluate(const Chromosome *chromosome) const override {
+        void evaluate(const Chromosome *chromosome) const override {
             // f(x) = -x^2 + 2x + 1; 
             BinaryStringCh *c = (BinaryStringCh*) chromosome;
             double x = (double) c->getPhenotype();
@@ -126,13 +127,12 @@ class QuadraticFitness : public Fitness {
             if(std::isnan(y) || std::isinf(y))
                 y = __DBL_MIN__;
             c->fitness = y;
-            return y;
         }
 
         BinaryStringCh* generateChromosome() const override {
             double mutProb = 10.0/(double)FLOAT_BITS;
             BinaryStringCh *ch = new BinaryStringCh(mutProb);
-            ch->fitness = evaluate(ch);
+            evaluate(ch);
             return ch;
         }
 };
@@ -151,7 +151,9 @@ int main(int argc, char **argv) {
     ga->print();
     
     GAResults results = ga->run();
-    results.print();
+
+    results.printStats();
+    results.printBest();
 
     return 0;
 }
