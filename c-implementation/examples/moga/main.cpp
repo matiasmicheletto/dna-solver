@@ -74,7 +74,7 @@ class MOSquareFitness : public Fitness {
             return "f(x) = {x^2, (x-2)^2}";
         }
 
-        void evaluate(const Chromosome *chromosome) const {
+        void evaluate(Chromosome *chromosome) const {
             VariableChromosome *c = (VariableChromosome*) chromosome;
             double x = c->getPhenotype();
             double f1 = pow(x, 2);

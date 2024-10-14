@@ -107,7 +107,7 @@ class SubSetSumFitness : public Fitness {
             return "Subset sum function";
         }
         
-        void evaluate(const Chromosome *chromosome) const override {
+        void evaluate(Chromosome *chromosome) const override {
             BinaryStringCh *c = (BinaryStringCh*) chromosome;
             unsigned int subSetSize = 0;
             for(unsigned int i = 0; i < set->size(); i++){

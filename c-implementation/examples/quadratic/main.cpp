@@ -119,7 +119,7 @@ class QuadraticFitness : public Fitness {
             return "f(x) = -x^2 + 2x + 1";
         }
         
-        void evaluate(const Chromosome *chromosome) const override {
+        void evaluate(Chromosome *chromosome) const override {
             // f(x) = -x^2 + 2x + 1; 
             BinaryStringCh *c = (BinaryStringCh*) chromosome;
             double x = (double) c->getPhenotype();
