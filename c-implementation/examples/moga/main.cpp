@@ -101,20 +101,12 @@ int main(int argc, char **argv) {
 
     // The configuration can be loaded directly from the program parameters.
     // See the manual for the list of arguments and how to use them.
-    moga->setConfig(argc, argv); 
-    
-    
+    moga->getConfig().setConfig(argc, argv); 
+
     GAResults results = moga->run();
 
-    /*
-    moga->print();
-    results.printStats();
-    results.printPareto();
-    results.printCSV();
-    */
-    
-    results.printSVG();
-
+    results.outputFormat = CSV;
+    results.print();
 
     return 0;
 }

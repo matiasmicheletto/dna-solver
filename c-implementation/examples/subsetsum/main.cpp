@@ -158,13 +158,12 @@ int main(int argc, char **argv) {
 
 
     GeneticAlgorithm *ga = new GeneticAlgorithm(new SubSetSumFitness(&set, target));
-    ga->setConfig(argc, argv);
+    ga->getConfig().setConfig(argc, argv);
     ga->print();
 
     GAResults results = ga->run();
     
-    results.printStats();
-    results.printBest();
+    results.print();
 
     return 0;
 }

@@ -147,13 +147,12 @@ int main(int argc, char **argv) {
 
     // The configuration can be loaded directly from the program parameters.
     // See the manual for the list of arguments and how to use them.
-    ga->setConfig(argc, argv); 
+    ga->getConfig().setConfig(argc, argv); 
     ga->print();
     
     GAResults results = ga->run();
 
-    results.printStats();
-    results.printBest();
+    results.print();
 
     return 0;
 }

@@ -5,9 +5,14 @@ LDFLAGS  = -lgsl -lgslcblas -lm
 
 TARGET   = moga_example
 
-SOURCES      = main.cpp
+SOURCES  = main.cpp
 
-OBJECTS     = ../../obj/lib/ga/chromosome.o ../../obj/lib/ga/ga.o ../../obj/lib/ga/moga.o ../../obj/lib/misc/uniform.o
+OBJECTS  = ../../obj/lib/ga/chromosome.o \
+		   ../../obj/lib/ga/moga.o \
+		   ../../obj/lib/ga/ga.o \
+		   ../../obj/lib/ga/ga_config.o \
+		   ../../obj/lib/ga/ga_results.o \
+		   ../../obj/lib/misc/uniform.o
 
 INCLUDES = -I../../src/lib/ga -I../../src/lib/moga
 

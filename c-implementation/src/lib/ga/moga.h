@@ -5,7 +5,6 @@
 
 class MultiObjectiveGA : public GeneticAlgorithm {
     public:
-        MultiObjectiveGA(Fitness *fitnessFunction, GAConfig config) : GeneticAlgorithm(fitnessFunction, config) {}
         MultiObjectiveGA(Fitness *fitnessFunction) : GeneticAlgorithm(fitnessFunction) {}
         MultiObjectiveGA() : GeneticAlgorithm() {}
 

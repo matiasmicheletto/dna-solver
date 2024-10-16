@@ -6,10 +6,10 @@ GeneticAlgorithm::GeneticAlgorithm() {
     // Cannot initialize with default constructor
 }
 
-GeneticAlgorithm::GeneticAlgorithm(Fitness *fitnessFunction, GAConfig config) {
+GeneticAlgorithm::GeneticAlgorithm(Fitness *fitnessFunction) {
     // Initialize with a fitness function and configuration
+    config = GAConfig();
     config.fitnessFunction = fitnessFunction;
-    this->config = config;
     initialize();
 }
 
@@ -17,59 +17,6 @@ GeneticAlgorithm::~GeneticAlgorithm() {
     if(config.fitnessFunction != nullptr)
         delete config.fitnessFunction;
     clearPopulation();
-}
-
-void GeneticAlgorithm::setConfig(GAConfig config) {
-    // Update the configuration
-    this->config = config;
-    
-    if(config.fitnessFunction == nullptr)
-        std::cerr << "Warning: configuration updated without fitness function" << std::endl;
-
-    initialize();
-}
-
-void GeneticAlgorithm::setConfig(int argc, char **argv) {
-    // Update the configuration with the command line arguments
-    // Cannot update the fitness function here
-    for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "-p") == 0) {
-            config.populationSize = atoi(argv[i + 1]);
-        } else if (strcmp(argv[i], "-g") == 0) {
-            config.maxGenerations = atoi(argv[i + 1]);
-        } else if (strcmp(argv[i], "-m") == 0) {
-            config.mutationRate = atof(argv[i + 1]);
-        } else if (strcmp(argv[i], "-c") == 0) {
-            config.crossoverRate = atof(argv[i + 1]);
-        } else if (strcmp(argv[i], "-e") == 0) {
-            config.elitismRate = atof(argv[i + 1]);
-        } else if (strcmp(argv[i], "-t") == 0) {
-            config.timeout = atoi(argv[i + 1]);
-        } else if (strcmp(argv[i], "-s") == 0) {
-            config.stagnationWindow = atof(argv[i + 1]);
-        } else if (strcmp(argv[i], "-l") == 0) {
-            config.printLevel = atoi(argv[i + 1]);
-        }else if(strcmp(argv[i], "-o") == 0) {
-            if(i+1 < argc){
-                if(std::strcmp(argv[i+1], "TXT") == 0)
-                    config.outputFormat = OUTPUTFORMAT::TXT;
-                if(std::strcmp(argv[i+1], "CSV") == 0)
-                    config.outputFormat = OUTPUTFORMAT::CSV;
-                if(std::strcmp(argv[i+1], "SVG") == 0)
-                    config.outputFormat = OUTPUTFORMAT::SVG;
-            }
-        }
-    }
-
-    if(config.fitnessFunction == nullptr)
-        std::cerr << "Warning: configuration updated without fitness function" << std::endl;
-    else
-        initialize();
-}
-
-void GeneticAlgorithm::setFitnessFunction(Fitness *fitnessFunction) {
-    config.fitnessFunction = fitnessFunction;
-    initialize();
 }
 
 void GeneticAlgorithm::setPopulation(std::vector<Chromosome*> population) {
@@ -94,7 +41,7 @@ void GeneticAlgorithm::clearPopulation() {
 void GeneticAlgorithm::initialize(){
 
     if(config.fitnessFunction == nullptr){
-        std::cerr << "Fitness function not set" << std::endl;
+        std::cerr << "Initialization: Fitness function not set" << std::endl;
         return;
     }
     clearPopulation();
@@ -241,10 +188,10 @@ void GeneticAlgorithm::print() {
 
 GAResults GeneticAlgorithm::run() {
     
-    GAResults results;
+    GAResults results(SINGLE);
 
     if(config.fitnessFunction == nullptr){
-        std::cerr << "Fitness function not set" << std::endl;
+        std::cerr << "Run: Fitness function not set" << std::endl;
         return results;
     }
     if(population.size() == 0){
@@ -257,6 +204,7 @@ GAResults GeneticAlgorithm::run() {
     currentGeneration = 0;
     stagnatedGenerations = 0;
     unsigned int maxStagationGenerations = config.stagnationWindow*config.maxGenerations;
+    
 
     // Start timer
     auto start = std::chrono::high_resolution_clock::now();
@@ -275,20 +223,20 @@ GAResults GeneticAlgorithm::run() {
 
         auto elapsed = std::chrono::high_resolution_clock::now() - start; // Time in milliseconds
         if (std::chrono::duration_cast<std::chrono::seconds>(elapsed).count() > config.timeout) {
-            std::cout << "Timeout reached (" << config.timeout << "s)" << std::endl;
+            //*config.outputStream << "Timeout reached (" << config.timeout << "s)" << std::endl;
             status = TIMEOUT;
             break;
         }
 
         if(stagnatedGenerations > maxStagationGenerations){
-            std::cout << "Stagnation reached: " << stagnatedGenerations << " generations out of " << config.maxGenerations << " stipulated." << std::endl;
+            //*config.outputStream << "Stagnation reached: " << stagnatedGenerations << " generations out of " << config.maxGenerations << " stipulated." << std::endl;
             status = STAGNATED;
             break;
         }
 
         currentGeneration++;
         if(currentGeneration >= config.maxGenerations){
-            std::cout << "Max generations reached (" << config.maxGenerations << ")" << std::endl;
+            //*config.outputStream << "Max generations reached (" << config.maxGenerations << ")" << std::endl;
             status = MAX_GENERATIONS;
             break;
         }
