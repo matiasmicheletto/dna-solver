@@ -10,7 +10,7 @@ OBJECTS  = ../../obj/lib/ga/chromosome.o \
 		   ../../obj/lib/ga/ga.o \
 		   ../../obj/lib/ga/ga_config.o \
 		   ../../obj/lib/ga/ga_results.o \
-		   ../../obj/lib/misc/uniform.o
+		   ../../obj/lib/ga/uniform.o
 	
 
 INCLUDES = -I../../src/lib/ga

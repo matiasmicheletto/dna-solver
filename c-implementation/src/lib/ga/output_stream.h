@@ -4,9 +4,8 @@
 #include <iostream>
 #include <fstream>
 
-namespace streams{
-    enum STREAM {CONSOLE, FILE, NONE};
-}
+
+enum class STREAM {CONSOLE, FILE, NONE};
 
 class NullStream : public std::ostream {
 public:
@@ -21,14 +20,14 @@ public:
 
 class OutputStream {
     public:
-        OutputStream() : type(streams::STREAM::NONE) {}
-        OutputStream(std::string filename) : type(streams::STREAM::FILE), filename(filename) {}
-        OutputStream(streams::STREAM type) : type(type) {}
+        OutputStream() : type(STREAM::NONE) {}
+        OutputStream(std::string filename) : type(STREAM::FILE), filename(filename) {}
+        OutputStream(STREAM type) : type(type) {}
         
         std::ostream* getStream() {
-            if(type == streams::STREAM::CONSOLE)
+            if(type == STREAM::CONSOLE)
                 return &std::cout;
-            if(type == streams::STREAM::FILE){
+            if(type == STREAM::FILE){
                 fileStream.open(filename);
                 return &fileStream;
             }
@@ -36,12 +35,12 @@ class OutputStream {
         }
         
         ~OutputStream() {
-            if(type == streams::STREAM::FILE)
+            if(type == STREAM::FILE)
                 fileStream.close();
         }
 
     private:
-        streams::STREAM type;
+        STREAM type;
         std::string filename;
         std::ofstream fileStream;
         NullStream nullStream;

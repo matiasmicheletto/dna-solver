@@ -6,7 +6,7 @@
 #include <cstring>
 #include <cstdlib>
 
-#include "../../src/lib/misc/help.h"
+#include "../../src/lib/ga/help.h"
 #include "../../src/lib/ga/moga.h"
 
 
@@ -97,15 +97,16 @@ int main(int argc, char **argv) {
 
     askedForHelp(argc, argv);
 
-    MultiObjectiveGA *moga = new MultiObjectiveGA(new MOSquareFitness());
+    GAConfig* config = new GAConfig();
+    config->setConfig(argc, argv); 
 
-    // The configuration can be loaded directly from the program parameters.
-    // See the manual for the list of arguments and how to use them.
-    moga->getConfig().setConfig(argc, argv); 
+    MultiObjectiveGA *moga = new MultiObjectiveGA(new MOSquareFitness(), config);
+
+    moga->print();
 
     GAResults results = moga->run();
 
-    results.outputFormat = HTML;
+    results.outputFormat = OUTPUTFORMAT::HTML;
     results.print();
 
     return 0;

@@ -6,7 +6,7 @@
 #include <cstring>
 #include <cstdlib>
 #include "util.h"
-#include "../../src/lib/misc/help.h"
+#include "../../src/lib/ga/help.h"
 #include "../../src/lib/ga/ga.h"
 
 
@@ -143,16 +143,20 @@ int main(int argc, char **argv) {
 
     askedForHelp(argc, argv);
 
-    GeneticAlgorithm *ga = new GeneticAlgorithm(new QuadraticFitness());
+    GAConfig* config = new GAConfig();
+    config->setConfig(argc, argv); 
 
-    // The configuration can be loaded directly from the program parameters.
-    // See the manual for the list of arguments and how to use them.
-    ga->getConfig().setConfig(argc, argv); 
+    GeneticAlgorithm *ga = new GeneticAlgorithm(new QuadraticFitness(), config);
+
     ga->print();
     
     GAResults results = ga->run();
 
     results.print();
+
+    std::cout << "Error fitness: " << results.best->fitness - 2.0 << std::endl;
+    std::cout << "Error phenotype: " << ((BinaryStringCh*) results.best)->getPhenotype() - 1.0 << std::endl;
+
 
     return 0;
 }

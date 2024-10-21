@@ -1,5 +1,5 @@
-#include "../../src/lib/misc/help.h"
-#include "../../src/lib/misc/uniform.h" //RANDOM
+#include "../../src/lib/ga/help.h"
+#include "../../src/lib/ga/uniform.h"
 #include "../../src/lib/ga/ga.h"
 
 #define SET_SIZE 20
@@ -156,14 +156,18 @@ int main(int argc, char **argv) {
     std::cout << std::endl;
     std::cout << "Target: " << target << std::endl;
 
+    GAConfig* config = new GAConfig();
+    config->setConfig(argc, argv); 
 
-    GeneticAlgorithm *ga = new GeneticAlgorithm(new SubSetSumFitness(&set, target));
-    ga->getConfig().setConfig(argc, argv);
+    GeneticAlgorithm *ga = new GeneticAlgorithm(new SubSetSumFitness(&set, target), config);
+    
     ga->print();
 
     GAResults results = ga->run();
     
     results.print();
+
+    std::cout << "Error: " << ((BinaryStringCh*) results.best)->getPhenotype() - target << std::endl;
 
     return 0;
 }

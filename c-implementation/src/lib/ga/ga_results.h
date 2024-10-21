@@ -5,12 +5,12 @@
 #include <iostream>
 #include <vector>
 
-#include "../misc/output_stream.h"
+#include "./output_stream.h"
 #include "chromosome.h"
 
-enum OUTPUTFORMAT {TXT, CSV, SVG, HTML};
+enum class OUTPUTFORMAT {TXT, CSV, SVG, HTML};
 
-enum STATUS { // Stop condition for the Genetic Algorithm
+enum class STATUS { // Stop condition for the Genetic Algorithm
     IDLE,
     RUNNING,
     MAX_GENERATIONS,
@@ -18,7 +18,7 @@ enum STATUS { // Stop condition for the Genetic Algorithm
     STAGNATED
 };
 
-enum OBJTYPE {SINGLE, MULTI};
+enum class OBJTYPE {SINGLE, MULTI};
 
 class GAResults { // Results of the Genetic Algorithm
 

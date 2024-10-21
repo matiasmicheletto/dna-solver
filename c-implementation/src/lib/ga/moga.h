@@ -5,7 +5,7 @@
 
 class MultiObjectiveGA : public GeneticAlgorithm {
     public:
-        MultiObjectiveGA(Fitness *fitnessFunction) : GeneticAlgorithm(fitnessFunction) {}
+        MultiObjectiveGA(Fitness *fitnessFunction, GAConfig *config) : GeneticAlgorithm(fitnessFunction, config) {}
         MultiObjectiveGA() : GeneticAlgorithm() {}
 
         GAResults run() override;

@@ -53,8 +53,8 @@ void MultiObjectiveGA::sortPopulation() { // Non-dominated sorting
 }
 
 void MultiObjectiveGA::evaluation() {
-    for (unsigned int i = 0; i < config.populationSize; i++) {
-        config.fitnessFunction->evaluate(population[i]);
+    for (unsigned int i = 0; i < config->populationSize; i++) {
+        fitnessFunction->evaluate(population[i]);
     }
 }
 
@@ -63,7 +63,7 @@ void MultiObjectiveGA::selection() { // Crowding distance
 
     // Crowding distance calculation
     for(std::vector<Chromosome*> front : paretoFronts){
-        if(newPopulation.size() + front.size() <= config.populationSize){
+        if(newPopulation.size() + front.size() <= config->populationSize){
             newPopulation.insert(newPopulation.end(), front.begin(), front.end());
             continue;
         } else { // Compute crowding distance for the current front
@@ -93,32 +93,32 @@ void MultiObjectiveGA::selection() { // Crowding distance
         return a->crowdingDistance > b->crowdingDistance;
     });
 
-    for(unsigned int i = newPopulation.size(); i < config.populationSize; i++){
+    for(unsigned int i = newPopulation.size(); i < config->populationSize; i++){
         newPopulation.push_back(population[i]);
     }
     
-    for(unsigned int i = 0; i < config.populationSize; i++){
+    for(unsigned int i = 0; i < config->populationSize; i++){
         population[i] = newPopulation[i];
     }    
 }
 
 void MultiObjectiveGA::print() {
 
-    if(config.printLevel < 0 || config.printLevel > 3){
+    if(config->printLevel < 0 || config->printLevel > 3){
         std::cerr << "Invalid print level" << std::endl;
         return;
     }
 
-    if(config.printLevel >= 0)
-        config.print();
+    if(config->printLevel >= 0)
+        config->print();
 
-    if(config.printLevel >= 1){
+    if(config->printLevel >= 1){
         if(population.size() == 0){
             std::cout << "Population not initialized" << std::endl;
             return;
         }
     }
-    if(config.printLevel >= 2){
+    if(config->printLevel >= 2){
         std::cout << "Population objectives: " << std::endl;        
         for (unsigned int i = 0; i < paretoFronts[0].size(); i++) {
             std::cout << "Chromosome " << i << ": " << std::endl;
@@ -127,7 +127,7 @@ void MultiObjectiveGA::print() {
             }
         }
     }
-    if(config.printLevel >= 3){
+    if(config->printLevel >= 3){
         std::cout << "Population genes: " << std::endl;
         for (unsigned int i = 0; i < paretoFronts[0].size(); i++) {
             paretoFronts[0][i]->printGenotype();
@@ -137,9 +137,9 @@ void MultiObjectiveGA::print() {
 }
 
 GAResults MultiObjectiveGA::run() { // Try to avoid overriding this method
-    GAResults results(MULTI);
+    GAResults results(OBJTYPE::MULTI);
 
-    if (config.fitnessFunction == nullptr) {
+    if (fitnessFunction == nullptr) {
         std::cerr << "Run: Fitness function not set" << std::endl;
         return results;
     }
@@ -149,13 +149,13 @@ GAResults MultiObjectiveGA::run() { // Try to avoid overriding this method
         return results;
     }
 
-    status = RUNNING;
+    status = STATUS::RUNNING;
     currentGeneration = 0;
     
     // Start the timer
     auto start = std::chrono::high_resolution_clock::now();
     
-    while(status == RUNNING) {
+    while(status == STATUS::RUNNING) {
 
         // GA steps
         sortPopulation();
@@ -168,16 +168,16 @@ GAResults MultiObjectiveGA::run() { // Try to avoid overriding this method
         ///// Check stop conditions ///////
 
         auto elapsed = std::chrono::high_resolution_clock::now() - start; // Time in milliseconds
-        if (std::chrono::duration_cast<std::chrono::seconds>(elapsed).count() > config.timeout) {
-            //*config.outputStream << "Timeout reached (" << config.timeout << "s)" << std::endl;
-            status = TIMEOUT;
+        if (std::chrono::duration_cast<std::chrono::seconds>(elapsed).count() > config->timeout) {
+            //*config->outputStream << "Timeout reached (" << config->timeout << "s)" << std::endl;
+            status = STATUS::TIMEOUT;
             break;
         }
 
         currentGeneration++;
-        if(currentGeneration >= config.maxGenerations){
-            //*config.outputStream << "Max generations reached (" << config.maxGenerations << ")" << std::endl;
-            status = MAX_GENERATIONS;
+        if(currentGeneration >= config->maxGenerations){
+            //*config->outputStream << "Max generations reached (" << config->maxGenerations << ")" << std::endl;
+            status = STATUS::MAX_GENERATIONS;
             break;
         }
     }

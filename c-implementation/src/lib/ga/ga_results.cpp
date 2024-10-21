@@ -5,11 +5,11 @@ GAResults::GAResults(OBJTYPE type) {
     best = nullptr;
     bestFitnessValue = 0;
     generations = 0;
-    status = IDLE;
+    status = STATUS::IDLE;
     elapsed = 0;
-    outputFormat = TXT;
+    outputFormat = OUTPUTFORMAT::TXT;
 
-    OutputStream os(streams::STREAM::CONSOLE);
+    OutputStream os(STREAM::CONSOLE);
     outputStream = os.getStream();
 }
 
@@ -18,18 +18,18 @@ void GAResults::printStats() {
     *outputStream << "Elapsed time: " << elapsed << "ms" << std::endl;
     *outputStream << "Stop condition: ";
     switch (status) {
-        case IDLE:
+        case STATUS::IDLE:
             *outputStream << "Idle" << std::endl;
             break;
-        case RUNNING:
+        case STATUS::RUNNING:
             *outputStream << "Population evolving" << std::endl;
-        case MAX_GENERATIONS:
+        case STATUS::MAX_GENERATIONS:
             *outputStream << "Max generations" << std::endl;
             break;
-        case TIMEOUT:
+        case STATUS::TIMEOUT:
             *outputStream << "Timeout" << std::endl;
             break;
-        case STAGNATED:
+        case STATUS::STAGNATED:
             *outputStream << "Stagnation" << std::endl;
             break;
         default:
@@ -129,27 +129,27 @@ void GAResults::printHTML() {
 
 void GAResults::print() {
     switch (outputFormat) {
-        case TXT:
+        case OUTPUTFORMAT::TXT:
             printStats();
-            if(type == SINGLE)
+            if(type == OBJTYPE::SINGLE)
                 printBest();
             else
                 printPareto();
             break;
-        case CSV:
-            if(type == MULTI)
+        case OUTPUTFORMAT::CSV:
+            if(type == OBJTYPE::MULTI)
                 printCSV();
             else
                 *outputStream << "CSV output is only available for multi-objective problems" << std::endl;
             break;
-        case SVG:
-            if(type == MULTI)
+        case OUTPUTFORMAT::SVG:
+            if(type == OBJTYPE::MULTI)
                 printSVG();
             else
                 *outputStream << "SVG output is only available for multi-objective problems" << std::endl;
             break;
-        case HTML:
-            if(type == MULTI)
+        case OUTPUTFORMAT::HTML:
+            if(type == OBJTYPE::MULTI)
                 printHTML();
             else
                 *outputStream << "HTML output is only available for multi-objective problems" << std::endl;

@@ -2,7 +2,6 @@
 
 
 GAConfig::GAConfig() : 
-                fitnessFunction(nullptr),
                 populationSize(100), 
                 maxGenerations(100), 
                 mutationRate(0.1), 
@@ -12,7 +11,7 @@ GAConfig::GAConfig() :
                 stagnationWindow(0.7),
                 printLevel(0){
 
-    OutputStream os(streams::STREAM::CONSOLE);
+    OutputStream os(STREAM::CONSOLE);
     outputStream = os.getStream();
 }
 
@@ -44,10 +43,6 @@ void GAConfig::setConfig(int argc, char **argv) {
 
 void GAConfig::print()  {
         *outputStream << std::endl << "Genetic Algorithm Configuration" << std::endl;
-        if(fitnessFunction == nullptr)
-            *outputStream << "  - Fitness function: not set" << std::endl;
-        else
-            *outputStream << "  - Fitness function: " << fitnessFunction->getName() << std::endl;
         *outputStream << "  - Population size: " << populationSize << std::endl;
         *outputStream << "  - Max generations: " << maxGenerations << std::endl;
         *outputStream << "  - Timeout: " << timeout << " seconds." << std::endl;

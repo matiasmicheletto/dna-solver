@@ -1,4 +1,4 @@
-#include "lib/misc/help.h"
+#include "lib/ga/help.h"
 #include "lib/ga/fitness.h"
 #include "lib/ga/chromosome.h"
 #include "lib/ga/gene.h"

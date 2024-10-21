@@ -19,22 +19,22 @@
 class GeneticAlgorithm {
     public:
         GeneticAlgorithm();
-        GeneticAlgorithm(Fitness *fitnessFunction);
+        GeneticAlgorithm(Fitness *fitnessFunction, GAConfig *config);
         
         ~GeneticAlgorithm();
 
         inline Chromosome* getChromosome(int index) { return population[index]; }
 
-        GAConfig& getConfig() { return config; }
-
-        void setPopulation(std::vector<Chromosome*> population);
+        GAConfig* getConfig() { return config; }
+        void setConfig(GAConfig *config);
 
         virtual GAResults run();
 
         virtual void print();
     
     protected:
-        GAConfig config;
+        Fitness *fitnessFunction;
+        GAConfig *config;
         STATUS status;
         std::vector<Chromosome*> population;
         unsigned int elite;

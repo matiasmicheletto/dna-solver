@@ -4,7 +4,7 @@
 #include <iostream>
 #include <cstring>
 
-#include "../misc/output_stream.h"
+#include "./output_stream.h"
 #include "fitness.h"
 
 
@@ -13,7 +13,6 @@ class GAConfig {
     public:
         GAConfig();
 
-        Fitness *fitnessFunction;
         unsigned int populationSize;
         unsigned int maxGenerations;
         double mutationRate;

@@ -2,8 +2,7 @@
 #define GENE_H
 
 #include <iostream>
-#include "../misc/uniform.h" //RANDOM
-//#include "../misc/custom_random.h"
+#include "./uniform.h"
 
 class Gene { // Abstract class that models a gene
     public:
