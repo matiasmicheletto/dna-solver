@@ -118,6 +118,15 @@ void GAResults::printSVG() {
     *outputStream << "</svg>" << std::endl;
 }
 
+void GAResults::printHTML() {
+    *outputStream << "<!DOCTYPE html>" << std::endl;
+    *outputStream << "<html>" << std::endl;
+    *outputStream << "<body>" << std::endl;
+    printSVG();
+    *outputStream << "</body>" << std::endl;
+    *outputStream << "</html>" << std::endl;
+}
+
 void GAResults::print() {
     switch (outputFormat) {
         case TXT:
@@ -138,6 +147,12 @@ void GAResults::print() {
                 printSVG();
             else
                 *outputStream << "SVG output is only available for multi-objective problems" << std::endl;
+            break;
+        case HTML:
+            if(type == MULTI)
+                printHTML();
+            else
+                *outputStream << "HTML output is only available for multi-objective problems" << std::endl;
             break;
         default:
             *outputStream << "Unknown output format" << std::endl;

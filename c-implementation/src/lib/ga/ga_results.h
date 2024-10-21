@@ -8,7 +8,7 @@
 #include "../misc/output_stream.h"
 #include "chromosome.h"
 
-enum OUTPUTFORMAT {TXT, CSV, SVG};
+enum OUTPUTFORMAT {TXT, CSV, SVG, HTML};
 
 enum STATUS { // Stop condition for the Genetic Algorithm
     IDLE,
@@ -43,6 +43,7 @@ class GAResults { // Results of the Genetic Algorithm
         void printPareto();
         void printCSV();
         void printSVG();
+        void printHTML();
 };
 
 #endif // GA_RESULTS_H

@@ -105,7 +105,7 @@ int main(int argc, char **argv) {
 
     GAResults results = moga->run();
 
-    results.outputFormat = CSV;
+    results.outputFormat = HTML;
     results.print();
 
     return 0;
