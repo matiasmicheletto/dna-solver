@@ -1,17 +1,45 @@
 #include "moga.h"
 
-bool MultiObjectiveGA::dominates(Chromosome *a, Chromosome *b) {
+/*
+def dominates(a, b):
+    return all(x >= y for x, y in zip(a, b)) and any(x > y for x, y in zip(a, b))
+*/
+
+bool MultiObjectiveGA::dominates(const Chromosome &a, const Chromosome &b) {
+    
     bool at_least_one_better = false;
-    for (unsigned int i = 0; i < a->objectives.size(); i++) {
-        if (a->objectives[i] > b->objectives[i]) {
+
+    /*
+    std::cout << std::endl << "Individual a: " << std::endl;
+    a.printGenotype();
+    std::cout << "Objectives are: " << a.objectives[0] << " " << a.objectives[1] << std::endl;
+
+    std::cout << std::endl;
+
+    std::cout << "Individual b: " << std::endl;
+    b.printGenotype();
+    std::cout << "Objectives are: " << b.objectives[0] << " " << b.objectives[1] << std::endl;
+
+    std::cout << std::endl;
+    */
+
+    for(unsigned int i = 0; i < a.objectives.size(); i++){
+        if(a.objectives[i] > b.objectives[i]) {
+            //std::cout << "a is not dominated by b" << std::endl;
+            //std::cout << "because for objective " << i << ", " << a.objectives[i] << " < " << b.objectives[i] << std::endl;
             return false;
         }
-        if (a->objectives[i] < b->objectives[i]) {
+        if(a.objectives[i] < b.objectives[i]){ 
+            //std::cout << "a may dominate b" << std::endl;
+            //std::cout << "because for objective " << i << ", " << a.objectives[i] << " > " << b.objectives[i] << std::endl;
             at_least_one_better = true;
         }
     }
+
+    //std::cout << "a is not dominated by b because it is not better in all objectives" << std::endl  << std::endl;
     return at_least_one_better;
 }
+
 
 void MultiObjectiveGA::sortPopulation() { // Non-dominated sorting
     paretoFronts.clear();
@@ -21,17 +49,16 @@ void MultiObjectiveGA::sortPopulation() { // Non-dominated sorting
         population[i]->dominationCount = 0;
         population[i]->dominatedChromosomes.clear();
         for (unsigned int j = 0; j < population.size(); ++j) {
-            if (dominates(population[i], population[j])) {
+            if (dominates(*population[i], *population[j])) {
                 population[i]->dominatedChromosomes.push_back(population[j]);
-            } else if (dominates(population[j], population[i])) {
+            } else if (dominates(*population[j], *population[i])) {
                 population[i]->dominationCount++;
             }
         }
         if (population[i]->dominationCount == 0) {
             if (paretoFronts.empty()) 
                 paretoFronts.emplace_back();  // Create the first front if needed
-            else
-                paretoFronts[0].push_back(population[i]);  // Add to the first Pareto front
+            paretoFronts[0].push_back(population[i]);  // Add to the first Pareto front
         }
     }
 
@@ -48,6 +75,7 @@ void MultiObjectiveGA::sortPopulation() { // Non-dominated sorting
             }
         }
         currentFront++;
+        if(nextFront.empty()) break;
         paretoFronts.push_back(nextFront);
     }
 }
@@ -189,6 +217,30 @@ GAResults MultiObjectiveGA::run() { // Try to avoid overriding this method
     results.paretoFront = paretoFronts[0];
     results.generations = currentGeneration;
     results.elapsed = static_cast<int>(duration.count());
+
+
+
+    // Debug dominated function
+    /*
+    for(unsigned int i = 0; i < population.size(); i++){
+        std::cout << population[i]->objectives[0] << ","  << population[i]->objectives[1];
+        bool is_dominated = false;
+        for(unsigned int j = 0; j < population.size(); j++) {
+            if(i != j){
+                if(dominates(*population[j], *population[i])){
+                    is_dominated = true;
+                    break;
+                }
+            }
+        }
+        if(is_dominated)
+            std::cout << ",0";
+        else
+            std::cout << ",1";
+        std::cout << std::endl;
+    }
+    */
+    
 
     return results;
 }

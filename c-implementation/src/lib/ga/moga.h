@@ -15,7 +15,7 @@ class MultiObjectiveGA : public GeneticAlgorithm {
     private:
         std::vector<std::vector<Chromosome*>> paretoFronts;
 
-        bool dominates(Chromosome *a, Chromosome *b);
+        bool dominates(const Chromosome &a, const Chromosome &b);
         void sortPopulation() override;
         void evaluation() override;
         void selection() override;

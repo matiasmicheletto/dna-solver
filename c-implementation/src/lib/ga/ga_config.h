@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstring>
 
+#include "./help.h"
 #include "./output_stream.h"
 #include "fitness.h"
 

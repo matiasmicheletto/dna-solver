@@ -127,6 +127,28 @@ void GAResults::printHTML() {
     *outputStream << "</html>" << std::endl;
 }
 
+void GAResults::setConfig(int argc, char **argv) {
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-o") == 0) {
+            if (i + 1 < argc) {
+                if (strcmp(argv[i + 1], "txt") == 0)
+                    outputFormat = OUTPUTFORMAT::TXT;
+                else if (strcmp(argv[i + 1], "csv") == 0)
+                    outputFormat = OUTPUTFORMAT::CSV;
+                else if (strcmp(argv[i + 1], "svg") == 0)
+                    outputFormat = OUTPUTFORMAT::SVG;
+                else if (strcmp(argv[i + 1], "html") == 0)
+                    outputFormat = OUTPUTFORMAT::HTML;
+                else
+                    *outputStream << "Unknown output format" << std::endl;
+            } else {
+                std::cerr << "Output format missing" << std::endl;
+                printHelp();
+            }
+        }
+    }
+}
+
 void GAResults::print() {
     switch (outputFormat) {
         case OUTPUTFORMAT::TXT:

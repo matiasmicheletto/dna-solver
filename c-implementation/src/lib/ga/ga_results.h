@@ -3,8 +3,10 @@
 
 
 #include <iostream>
+#include <cstring>
 #include <vector>
 
+#include "./help.h"
 #include "./output_stream.h"
 #include "chromosome.h"
 
@@ -33,6 +35,7 @@ class GAResults { // Results of the Genetic Algorithm
         std::ostream *outputStream;
         OUTPUTFORMAT outputFormat;
 
+        void setConfig(int argc, char **argv);
         void print();
 
     private:
