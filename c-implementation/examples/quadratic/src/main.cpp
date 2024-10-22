@@ -6,7 +6,6 @@
 #include <cstring>
 #include <cstdlib>
 #include "util.h"
-#include "../../src/lib/ga/help.h"
 #include "../../src/lib/ga/ga.h"
 
 
@@ -141,7 +140,12 @@ class QuadraticFitness : public Fitness {
 // focus in the configuration parameters (hyperparameters).
 int main(int argc, char **argv) {
 
-    askedForHelp(argc, argv);
+    // Check for help flag
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
+            printHelp();
+        }
+    }
 
     GAConfig* config = new GAConfig();
     config->setConfig(argc, argv); 

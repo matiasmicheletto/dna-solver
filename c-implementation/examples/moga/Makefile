@@ -1,22 +1,17 @@
-
 CPP      = g++
 CFLAGS   = -Wall -pthread 
 LDFLAGS  = -lgsl -lgslcblas -lm
+SRCDIR   = src
+OBJDIR   = obj
+LIBDIR   = ../../src
 
 TARGET   = moga_example
 
-SOURCES  = main.cpp
+EXAMPLE_SOURCES  = $(wildcard $(SRCDIR)/main.cpp) $(wildcard $(LIBDIR)/**/*.cpp)
 
-OBJECTS  = ../../obj/lib/ga/chromosome.o \
-		   ../../obj/lib/ga/moga.o \
-		   ../../obj/lib/ga/ga.o \
-		   ../../obj/lib/ga/ga_config.o \
-		   ../../obj/lib/ga/ga_results.o \
-		   ../../obj/lib/ga/uniform.o
+EXAMPLE_OBJECTS  = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(EXAMPLE_SOURCES))
 
-INCLUDES = -I../../src/lib/ga -I../../src/lib/moga
-
-all: $(TARGET)
+INCLUDES = -I$(LIBDIR) -I$(LIBDIR)/ga
 
 ifdef DEBUG
     CFLAGS += -DDEBUG=true
@@ -24,15 +19,19 @@ endif
 
 CFLAGS += -DMANUAL_PATH=\"../../manual.txt\"
 
-$(TARGET): $(OBJECTS)
+
+all: $(TARGET)
+
+$(TARGET): $(EXAMPLE_OBJECTS)
 	@echo "Compiling example..."
-	$(CPP) $(CFLAGS) $(INCLUDES) $(SOURCES) $(OBJECTS) -o $(TARGET)
+	$(CPP) $(CFLAGS) $(INCLUDES) $^ -o $@ $(LDFLAGS)
 	@if [ "$(DEBUG)" = "true" ]; then echo "Debug mode enabled"; fi
 	@echo "Example compiled"
 
-../../obj/lib/ga/main.o: $(SOURCES)
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(HEADERS)
 	@mkdir -p $(@D)
-	$(CPP) $(CFLAGS) $(INCLUDES) -c $(SOURCES) -o $@
+	@echo "Compiling $<..."
+	$(CPP) $(CFLAGS) $(INCLUDES) -c $< -o $@ $(LDFLAGS)
 
 clean:
 	rm -f $(TARGET)

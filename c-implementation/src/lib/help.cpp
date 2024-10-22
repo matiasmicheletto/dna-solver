@@ -1,6 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <string.h>
+#include "help.h"
 
 void printHelp() {
     std::ifstream manualFile(MANUAL_PATH); // MATNUAL_PATH is defined in the Makefile

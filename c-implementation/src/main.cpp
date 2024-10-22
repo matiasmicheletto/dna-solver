@@ -1,11 +1,7 @@
-#include "lib/ga/help.h"
-#include "lib/ga/fitness.h"
-#include "lib/ga/chromosome.h"
-#include "lib/ga/gene.h"
-#include "lib/ga/ga.h"
-
 #include <iostream>
 #include <string.h>
+
+#include "lib/ga/help.h"
 
 int main(int argc, char **argv) {
     for(int i = 0; i < argc; i++) {    
