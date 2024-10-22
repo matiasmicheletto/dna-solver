@@ -1,5 +1,9 @@
 // Class GeneticAlgorithm definition
 
+#if __cplusplus <= 199711L
+  #error This library needs at least a C++11 compliant compiler
+#endif
+
 #ifndef GENETIC_ALGORITHM
 #define GENETIC_ALGORITHM
 

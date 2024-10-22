@@ -6,7 +6,7 @@
 #include <cstring>
 #include <cstdlib>
 #include "util.h"
-#include "../../src/lib/ga/ga.h"
+#include "../../src/lib/ga.h"
 
 
 /*

@@ -1,7 +1,7 @@
 #include "help.h"
 
 void printHelp() {
-    std::ifstream manualFile(MANUAL_PATH); // MATNUAL_PATH is defined in the Makefile
+    std::ifstream manualFile(MANUAL_PATH); // MANUAL_PATH is defined in the Makefile
     if (manualFile.is_open()) {
         std::string line;
         while (getline(manualFile, line)) {

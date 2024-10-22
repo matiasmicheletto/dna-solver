@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string.h>
 
-#include "lib/ga/help.h"
+#include "lib/help.h"
 
 int main(int argc, char **argv) {
     for(int i = 0; i < argc; i++) {    

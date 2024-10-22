@@ -6,8 +6,8 @@
 #include <cstring>
 #include <cstdlib>
 
-#include "../../src/lib/ga/help.h"
-#include "../../src/lib/ga/moga.h"
+#include "../../src/lib/help.h"
+#include "../../src/lib/moga.h"
 
 
 /*

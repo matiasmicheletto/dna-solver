@@ -1,6 +1,6 @@
-#include "../../src/lib/ga/help.h"
-#include "../../src/lib/ga/uniform.h"
-#include "../../src/lib/ga/ga.h"
+#include "../../src/lib/help.h"
+#include "../../src/lib/uniform.h"
+#include "../../src/lib/ga.h"
 
 #define SET_SIZE 20
 

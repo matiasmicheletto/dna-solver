@@ -1,0 +1,60 @@
+.
+├── examples
+│   ├── moga
+│   │   ├── Makefile
+│   │   ├── moga_example
+│   │   ├── obj
+│   │   │   └── main.o
+│   │   └── src
+│   │       └── main.cpp
+│   ├── quadratic
+│   │   ├── Makefile
+│   │   ├── obj
+│   │   │   └── main.o
+│   │   ├── quadratic_example
+│   │   └── src
+│   │       ├── main.cpp
+│   │       └── util.h
+│   └── subsetsum
+│       ├── Makefile
+│       ├── obj
+│       │   └── main.o
+│       ├── src
+│       │   └── main.cpp
+│       └── subsetsum_example
+├── Makefile
+├── manual.txt
+├── obj
+│   ├── lib
+│   │   ├── chromosome.o
+│   │   ├── ga_config.o
+│   │   ├── ga.o
+│   │   ├── ga_results.o
+│   │   ├── help.o
+│   │   ├── moga.o
+│   │   └── uniform.o
+│   └── main.o
+├── project_tree.txt
+├── solver
+└── src
+    ├── lib
+    │   ├── chromosome.cpp
+    │   ├── chromosome.h
+    │   ├── fitness.h
+    │   ├── ga_config.cpp
+    │   ├── ga_config.h
+    │   ├── ga.cpp
+    │   ├── ga.h
+    │   ├── ga_results.cpp
+    │   ├── ga_results.h
+    │   ├── gene.h
+    │   ├── help.cpp
+    │   ├── help.h
+    │   ├── moga.cpp
+    │   ├── moga.h
+    │   ├── output_stream.h
+    │   ├── uniform.cpp
+    │   └── uniform.h
+    └── main.cpp
+
+15 directories, 43 files

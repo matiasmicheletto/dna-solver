@@ -1,3 +1,4 @@
+
 CPP      = g++
 CFLAGS   = -Wall -pthread 
 LDFLAGS  = -lgsl -lgslcblas -lm
@@ -11,7 +12,7 @@ EXAMPLE_SOURCES  = $(wildcard $(SRCDIR)/main.cpp) $(wildcard $(LIBDIR)/**/*.cpp)
 
 EXAMPLE_OBJECTS  = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(EXAMPLE_SOURCES))
 
-INCLUDES = -I$(LIBDIR) -I$(LIBDIR)/ga
+INCLUDES = -I$(LIBDIR) -I$(LIBDIR)/lib
 
 ifdef DEBUG
     CFLAGS += -DDEBUG=true
